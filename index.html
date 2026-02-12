@@ -18,575 +18,470 @@
         .fade-in { animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        
-        /* UI Components */
-        .glass-panel { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.5); }
         .soft-shadow { box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08); }
         .nav-shadow { box-shadow: 0 -4px 20px rgba(0,0,0,0.03); }
         .btn-press:active { transform: scale(0.95); transition: transform 0.1s; }
-        
-        /* Navigation */
         .nav-item.active i { color: #10b981; transform: translateY(-4px); }
         .nav-item.active span { color: #10b981; font-weight: 700; }
-        .nav-item i { transition: all 0.3s ease; }
-        
-        /* Center Button */
         .center-btn-wrapper { position: absolute; top: -28px; left: 50%; transform: translateX(-50%); z-index: 50; }
         .pulse-shadow { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); animation: pulse-green 2s infinite; }
-        @keyframes pulse-green { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
-
-        /* Logos */
+        @keyframes pulse-green { 0% { transform: scale(0.95); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); } }
         .wallet-logo { width: 28px; height: 28px; object-fit: contain; border-radius: 50%; background: white; padding: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        
-        /* Misc */
         .notif-badge { position: absolute; top: 0; right: 0; width: 10px; height: 10px; background-color: #ef4444; border-radius: 50%; border: 2px solid white; display: none; }
         .notif-badge.active { display: block; }
-        .dropdown-menu { transform-origin: top right; transition: transform 0.2s ease-out, opacity 0.2s ease-out; }
         .loader { border: 2px solid #f3f3f3; border-radius: 50%; border-top: 2px solid #10b981; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        /* Auth Screen */
-        .auth-input { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #e2e8f0; outline: none; transition: border-color 0.2s; font-size: 14px; background: #f8fafc; }
-        .auth-input:focus { border-color: #10b981; background: white; }
+        .auth-input { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #e2e8f0; outline: none; font-size: 14px; background: #f8fafc; }
+        .todo-item.overdue { border-left: 4px solid #ef4444; }
+        .todo-item.upcoming { border-left: 4px solid #3b82f6; }
+        .chat-ai { background: #eff6ff; color: #1e3a8a; border-radius: 12px 12px 12px 2px; padding: 10px; align-self: flex-start; }
     </style>
 </head>
 <body class="h-screen w-screen overflow-hidden flex flex-col bg-slate-50">
 
-    <!-- AUTHENTICATION PAGE -->
-    <div id="authOverlay" class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center p-6 transition-all duration-500">
+    <!-- AUTHENTICATION -->
+    <div id="authOverlay" class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center p-6 hidden">
         <div class="w-full max-w-sm">
             <div class="text-center mb-8">
-                <div class="h-20 w-20 bg-slate-900 rounded-3xl mx-auto flex items-center justify-center mb-4 shadow-xl">
-                    <span class="text-3xl font-black text-emerald-400">TK</span>
-                </div>
+                <img src="https://1000logos.net/wp-content/uploads/2021/05/Teka-logo-500x300.png" alt="Logo" class="h-16 mx-auto mb-4 object-contain">
                 <h1 class="text-3xl font-black text-slate-800 tracking-tight">Teka Koi?</h1>
                 <p class="text-slate-400 text-sm mt-1">Smart Lifestyle Finance AI</p>
             </div>
-
-            <!-- Login Form -->
-            <div id="loginForm" class="space-y-4 fade-in">
-                <div class="space-y-3">
-                    <input type="email" id="loginEmail" class="auth-input" placeholder="Email Address">
-                    <input type="password" id="loginPass" class="auth-input" placeholder="Password">
-                </div>
-                <div class="flex justify-between items-center text-xs mt-2">
-                    <label class="flex items-center gap-2 text-slate-500">
-                        <input type="checkbox" id="rememberMe" class="rounded text-emerald-500 focus:ring-emerald-500"> Remember me
-                    </label>
-                    <button onclick="alert('Reset link sent!')" class="text-emerald-600 font-bold">Forgot Password?</button>
-                </div>
-                <button onclick="handleLogin()" id="btnLogin" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold text-sm shadow-lg btn-press mt-4">LOG IN</button>
-                <p class="text-center text-xs text-slate-500 mt-6">
-                    Don't have an account? <button onclick="toggleAuthMode('signup')" class="text-emerald-600 font-bold">Sign Up</button>
-                </p>
+            <div id="loginForm" class="bg-white p-6 rounded-3xl border border-slate-100 soft-shadow space-y-4">
+                <input type="email" id="loginEmail" class="auth-input" placeholder="Email Address">
+                <input type="password" id="loginPass" class="auth-input" placeholder="Password">
+                <button onclick="handleAuth('login')" id="btnLogin" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-lg">Log In</button>
+                <p class="text-center text-xs text-slate-500">New user? <button onclick="toggleAuth('signup')" class="text-emerald-600 font-bold underline">Create Account</button></p>
             </div>
-
-            <!-- Sign Up Form -->
-            <div id="signupForm" class="space-y-4 fade-in hidden">
-                <div class="space-y-3">
-                    <input type="text" id="regName" class="auth-input" placeholder="Full Name">
-                    <input type="email" id="regEmail" class="auth-input" placeholder="Email Address">
-                    <input type="password" id="regPass" class="auth-input" placeholder="Create Password">
-                </div>
-                <button onclick="handleSignup()" id="btnSignup" class="w-full bg-emerald-500 text-white py-4 rounded-2xl font-bold text-sm shadow-lg btn-press mt-4">CREATE ACCOUNT</button>
-                <p class="text-center text-xs text-slate-500 mt-6">
-                    Already have an account? <button onclick="toggleAuthMode('login')" class="text-slate-900 font-bold">Log In</button>
-                </p>
+            <div id="signupForm" class="bg-white p-6 rounded-3xl border border-slate-100 soft-shadow space-y-4 hidden">
+                <input type="text" id="regName" class="auth-input" placeholder="Your Name">
+                <input type="email" id="regEmail" class="auth-input" placeholder="Email Address">
+                <input type="password" id="regPass" class="auth-input" placeholder="Password">
+                <button onclick="handleAuth('signup')" id="btnSignup" class="w-full bg-emerald-500 text-white py-4 rounded-2xl font-bold shadow-lg">Register & Sync</button>
+                <p class="text-center text-xs text-slate-500">Have account? <button onclick="toggleAuth('login')" class="text-slate-900 font-bold underline">Log In</button></p>
             </div>
         </div>
     </div>
-
-    <!-- MAIN APP HEADER -->
-    <header class="px-6 pt-12 pb-4 bg-white sticky top-0 z-40 border-b border-slate-100 flex justify-between items-center transition-all duration-300" id="mainHeader">
+     <header class="px-6 pt-12 pb-4 bg-white sticky top-0 z-40 border-b border-slate-100 flex justify-between items-center transition-all duration-300" id="mainHeader">
         <div class="flex items-center gap-3">
-            <div class="h-10 w-10 bg-slate-900 rounded-full flex items-center justify-center text-emerald-400 font-bold text-sm border-2 border-slate-100 shadow-sm" id="headerAvatar">U</div>
+            <div class="h-10 w-10 bg-slate-900 rounded-full flex items-center justify-center text-emerald-400 font-bold border-2 border-slate-100 shadow-sm" id="headerAvatar">U</div>
             <div>
                 <h1 class="text-sm font-extrabold text-slate-800 leading-none" id="headerAppName">Teka Koi?</h1>
                 <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider" id="userGreeting">WELCOME</p>
             </div>
         </div>
         <div class="flex gap-2 items-center">
-            <!-- Sync Indicator -->
             <div id="syncIndicator" class="hidden"><div class="loader"></div></div>
-            
             <button onclick="openNotifications()" class="h-10 w-10 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center relative btn-press">
                 <i class="fas fa-bell"></i>
                 <span id="notifDot" class="notif-badge"></span>
             </button>
-            
-            <!-- 3 Dot Menu -->
             <div class="relative">
-                <button onclick="toggleTopMenu(event)" class="h-10 w-10 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center btn-press">
-                    <i class="fas fa-ellipsis-v"></i>
-                </button>
-                <div id="topMenuDropdown" class="absolute top-12 right-0 w-48 bg-white rounded-2xl shadow-2xl border border-slate-100 hidden flex-col z-50 overflow-hidden fade-in">
-                    <button onclick="navTo('advisor'); closeTopMenu()" class="text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 border-b border-slate-50 flex items-center gap-2"><i class="fas fa-robot text-indigo-500"></i> AI Assistant</button>
-                    <button onclick="navTo('halkhata'); closeTopMenu()" class="text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 border-b border-slate-50 flex items-center gap-2"><i class="fas fa-book text-emerald-500"></i> Halkhata</button>
-                    <button onclick="openSettings(); closeTopMenu()" class="text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 flex items-center gap-2"><i class="fas fa-cog text-slate-400"></i> Settings</button>
+                <button onclick="toggleTopMenu(event)" class="h-10 w-10 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center btn-press"><i class="fas fa-ellipsis-v"></i></button>
+                <div id="topMenuDropdown" class="absolute top-12 right-0 w-52 bg-white rounded-2xl shadow-2xl border border-slate-100 hidden flex-col z-50 overflow-hidden fade-in shadow-xl">
+                    <button onclick="navTo('advisor'); closeTopMenu()" class="text-left px-5 py-4 text-sm font-bold text-slate-600 hover:bg-slate-50 border-b border-slate-50 flex items-center gap-3"><i class="fas fa-robot text-indigo-500"></i> AI Assistant</button>
+                    <button onclick="navTo('halkhata'); closeTopMenu()" class="text-left px-5 py-4 text-sm font-bold text-slate-600 hover:bg-slate-50 border-b border-slate-50 flex items-center gap-3"><i class="fas fa-book text-emerald-500"></i> Halkhata</button>
+                    <button onclick="logoutUser()" class="text-left px-5 py-4 text-sm font-bold text-red-500 hover:bg-red-50 flex items-center gap-3"><i class="fas fa-sign-out-alt"></i> Logout</button>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- CONTENT AREA -->
+    <!-- MAIN CONTAINER -->
     <main id="mainContainer" class="flex-1 overflow-y-auto no-scrollbar pb-24 relative bg-slate-50">
         
-        <!-- HOME DASHBOARD -->
+        <!-- DASHBOARD VIEW -->
         <div id="view-home" class="view-section px-6 py-6 fade-in">
-            <!-- Net Worth Card -->
-            <div class="bg-slate-900 rounded-[32px] p-6 text-white soft-shadow mb-6 relative overflow-hidden btn-press">
+            <div class="bg-slate-900 rounded-[32px] p-6 text-white soft-shadow mb-6 relative overflow-hidden">
                 <div class="absolute -right-10 -top-10 h-40 w-40 bg-emerald-500/20 rounded-full blur-3xl"></div>
                 <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1">Total Net Worth</p>
                 <h2 class="text-4xl font-black mb-6 tracking-tight">৳ <span id="dashTotalBalance">0</span></h2>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-sm">
-                        <div class="flex items-center gap-2 mb-1"><div class="h-2 w-2 rounded-full bg-emerald-400"></div><p class="text-[10px] text-slate-300 font-bold">INCOME</p></div>
+                        <p class="text-[10px] text-slate-300 font-bold mb-1 uppercase tracking-tighter">Income</p>
                         <p class="font-bold text-sm">৳ <span id="dashIncome">0</span></p>
                     </div>
                     <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-sm">
-                        <div class="flex items-center gap-2 mb-1"><div class="h-2 w-2 rounded-full bg-rose-400"></div><p class="text-[10px] text-slate-300 font-bold">EXPENSE</p></div>
+                        <p class="text-[10px] text-slate-300 font-bold mb-1 uppercase tracking-tighter">Expense</p>
                         <p class="font-bold text-sm">৳ <span id="dashExpense">0</span></p>
                     </div>
                 </div>
             </div>
 
-            <!-- Quick Actions -->
+            <h3 class="text-sm font-extrabold text-slate-800 mb-3 ml-1">My Wallets</h3>
+            <div id="walletList" class="flex gap-3 overflow-x-auto no-scrollbar mb-6 pb-2 pl-1"></div>
+
             <div class="grid grid-cols-2 gap-3 mb-6">
                 <button onclick="openBalanceUpdateModal()" class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-start gap-2 btn-press">
-                    <div class="h-8 w-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fas fa-sync-alt"></i></div>
-                    <span class="text-xs font-bold text-slate-700">Update Balance</span>
+                    <i class="fas fa-sync-alt text-blue-500"></i>
+                    <span class="text-xs font-bold text-slate-700">Closing</span>
                 </button>
                 <button onclick="openUpcomingModal()" class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-start gap-2 btn-press">
-                    <div class="h-8 w-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center"><i class="fas fa-calendar-alt"></i></div>
-                    <span class="text-xs font-bold text-slate-700">Add Upcoming</span>
+                    <i class="fas fa-calendar-alt text-purple-500"></i>
+                    <span class="text-xs font-bold text-slate-700">Plans</span>
                 </button>
             </div>
 
-            <!-- Wallets Section (Horizontal Scroll) -->
-            <h3 class="text-sm font-extrabold text-slate-800 mb-3 ml-1">My Wallets</h3>
-            <div id="walletList" class="flex gap-3 overflow-x-auto no-scrollbar mb-6 pb-2 pl-1">
-                <!-- Injected via JS -->
-            </div>
-
-            <!-- Upcoming List -->
             <div class="flex justify-between items-center mb-3 px-1">
                 <h3 class="text-sm font-extrabold text-slate-800">Planned</h3>
-                <span class="text-[10px] font-bold text-slate-400 bg-slate-200 px-2 py-1 rounded-md" id="upcomingCount">0</span>
+                <span id="upcomingCount" class="text-[10px] font-bold text-slate-400 bg-slate-200 px-2 py-1 rounded-md">0</span>
             </div>
             <div id="upcomingList" class="space-y-3 mb-6"></div>
-            
-            <!-- Recent Activity -->
+
+            <div class="flex justify-between items-center mb-3 px-1">
+                 <h3 class="text-sm font-extrabold text-slate-800">Context</h3>
+                 <button onclick="editTabs()" class="text-slate-400 hover:text-emerald-500 transition-colors"><i class="fas fa-pen text-xs"></i></button>
+            </div>
+            <div id="tabsList" class="flex gap-2 overflow-x-auto no-scrollbar mb-6 pb-1"></div>
+
             <div class="flex justify-between items-center mb-3 px-1">
                 <h3 class="text-sm font-extrabold text-slate-800">Recent</h3>
-                <button onclick="navTo('history')" class="text-emerald-600 text-xs font-bold">View All</button>
+                <button onclick="navTo('history')" class="text-emerald-600 text-xs font-bold uppercase">View All</button>
             </div>
             <div id="homeRecentList" class="space-y-3 pb-4"></div>
         </div>
-
-        <!-- HISTORY VIEW -->
-        <div id="view-history" class="view-section hidden px-6 py-6 fade-in h-full flex flex-col">
-            <h2 class="text-2xl font-black text-slate-800 mb-4">Transaction History</h2>
+         <div id="view-history" class="view-section hidden px-6 py-6 fade-in h-full flex flex-col">
+            <h2 class="text-2xl font-black text-slate-800 mb-4 tracking-tight">History</h2>
             <div class="bg-white p-3 rounded-2xl border border-slate-200 mb-4 flex gap-2 shadow-sm">
                 <i class="fas fa-search text-slate-400 mt-1"></i>
-                <input type="text" id="searchInput" placeholder="Search transactions..." class="w-full text-sm outline-none text-slate-700" onkeyup="renderTransactions()">
+                <input type="text" id="searchInput" placeholder="Search..." class="w-full text-sm outline-none" onkeyup="renderTransactions()">
             </div>
             <div id="fullHistoryList" class="flex-1 overflow-y-auto space-y-3 pb-24"></div>
         </div>
 
-        <!-- TASKS VIEW -->
         <div id="view-todo" class="view-section hidden px-6 py-6 fade-in h-full flex flex-col">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-black text-slate-800">Financial Tasks</h2>
-                <button onclick="openTaskModal()" class="bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg btn-press"><i class="fas fa-plus mr-1"></i> New</button>
+                <h2 class="text-2xl font-black text-slate-800">Tasks</h2>
+                <button onclick="openTaskModal()" class="h-10 w-10 bg-slate-900 text-white rounded-full flex items-center justify-center shadow-lg"><i class="fas fa-plus"></i></button>
             </div>
-            <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-2xl mb-6">
-                <div class="flex items-center gap-2 mb-1 text-indigo-700">
-                    <i class="fas fa-brain"></i><span class="text-xs font-bold uppercase">AI Insight</span>
-                </div>
-                <p class="text-xs text-indigo-900 leading-relaxed" id="aiTodoText">Analyzing tasks...</p>
-            </div>
-            <div id="fullTodoList" class="flex-1 overflow-y-auto space-y-2 pb-24"></div>
+            <div id="fullTodoList" class="flex-1 overflow-y-auto space-y-3 pb-24"></div>
         </div>
 
-        <!-- LIFESTYLE VIEW -->
+        <div id="view-halkhata" class="view-section hidden px-6 py-6 fade-in h-full flex flex-col">
+            <h2 class="text-2xl font-black text-slate-800 mb-6">Halkhata</h2>
+            <div class="flex bg-slate-100 p-1 rounded-xl mb-4">
+                <button onclick="setDebtView('pabo')" id="btnPabo" class="flex-1 py-2 rounded-lg text-xs font-bold bg-white shadow-sm text-slate-800 transition-all">Pabo</button>
+                <button onclick="setDebtView('dibo')" id="btnDibo" class="flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 transition-all">Dibo</button>
+            </div>
+            <div id="halkhataList" class="space-y-3 flex-1 overflow-y-auto pb-24"></div>
+        </div>
+
         <div id="view-lifestyle" class="view-section hidden px-6 py-6 fade-in">
             <div class="flex justify-between items-end mb-6">
-                <h2 class="text-2xl font-black text-slate-800">Lifestyle</h2>
-                <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full" id="hijriDate">Loading...</span>
+                <h2 class="text-2xl font-black text-slate-800">Life</h2>
+                <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full" id="hijriDate">---</span>
             </div>
             <div class="bg-slate-900 rounded-3xl p-6 text-white mb-6 relative overflow-hidden shadow-xl">
-                <div class="absolute -right-6 -bottom-6 text-8xl text-white/5"><i class="fas fa-moon"></i></div>
-                <p class="text-slate-400 text-xs font-bold uppercase mb-2">Next Prayer</p>
-                <h2 class="text-4xl font-black mb-1" id="nextPrayerName">--</h2>
-                <p class="text-emerald-400 font-mono text-xl mb-6" id="countdownMsg">--:--:--</p>
-                <div class="grid grid-cols-2 gap-4 border-t border-white/10 pt-4 mt-4">
-                    <div><p class="text-[10px] text-slate-400 font-bold uppercase">Sehri Ends</p><p class="text-lg font-bold" id="sehriTime">--:--</p></div>
-                    <div><p class="text-[10px] text-slate-400 font-bold uppercase">Iftar Time</p><p class="text-lg font-bold" id="iftarTime">--:--</p></div>
+                <p class="text-slate-400 text-xs font-bold mb-2 uppercase">Prayer Times</p>
+                <h2 class="text-3xl font-black mb-4" id="nextPrayerName">---</h2>
+                <div class="grid grid-cols-2 gap-4 border-t border-white/10 pt-4 text-center">
+                    <div><p class="text-[10px] text-slate-400 font-bold uppercase">Sehri</p><p class="text-lg font-bold" id="sehriTime">--:--</p></div>
+                    <div><p class="text-[10px] text-slate-400 font-bold uppercase">Iftar</p><p class="text-lg font-bold" id="iftarTime">--:--</p></div>
                 </div>
             </div>
-            <h3 class="text-sm font-extrabold text-slate-800 mb-3 ml-1">Today's Schedule</h3>
             <div id="prayerList" class="space-y-2"></div>
         </div>
 
-        <!-- ADVISOR VIEW -->
         <div id="view-advisor" class="view-section hidden px-6 py-6 fade-in h-full flex flex-col">
             <h2 class="text-2xl font-black text-slate-800 mb-6">Finance AI</h2>
             <div class="flex-1 overflow-y-auto no-scrollbar pb-24">
-                <div class="bg-white rounded-3xl border border-slate-100 p-5 shadow-sm mb-6">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase mb-4">Spending Analysis</h3>
+                <div class="bg-white rounded-3xl p-5 shadow-sm mb-6 border border-slate-100">
                     <div class="h-48"><canvas id="categoryChart"></canvas></div>
                 </div>
-                <div class="bg-slate-50 rounded-3xl p-5 border border-slate-100">
-                    <div class="flex gap-2 items-center mb-3">
-                        <div class="h-8 w-8 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center"><i class="fas fa-robot"></i></div>
-                        <h3 class="font-bold text-slate-700 text-sm">Virtual Assistant</h3>
-                    </div>
-                    <div id="chatContainer" class="h-40 overflow-y-auto mb-3 pr-2 space-y-2 text-xs">
-                        <div class="chat-bubble chat-ai">Hello! I'm your local finance AI. Ask me to analyze your spending!</div>
-                    </div>
-                    <div class="flex gap-2 overflow-x-auto no-scrollbar">
-                        <button onclick="askAI('predict')" class="bg-white border border-slate-200 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap">Forecast</button>
-                        <button onclick="askAI('save')" class="bg-white border border-slate-200 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap">Save Money</button>
-                        <button onclick="askAI('audit')" class="bg-white border border-slate-200 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap">Audit</button>
-                    </div>
+                <div id="chatContainer" class="bg-slate-50 p-5 rounded-3xl space-y-3 text-xs h-40 overflow-y-auto border border-slate-100 mb-4">
+                    <div class="chat-ai">Hello! Tap a query below to start.</div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="askAI('predict')" class="flex-1 bg-white py-3 rounded-xl font-bold text-xs border border-slate-200">Forecast</button>
+                    <button onclick="askAI('save')" class="flex-1 bg-white py-3 rounded-xl font-bold text-xs border border-slate-200">Tips</button>
                 </div>
             </div>
         </div>
-        
-        <!-- HALKHATA VIEW -->
-         <div id="view-halkhata" class="view-section hidden px-6 py-6 fade-in h-full flex flex-col">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-black text-slate-800">Halkhata</h2>
-                <button onclick="openDebtModal()" class="bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-lg text-xs font-bold"><i class="fas fa-plus mr-1"></i> New Entry</button>
-            </div>
-            <div class="flex bg-slate-100 p-1 rounded-xl mb-4">
-                <button onclick="setDebtView('pabo')" id="btnPabo" class="flex-1 py-2 rounded-lg text-xs font-bold bg-white shadow-sm text-slate-800 transition-all">Receivable (Pabo)</button>
-                <button onclick="setDebtView('dibo')" id="btnDibo" class="flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 transition-all">Payable (Dibo)</button>
-            </div>
-            <div id="halkhataList" class="space-y-3 flex-1 overflow-y-auto pb-24"></div>
-         </div>
-
     </main>
 
     <!-- BOTTOM NAV -->
     <nav class="bg-white h-20 fixed bottom-0 left-0 right-0 nav-shadow z-40 border-t border-slate-100">
-        <div class="grid grid-cols-5 h-full relative">
-            <button onclick="navTo('home')" class="nav-item active flex flex-col items-center justify-center h-full"><i class="fas fa-house text-xl text-slate-300"></i><span class="text-[10px] mt-1 text-slate-300">Home</span></button>
-            <button onclick="navTo('history')" class="nav-item flex flex-col items-center justify-center h-full"><i class="fas fa-list-ul text-xl text-slate-300"></i><span class="text-[10px] mt-1 text-slate-300">History</span></button>
-            <div class="h-full"></div> <!-- Spacer for FAB -->
-            <button onclick="navTo('todo')" class="nav-item flex flex-col items-center justify-center h-full"><i class="fas fa-check-square text-xl text-slate-300"></i><span class="text-[10px] mt-1 text-slate-300">Tasks</span></button>
-            <button onclick="navTo('lifestyle')" class="nav-item flex flex-col items-center justify-center h-full"><i class="fas fa-moon text-xl text-slate-300"></i><span class="text-[10px] mt-1 text-slate-300">Life</span></button>
-            
-            <!-- MAGIC BUTTON -->
+        <div class="grid grid-cols-5 h-full relative text-center">
+            <button onclick="navTo('home')" class="nav-item active flex flex-col items-center justify-center h-full"><i class="fas fa-house text-xl text-slate-300"></i><span class="text-[10px] mt-1 text-slate-300 uppercase">Home</span></button>
+            <button onclick="navTo('history')" class="nav-item flex flex-col items-center justify-center h-full"><i class="fas fa-list-ul text-xl text-slate-300"></i><span class="text-[10px] mt-1 text-slate-300 uppercase">History</span></button>
+            <div class="h-full"></div>
+            <button onclick="navTo('todo')" class="nav-item flex flex-col items-center justify-center h-full"><i class="fas fa-check-square text-xl text-slate-300"></i><span class="text-[10px] mt-1 text-slate-300 uppercase">Tasks</span></button>
+            <button onclick="navTo('lifestyle')" class="nav-item flex flex-col items-center justify-center h-full"><i class="fas fa-moon text-xl text-slate-300"></i><span class="text-[10px] mt-1 text-slate-300 uppercase">Life</span></button>
             <div class="center-btn-wrapper">
-                <button onclick="openMagicInput()" class="h-16 w-16 bg-slate-900 rounded-full shadow-2xl pulse-shadow flex items-center justify-center text-white active:scale-95 transition-all">
-                    <i class="fas fa-plus text-2xl"></i>
-                </button>
+                <button onclick="openMagicInput()" class="h-16 w-16 bg-slate-900 rounded-full shadow-2xl pulse-shadow flex items-center justify-center text-white active:scale-90 transition-all"><i class="fas fa-plus text-2xl"></i></button>
             </div>
         </div>
     </nav>
 
-    <!-- === MODALS === -->
-
-    <!-- Magic Input -->
+    <!-- MODALS -->
     <div id="magicModal" class="fixed inset-0 z-[80] hidden flex flex-col justify-end bg-black/60 backdrop-blur-sm" onclick="if(event.target===this) closeMagicInput()">
-        <div id="magicSheet" class="bg-white rounded-t-[40px] p-6 pb-10 transform translate-y-full transition-transform duration-300">
+        <div id="magicSheet" class="bg-white rounded-t-[40px] p-8 pb-10 transform translate-y-full transition-transform duration-300">
             <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
-            <h3 class="text-lg font-black text-slate-800 mb-2">Smart Input</h3>
-            <p class="text-xs text-slate-400 mb-4">"Salary 20k, Rickshaw 50, Rakib 500 pabe"</p>
-            <div class="bg-slate-50 p-4 rounded-2xl border-2 border-transparent focus-within:border-emerald-500 transition-colors mb-4 flex gap-2">
-                <textarea id="magicText" class="w-full bg-transparent outline-none text-slate-800 font-medium resize-none h-12" placeholder="Type or speak..."></textarea>
-                <button onclick="toggleVoiceInput()" id="micBtn" class="text-slate-400 hover:text-red-500 transition-colors"><i class="fas fa-microphone text-xl"></i></button>
+            <textarea id="magicText" class="w-full h-32 bg-slate-50 rounded-2xl p-4 text-slate-800 text-lg outline-none resize-none mb-6" placeholder="What happened today?"></textarea>
+            <div class="flex gap-3 mb-6">
+                <button onclick="toggleVoiceInput()" id="micBtn" class="h-14 w-14 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center"><i class="fas fa-microphone text-xl"></i></button>
+                <button onclick="processMagicInput()" class="flex-1 bg-slate-900 text-white rounded-2xl font-bold shadow-xl">PROCESS AI</button>
             </div>
-            <div class="flex gap-3">
-                <button onclick="processMagicInput()" class="flex-1 bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-lg btn-press">Process with AI</button>
-            </div>
-            <div class="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-slate-100">
-                <button onclick="openManualInput('income'); closeMagicInput()" class="py-3 rounded-xl bg-emerald-50 text-emerald-700 font-bold text-xs">Manual Income</button>
-                <button onclick="openManualInput('expense'); closeMagicInput()" class="py-3 rounded-xl bg-rose-50 text-rose-700 font-bold text-xs">Manual Expense</button>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="openManualInput('income'); closeMagicInput()" class="bg-emerald-50 text-emerald-700 py-4 rounded-2xl font-bold text-xs uppercase">Income</button>
+                <button onclick="openManualInput('expense'); closeMagicInput()" class="bg-rose-50 text-rose-700 py-4 rounded-2xl font-bold text-xs uppercase">Expense</button>
             </div>
         </div>
     </div>
 
-    <!-- Manual Input -->
     <div id="inputModal" class="fixed inset-0 z-[90] hidden flex items-end justify-center bg-black/60 backdrop-blur-sm">
         <div class="bg-white w-full rounded-t-[40px] p-8 animate-slide-up">
-            <div class="flex justify-between items-center mb-6">
-                <h3 id="inputModalTitle" class="text-xl font-black text-slate-800">Add Expense</h3>
-                <button onclick="closeInputModal()" class="h-8 w-8 bg-slate-100 rounded-full text-slate-500"><i class="fas fa-times"></i></button>
-            </div>
+            <div class="flex justify-between items-center mb-6"><h3 id="inputModalTitle" class="text-xl font-black">Record</h3><button onclick="closeInputModal()" class="text-slate-400"><i class="fas fa-times"></i></button></div>
             <div class="space-y-4">
-                <input type="number" id="inpAmount" class="w-full text-4xl font-black text-slate-800 border-b-2 border-slate-100 py-3 outline-none bg-transparent" placeholder="৳ 0">
-                <input type="text" id="inpTitle" class="w-full border rounded-xl px-4 py-3 text-sm bg-slate-50 outline-none font-bold" placeholder="Description (e.g. Lunch)">
+                <input type="number" id="inpAmount" class="w-full text-4xl font-black border-b-2 py-3 outline-none" placeholder="৳ 0">
+                <input type="text" id="inpTitle" class="w-full border rounded-xl p-3 bg-slate-50 outline-none font-bold" placeholder="Description">
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase">Wallet</label>
-                        <select id="inpWallet" class="w-full border rounded-xl px-3 py-3 text-sm bg-white font-bold text-slate-700"></select>
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase">Category</label>
-                        <select id="inpCategory" class="w-full border rounded-xl px-3 py-3 text-sm bg-white font-bold text-slate-700"></select>
-                    </div>
+                    <select id="inpWallet" class="w-full border rounded-xl p-3 bg-white font-bold"></select>
+                    <select id="inpCategory" class="w-full border rounded-xl p-3 bg-white font-bold"></select>
                 </div>
-                <div class="space-y-1">
-                    <label class="text-[10px] font-bold text-slate-400 uppercase">Context</label>
-                    <select id="inpContext" class="w-full border rounded-xl px-3 py-3 text-sm bg-white font-bold text-slate-700"></select>
-                </div>
-                
-                <!-- GPS Indicator -->
-                <div class="flex items-center gap-2 text-xs font-bold text-slate-400" id="gpsStatus">
-                    <i class="fas fa-map-marker-alt"></i> Location: Waiting...
-                </div>
-
-                <button onclick="submitManualInput()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-lg btn-press mt-2">SAVE RECORD</button>
+                <select id="inpContext" class="w-full border rounded-xl p-3 bg-white font-bold"></select>
+                <p id="gpsStatus" class="text-[10px] font-bold text-slate-400 tracking-widest uppercase">GPS: Waiting...</p>
+                <button onclick="submitManualInput()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold">SAVE</button>
             </div>
         </div>
     </div>
 
-    <!-- Debt Modal -->
-    <div id="debtModal" class="fixed inset-0 z-[90] hidden flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-6 soft-shadow">
-            <h3 class="text-xl font-black text-slate-800 mb-4">New Entry</h3>
-            <div class="space-y-3">
-                <input type="text" id="debtName" placeholder="Name" class="w-full border rounded-xl px-4 py-3 text-sm bg-slate-50 outline-none font-bold">
-                <input type="number" id="debtAmount" placeholder="Amount" class="w-full border rounded-xl px-4 py-3 text-sm bg-slate-50 outline-none font-bold">
-                <button onclick="addDebt()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold btn-press">Save</button>
-                <button onclick="document.getElementById('debtModal').classList.add('hidden')" class="w-full text-slate-400 text-sm py-2">Cancel</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Balance Update Modal -->
     <div id="balanceModal" class="fixed inset-0 z-[90] hidden flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-6 soft-shadow">
-            <h3 class="text-xl font-black text-slate-800 mb-4">Update Balance</h3>
-            <div id="balanceList" class="space-y-4 mb-6 max-h-[50vh] overflow-y-auto"></div>
-            <button onclick="saveBalanceUpdates()" class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold btn-press">Update All</button>
-            <button onclick="document.getElementById('balanceModal').classList.add('hidden')" class="w-full text-slate-400 text-sm py-3 mt-2">Cancel</button>
+        <div class="bg-white w-full max-w-sm rounded-[40px] p-8">
+            <h3 class="text-xl font-black mb-4">Cash Update</h3>
+            <div id="balanceList" class="space-y-4 mb-6"></div>
+            <button onclick="saveBalanceUpdates()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold">Update All</button>
+            <button onclick="document.getElementById('balanceModal').classList.add('hidden')" class="w-full text-slate-400 text-sm mt-3">Cancel</button>
         </div>
     </div>
 
-    <!-- Notification Modal -->
-    <div id="notifModal" class="fixed inset-0 z-[90] hidden flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-6 soft-shadow">
-            <h3 class="text-xl font-black text-slate-800 mb-4">Notifications</h3>
-            <div id="notifList" class="space-y-2 max-h-[50vh] overflow-y-auto mb-4"></div>
-            <button onclick="document.getElementById('notifModal').classList.add('hidden')" class="w-full text-slate-500 font-bold py-2">Close</button>
-        </div>
-    </div>
-    
-    <!-- Upcoming Modal -->
-    <div id="upcomingModal" class="fixed inset-0 z-[90] hidden flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-6 soft-shadow">
-            <h3 class="text-xl font-black text-slate-800 mb-4">Upcoming</h3>
-            <div class="space-y-3">
-                <input type="text" id="upTitle" placeholder="Title" class="w-full border rounded-xl px-4 py-3 text-sm bg-slate-50 font-bold">
-                <input type="number" id="upAmount" placeholder="Amount" class="w-full border rounded-xl px-4 py-3 text-sm bg-slate-50 font-bold">
-                <select id="upPriority" class="w-full border rounded-xl px-3 py-3 text-sm bg-white font-bold text-slate-700">
-                    <option value="Critical">Critical</option>
-                    <option value="High">High</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Low">Low</option>
-                </select>
-                <input type="date" id="upDate" class="w-full border rounded-xl px-4 py-3 text-sm bg-slate-50 font-bold">
-                <button onclick="saveUpcoming()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold btn-press">Save Plan</button>
-                <button onclick="document.getElementById('upcomingModal').classList.add('hidden')" class="w-full text-slate-400 text-sm py-2">Cancel</button>
+    <div id="taskModal" class="fixed inset-0 z-[90] hidden flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-sm rounded-[40px] p-8">
+            <h3 class="text-xl font-black mb-6">New Task</h3>
+            <div class="space-y-4">
+                <input type="text" id="taskText" placeholder="Remind me to..." class="w-full border rounded-2xl p-4 bg-slate-50 outline-none">
+                <input type="datetime-local" id="taskDue" class="w-full border rounded-2xl p-4 bg-white">
+                <button onclick="saveTask()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold">Set Reminder</button>
             </div>
         </div>
     </div>
     
-    <!-- Settings Modal -->
-    <div id="settingsModal" class="fixed inset-0 z-[90] hidden flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-6 soft-shadow">
-            <h3 class="text-xl font-black text-slate-800 mb-4">Settings</h3>
-            <input type="text" id="scriptUrlInput" class="w-full border rounded-xl px-4 py-3 text-sm bg-slate-50 font-bold mb-4" placeholder="Google Script URL">
-            <button onclick="saveSettings()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold btn-press">Save URL</button>
-            <button onclick="manualSync()" class="w-full bg-purple-100 text-purple-700 py-4 rounded-2xl font-bold btn-press mt-2">Force Sync</button>
-            <button onclick="logoutUser()" class="w-full text-red-500 font-bold py-4">Logout</button>
-            <button onclick="document.getElementById('settingsModal').classList.add('hidden')" class="w-full text-slate-400 text-sm">Close</button>
+    <div id="debtModal" class="fixed inset-0 z-[90] hidden flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-6">
+            <h3 class="text-xl font-black mb-4 uppercase text-xs tracking-widest">Halkhata Entry</h3>
+            <div class="space-y-3">
+                <input type="text" id="debtName" placeholder="Person Name" class="w-full border rounded-xl p-3 bg-slate-50">
+                <input type="number" id="debtAmount" placeholder="Amount" class="w-full border rounded-xl p-3 bg-slate-50">
+                <button onclick="addDebt()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold">Add to Book</button>
+                <button onclick="document.getElementById('debtModal').classList.add('hidden')" class="w-full text-slate-400 text-sm py-2">Close</button>
+            </div>
         </div>
     </div>
-
-    <!-- New Task Modal -->
-    <div id="taskModal" class="fixed inset-0 z-[90] hidden flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-6 soft-shadow">
-            <h3 class="text-xl font-black text-slate-800 mb-4">New Task</h3>
-            <input type="text" id="taskText" placeholder="Task Name" class="w-full border rounded-xl px-4 py-3 text-sm bg-slate-50 font-bold mb-4">
-            <button onclick="saveTask()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold btn-press">Add Task</button>
-            <button onclick="document.getElementById('taskModal').classList.add('hidden')" class="w-full text-slate-400 text-sm py-2">Cancel</button>
+    
+    <div id="notifModal" class="fixed inset-0 z-[90] hidden flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-6">
+            <h3 class="text-xl font-black mb-4">Notifications</h3>
+            <div id="notifList" class="space-y-2 max-h-60 overflow-y-auto mb-4"></div>
+            <button onclick="document.getElementById('notifModal').classList.add('hidden')" class="w-full text-slate-400 font-bold py-2 uppercase text-xs">Close</button>
         </div>
     </div>
-
     <script>
-        // CONFIG - Hardcoded Backend URL
-        let GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHMq_jrGX177iZTsr5T4XwhXt1hKlqD9ogkeijNGMkT2AEiH-coHR_soQFYxIKaJo-/exec";
+        /**
+         * TEKA KOI - INTELLIGENT CORE v3.5
+         * Part 4 of 4: The Logic Engine
+         */
+
+        // 1. CONFIGURATION & PERMANENT STORAGE
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzXEiy8E3tYgHp5yUpDKHs_p9A-bSU9s-iizR8prIrUc4gNBCetP4018dmGegMeliOU/exec";
         const GEMINI_API_KEY = "AIzaSyC-5OUanWpO76PzlGLWl9bxfXqqAM-Uyyo";
-
-        const WALLET_LOGOS = {
-            'Bkash': 'https://freelogopng.com/images/all_img/1656234745bkash-app-logo-png.png',
-            'Nagad': 'https://play-lh.googleusercontent.com/EQC9NtbtRvsNcU1r_5Dr8pWm3hPfN3OjGjzkOqzCEPDJvqBGKyfU9-a2ajNtcrIg1rs=w600-h300-pc0xffffff-pd',
+        
+        const WALLET_META = { 
+            'Bkash': 'https://freelogopng.com/images/all_img/1656234745bkash-app-logo-png.png', 
+            'Nagad': 'https://play-lh.googleusercontent.com/EQC9NtbtRvsNcU1r_5Dr8pWm3hPfN3OjGjzkOqzCEPDJvqBGKyfU9-a2ajNtcrIg1rs=w600-h300-pc0xffffff-pd', 
             'Bank': 'https://cdn-icons-png.flaticon.com/512/2830/2830284.png',
-            'Cash': '' 
+            'Cash': 'https://cdn-icons-png.flaticon.com/512/2489/2489756.png'
         };
-        const DEFAULT_ACCOUNTS = { 'Cash': 0, 'Bkash': 0, 'Nagad': 0, 'Bank': 0 };
-        const DEFAULT_TABS = ['Personal', 'Family', 'Girlfriend', 'Office'];
-        const DEFAULT_CATEGORIES = ['Food', 'Transport', 'Bills', 'Shopping', 'General'];
 
-        let currentUser = null;
-        let db = {
-            accounts: { ...DEFAULT_ACCOUNTS },
-            tabs: [...DEFAULT_TABS],
-            categories: [...DEFAULT_CATEGORIES],
-            transactions: [],
-            debts: [],
-            todos: [],
-            upcoming: [],
-            notifications: []
+        const DEFAULT_DB = { 
+            accounts: { 'Cash': 0, 'Bkash': 0, 'Nagad': 0, 'Bank': 0 }, 
+            tabs: ['Personal', 'Family', 'Office', 'Other'], 
+            categories: ['Food', 'Transport', 'Bills', 'Shopping', 'General'], 
+            transactions: [], 
+            debts: [], 
+            todos: [], 
+            upcoming: [], 
+            notifications: [] 
         };
+
+        // 2. GLOBAL STATE
+        let currentUser = null;
+        let currentLocation = null;
+        let db = JSON.parse(JSON.stringify(DEFAULT_DB));
         let activeTab = 'Personal';
         let currentTxType = 'expense';
         let currentDebtView = 'pabo';
         let currentDebtType = 'pabo';
-        let currentLocation = null;
         let catChartInstance = null;
+        let trendChartInstance = null;
 
-        // AUTH
+        // 3. LIFECYCLE & AUTHENTICATION
         window.onload = function() {
-            // Close menus on click outside
-            document.addEventListener('click', function(e) {
-                 if (!e.target.closest('#topMenuDropdown') && !e.target.closest('button[onclick="toggleTopMenu(event)"]')) {
-                     document.getElementById('topMenuDropdown').classList.add('hidden');
-                 }
+            // UI Event Listeners
+            document.addEventListener('click', e => { 
+                if (!e.target.closest('#topMenuDropdown') && !e.target.closest('button[onclick*="toggleTopMenu"]')) {
+                    closeTopMenu();
+                }
             });
 
             const savedUser = localStorage.getItem('tk_current_user');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                initApp();
-            } else {
-                document.getElementById('authOverlay').classList.remove('hidden');
+            if (savedUser) { 
+                currentUser = JSON.parse(savedUser); 
+                initApp(); 
+            } else { 
+                document.getElementById('authOverlay').classList.remove('hidden'); 
             }
         };
-        
-        function toggleAuthMode(mode) {
-            if(mode==='signup') { document.getElementById('loginForm').classList.add('hidden'); document.getElementById('signupForm').classList.remove('hidden'); }
-            else { document.getElementById('signupForm').classList.add('hidden'); document.getElementById('loginForm').classList.remove('hidden'); }
+
+        function toggleAuth(mode) {
+            document.getElementById('loginForm').classList.toggle('hidden', mode === 'signup');
+            document.getElementById('signupForm').classList.toggle('hidden', mode === 'login');
         }
 
-        async function handleLogin() {
-            const email = document.getElementById('loginEmail').value;
-            const pass = document.getElementById('loginPass').value;
-            if(!email || !pass) return alert("Enter credentials");
+        async function handleAuth(action) {
+            const email = action === 'login' ? document.getElementById('loginEmail').value : document.getElementById('regEmail').value;
+            const pass = action === 'login' ? document.getElementById('loginPass').value : document.getElementById('regPass').value;
+            const name = action === 'signup' ? document.getElementById('regName').value : null;
+
+            if (!email || !pass) return alert("Please fill all required fields.");
             
-            // Call Backend for Login
-            const btn = document.getElementById('btnLogin');
-            const originalText = btn.innerText;
-            btn.innerText = "Verifying...";
-            
+            showSync(true);
             try {
-                const res = await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'text/plain;charset=utf-8'}, // Simple CORS handling
-                    body: JSON.stringify({ action: 'login', email, password: btoa(pass) })
+                const res = await fetch(SCRIPT_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ action, email: email.toLowerCase(), password: btoa(pass), name }) 
                 });
-                // Note: CORS might block response reading in simple mode, assume local check for demo or success
-                // For this demo file, we will store locally
-                // In production, we parse response.
+                const json = await res.json();
                 
-                currentUser = { name: "User", email: email }; // Simulate success for offline/demo
-                localStorage.setItem('tk_current_user', JSON.stringify(currentUser));
-                document.getElementById('authOverlay').classList.add('hidden');
-                initApp();
-            } catch(e) {
-                alert("Login Error (Check network)");
-                btn.innerText = originalText;
+                if (json.status === 'success') {
+                    currentUser = action === 'signup' ? { name, email: email.toLowerCase() } : json.user;
+                    localStorage.setItem('tk_current_user', JSON.stringify(currentUser));
+                    document.getElementById('authOverlay').classList.add('hidden');
+                    initApp();
+                } else { 
+                    alert(json.message || "Authentication Failed."); 
+                }
+            } catch (e) { 
+                alert("Auth system unavailable. Check internet connection."); 
             }
-        }
-        
-        async function handleSignup() {
-            const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
-            const pass = document.getElementById('regPass').value;
-            if(!name || !email || !pass) return alert("Fill all fields");
-
-            const btn = document.getElementById('btnSignup');
-            btn.innerText = "Creating...";
-
-            try {
-                 // Simulate Backend Register
-                 await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'text/plain;charset=utf-8'},
-                    body: JSON.stringify({ action: 'signup', name, email, password: btoa(pass) })
-                });
-                
-                currentUser = { name, email };
-                localStorage.setItem('tk_current_user', JSON.stringify(currentUser));
-                document.getElementById('authOverlay').classList.add('hidden');
-                initApp();
-            } catch(e) { alert("Signup Error"); btn.innerText = "CREATE ACCOUNT"; }
-        }
-
-        function logoutUser() {
-            localStorage.removeItem('tk_current_user');
-            location.reload();
+            showSync(false);
         }
 
         function initApp() {
-            document.getElementById('userGreeting').innerText = `HELLO, ${currentUser.name.toUpperCase()}`;
+            document.getElementById('userGreeting').innerText = `HELLO, ${currentUser.name.split(' ')[0].toUpperCase()}`;
             document.getElementById('headerAvatar').innerText = currentUser.name[0].toUpperCase();
             
-            // Load saved DB
             const savedDB = localStorage.getItem(`tk_db_${currentUser.email}`);
-            if (savedDB) db = JSON.parse(savedDB);
-            
-            // Check Script URL override
-            const savedUrl = localStorage.getItem('tk_script_url');
-            if(savedUrl) GOOGLE_SCRIPT_URL = savedUrl;
-            document.getElementById('scriptUrlInput').value = GOOGLE_SCRIPT_URL;
+            if (savedDB) {
+                const parsed = JSON.parse(savedDB);
+                db = { ...DEFAULT_DB, ...parsed }; // Merge with defaults to prevent nulls
+            }
 
-            // Scroll effect
+            // Header Scroll Logic
             document.getElementById('mainContainer').addEventListener('scroll', function() {
-                const headerTitle = document.getElementById('headerAppName');
-                const netWorth = document.getElementById('dashTotalBalance').innerText;
-                if(this.scrollTop > 100) { headerTitle.innerHTML = `<span class="text-emerald-600">৳${netWorth}</span>`; } 
-                else { headerTitle.innerText = "Teka Koi?"; }
+                const headAppName = document.getElementById('headerAppName');
+                const worth = document.getElementById('dashTotalBalance').innerText;
+                if (this.scrollTop > 80) {
+                    headAppName.innerHTML = `<span class="text-emerald-600 font-extrabold tracking-tighter">৳${worth}</span>`;
+                } else {
+                    headAppName.innerText = "Teka Koi?";
+                }
             });
 
-            renderAll();
-            navTo('home');
+            setInterval(checkReminders, 30000);
+            renderAll(); 
+            navTo('home'); 
+            syncDataDown(); 
             fetchPrayerTimes();
-            
-            // Auto Sync on Load
-            syncDataDown();
+        }
+
+        function logoutUser() {
+            if (confirm("Log out? Local data will remain but sync will stop.")) {
+                localStorage.removeItem('tk_current_user');
+                location.reload();
+            }
+        }
+
+        // 4. DATA SYNCHRONIZATION
+        async function syncUp(payload) {
+            showSync(true);
+            try {
+                await fetch(SCRIPT_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ 
+                        action: 'sync_up', 
+                        userEmail: currentUser.email, 
+                        userName: currentUser.name, 
+                        ...payload 
+                    }) 
+                });
+            } catch (e) { console.warn("Sync failed, will retry next action."); }
+            showSync(false);
+        }
+
+        async function syncDataDown() {
+            showSync(true);
+            try {
+                const res = await fetch(`${SCRIPT_URL}?email=${currentUser.email}`);
+                const json = await res.json();
+                if (json.status === 'success' && json.data) {
+                    // Update local DB with Cloud Data
+                    db.transactions = json.data.transactions || db.transactions;
+                    db.debts = json.data.debts || db.debts;
+                    db.upcoming = json.data.upcoming || db.upcoming;
+                    saveDB();
+                    renderAll();
+                }
+            } catch (e) { console.error("Could not fetch cloud data."); }
+            showSync(false);
+        }
+
+        function manualSync() {
+            syncUp({
+                transactions: db.transactions,
+                debts: db.debts,
+                upcoming: db.upcoming
+            }).then(() => alert("Full Database Synced!"));
         }
 
         function saveDB() {
             localStorage.setItem(`tk_db_${currentUser.email}`, JSON.stringify(db));
         }
 
-        // NAVIGATION
+        // 5. NAVIGATION & UI HELPERS
         function navTo(viewId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`view-${viewId}`).classList.remove('hidden');
-            
-            const map = { 'home':0, 'history':1, 'todo':2, 'lifestyle':3 };
-            document.querySelectorAll('.nav-item').forEach((btn, i) => {
+            const target = document.getElementById(`view-${viewId}`);
+            if (target) target.classList.remove('hidden');
+
+            const navItems = document.querySelectorAll('.nav-item');
+            const map = { 'home': 0, 'history': 1, 'todo': 3, 'lifestyle': 4 };
+            navItems.forEach((btn, i) => {
                 btn.classList.remove('active');
-                if(i === map[viewId]) btn.classList.add('active');
+                if (i === map[viewId]) btn.classList.add('active');
             });
 
-            if(viewId === 'advisor') updateCharts();
+            if (viewId === 'advisor') updateCharts();
         }
 
         function toggleTopMenu(e) {
-            if(e) e.stopPropagation();
-            const menu = document.getElementById('topMenuDropdown');
-            menu.classList.toggle('hidden');
+            if (e) e.stopPropagation();
+            document.getElementById('topMenuDropdown').classList.toggle('hidden');
         }
         function closeTopMenu() { document.getElementById('topMenuDropdown').classList.add('hidden'); }
 
-        // RENDERING
+        function showSync(s) { document.getElementById('syncIndicator').classList.toggle('hidden', !s); }
+
+        // 6. MODULE: DASHBOARD & TRANSACTIONS
         function renderAll() {
             updateDashboard();
             renderWallets();
@@ -600,12 +495,16 @@
         }
 
         function updateDashboard() {
-            let total = 0; for(let k in db.accounts) total += db.accounts[k];
+            let total = 0;
+            for (let k in db.accounts) total += db.accounts[k];
             document.getElementById('dashTotalBalance').innerText = total.toLocaleString();
-            
+
             const now = new Date();
-            const inc = db.transactions.filter(t => t.type==='income' && new Date(t.date).getMonth()===now.getMonth()).reduce((s,t)=>s+t.amount,0);
-            const exp = db.transactions.filter(t => t.type==='expense' && new Date(t.date).getMonth()===now.getMonth()).reduce((s,t)=>s+t.amount,0);
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+            
+            const inc = db.transactions.filter(t => t.type === 'income' && new Date(t.date) >= startOfMonth).reduce((s, t) => s + t.amount, 0);
+            const exp = db.transactions.filter(t => t.type === 'expense' && new Date(t.date) >= startOfMonth).reduce((s, t) => s + t.amount, 0);
+            
             document.getElementById('dashIncome').innerText = inc.toLocaleString();
             document.getElementById('dashExpense').innerText = exp.toLocaleString();
         }
@@ -613,261 +512,331 @@
         function renderWallets() {
             const container = document.getElementById('walletList');
             container.innerHTML = Object.entries(db.accounts).map(([name, bal]) => {
-                const logo = WALLET_LOGOS[name];
-                const imgHtml = logo ? `<img src="${logo}" class="wallet-logo">` : `<div class="h-7 w-7 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600"><i class="fas fa-wallet text-xs"></i></div>`;
+                const logo = WALLET_META[name];
+                const img = logo ? `<img src="${logo}" class="wallet-logo">` : `<div class="h-7 w-7 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600"><i class="fas fa-wallet text-xs"></i></div>`;
                 return `
-                <div onclick="openBalanceUpdateModal()" class="bg-white p-3 rounded-2xl min-w-[130px] border border-slate-100 flex flex-col gap-2 soft-shadow cursor-pointer btn-press">
-                    <div class="flex justify-between items-start">${imgHtml}</div>
-                    <div><p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">${name}</p><p class="font-black text-lg text-slate-800">৳${bal.toLocaleString()}</p></div>
+                <div onclick="openBalanceUpdateModal()" class="bg-white p-4 rounded-[24px] min-w-[150px] border border-slate-100 flex flex-col gap-3 shadow-sm cursor-pointer btn-press">
+                    <div class="flex justify-between items-start">${img}<i class="fas fa-chevron-right text-[8px] text-slate-300 mt-1"></i></div>
+                    <div>
+                        <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest">${name}</p>
+                        <p class="font-black text-lg text-slate-800 tracking-tight">৳${bal.toLocaleString()}</p>
+                    </div>
                 </div>`;
             }).join('');
         }
 
-        function renderContextTabs() {
-            document.getElementById('tabsList').innerHTML = db.tabs.map(t => `
-                <button onclick="activeTab='${t}'; renderAll()" class="px-4 py-2 rounded-full text-xs font-bold border ${activeTab===t?'bg-slate-900 text-white border-slate-900':'bg-white text-slate-500 border-slate-200'}">${t}</button>
-            `).join('');
-        }
-        function editTabs() {
-            const res = prompt("Edit Contexts (comma separated):", db.tabs.join(","));
-            if(res) { db.tabs = res.split(',').map(s=>s.trim()); if(db.tabs.length) activeTab=db.tabs[0]; saveDB(); renderAll(); }
-        }
-
         function renderTransactions() {
-            const list = document.getElementById('homeRecentList');
-            const fullList = document.getElementById('fullHistoryList');
-            const sorted = [...db.transactions].sort((a,b)=>new Date(b.date)-new Date(a.date));
-            const filtered = sorted.filter(t => t.context === activeTab);
+            const sorted = [...db.transactions].sort((a,b) => new Date(b.date) - new Date(a.date));
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = sorted.filter(t => t.title.toLowerCase().includes(search) || t.category.toLowerCase().includes(search));
             
-            const row = (t) => {
-                const locIcon = t.coords ? '<i class="fas fa-map-marker-alt text-emerald-500 ml-1 text-xs"></i>' : '';
-                return `
-                <div class="bg-white p-4 rounded-2xl flex justify-between items-center border border-slate-50 shadow-sm mb-2">
+            const row = (t) => `
+                <div class="bg-white p-4 rounded-2xl flex justify-between items-center border border-slate-50 shadow-sm">
                     <div class="flex gap-3 items-center">
-                        <div class="h-10 w-10 bg-slate-50 rounded-xl flex items-center justify-center text-xl">${t.type==='income'?'💰':'💸'}</div>
-                        <div><p class="text-sm font-bold text-slate-800">${t.title} ${locIcon}</p><p class="text-[10px] text-slate-400 font-bold uppercase">${t.category} • ${new Date(t.date).toLocaleDateString()}</p></div>
+                        <div class="h-12 w-12 bg-slate-50 rounded-2xl flex items-center justify-center text-xl">
+                            ${t.type === 'income' ? '💰' : getCategoryEmoji(t.category)}
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-slate-800">${t.title}</p>
+                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">${t.category} • ${t.wallet} • ${new Date(t.date).toLocaleDateString()}</p>
+                        </div>
                     </div>
-                    <p class="font-black text-sm ${t.type==='income'?'text-emerald-500':'text-slate-800'}">${t.type==='income'?'+':'-'} ৳${t.amount}</p>
+                    <div class="text-right">
+                        <p class="font-black text-sm ${t.type === 'income' ? 'text-emerald-500' : 'text-slate-700'}">
+                            ${t.type === 'income' ? '+' : '-'}৳${t.amount}
+                        </p>
+                        ${t.coords ? '<i class="fas fa-map-marker-alt text-[8px] text-emerald-400"></i>' : ''}
+                    </div>
                 </div>`;
-            };
-            
-            list.innerHTML = filtered.slice(0,5).map(row).join('') || '<div class="text-center text-xs text-slate-300 py-4">No recent activity here</div>';
-            fullList.innerHTML = sorted.map(row).join('');
+
+            document.getElementById('homeRecentList').innerHTML = sorted.filter(t => t.context === activeTab).slice(0, 5).map(row).join('') || '<p class="text-center py-6 text-xs text-slate-300">Quiet day so far!</p>';
+            document.getElementById('fullHistoryList').innerHTML = filtered.map(row).join('');
         }
 
-        // TRANSACTIONS
-        function openManualInput(type) {
-            currentTxType = type;
-            document.getElementById('inputModal').classList.remove('hidden');
-            document.getElementById('inputModalTitle').innerText = type==='income'?'Add Income':'Add Expense';
+        function getCategoryEmoji(c) {
+            const map = { 'Food': '🍔', 'Transport': '🚕', 'Bills': '⚡', 'Shopping': '🛍️', 'General': '📄', 'Debt': '🤝' };
+            return map[c] || '📄';
+        }
+
+        // 7. MODULE: ACTIONS & INPUTS
+        function openManualInput(type) { 
+            currentTxType = type; 
+            document.getElementById('inputModal').classList.remove('hidden'); 
+            document.getElementById('inputModalTitle').innerText = type === 'income' ? 'Add Income' : 'Add Expense';
             fillFormOptions();
             getGPS();
         }
-        function closeInputModal() { document.getElementById('inputModal').classList.add('hidden'); }
-        function fillFormOptions() {
-            const wS = document.getElementById('inpWallet'); wS.innerHTML = Object.keys(db.accounts).map(k=>`<option value="${k}">${k}</option>`).join('');
-            const cS = document.getElementById('inpCategory'); cS.innerHTML = db.categories.map(c=>`<option value="${c}">${c}</option>`).join('');
-            const xS = document.getElementById('inpContext'); xS.innerHTML = db.tabs.map(t=>`<option value="${t}" ${t===activeTab?'selected':''}>${t}</option>`).join('');
-        }
+
         function getGPS() {
             const status = document.getElementById('gpsStatus');
-            status.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating...';
-            if(navigator.geolocation) {
+            status.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Seeking Location...';
+            if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
-                    (pos) => { currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude }; status.innerHTML = '<i class="fas fa-check-circle text-emerald-500"></i> Location Found'; },
-                    () => { status.innerHTML = '<i class="fas fa-times-circle text-red-400"></i> GPS Failed'; }
+                    pos => {
+                        currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                        status.innerHTML = '<i class="fas fa-check-circle text-emerald-500 mr-1"></i> Location Tagged';
+                    },
+                    () => { status.innerHTML = '<i class="fas fa-times-circle text-slate-300 mr-1"></i> Location Skipped'; }
                 );
-            } else { status.innerHTML = 'GPS Not Supported'; }
-        }
-        function submitManualInput() {
-            const amt = parseFloat(document.getElementById('inpAmount').value);
-            const title = document.getElementById('inpTitle').value;
-            if(!amt || !title) return alert("Enter Details");
-            
-            const tx = {
-                id: Date.now(),
-                date: new Date().toISOString(),
-                title: title, amount: amt, type: currentTxType,
-                wallet: document.getElementById('inpWallet').value,
-                category: document.getElementById('inpCategory').value,
-                context: document.getElementById('inpContext').value,
-                coords: currentLocation
-            };
-            
-            if(tx.type === 'income') db.accounts[tx.wallet] += amt; else db.accounts[tx.wallet] -= amt;
-            db.transactions.unshift(tx);
-            saveDB(); renderAll(); closeInputModal(); syncCloud({transactions: [tx]});
-        }
-
-        // HALKHATA
-        function openDebtModal() { document.getElementById('debtModal').classList.remove('hidden'); }
-        function setDebtType(t) { currentDebtType = t; } 
-        function setDebtView(v) { 
-            currentDebtView = v; 
-            document.getElementById('btnPabo').className = v==='pabo' ? "flex-1 py-2 rounded-lg text-xs font-bold bg-white shadow-sm text-slate-800 transition-all" : "flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 transition-all";
-            document.getElementById('btnDibo').className = v==='dibo' ? "flex-1 py-2 rounded-lg text-xs font-bold bg-white shadow-sm text-slate-800 transition-all" : "flex-1 py-2 rounded-lg text-xs font-bold text-slate-400 transition-all";
-            renderHalkhata();
-        }
-        function renderHalkhata() {
-            const list = document.getElementById('halkhataList');
-            const filtered = db.debts.filter(d => !d.settled && d.type === currentDebtView);
-            if(!filtered.length) { list.innerHTML = '<div class="text-center text-xs text-slate-300 py-10">No pending debts</div>'; return; }
-            list.innerHTML = filtered.map(d => `
-                <div class="bg-white p-4 rounded-2xl border border-slate-50 flex justify-between items-center shadow-sm">
-                    <div><p class="text-sm font-bold text-slate-800">${d.name}</p><p class="text-[10px] text-slate-400 font-bold">${new Date(d.date).toLocaleDateString()}</p></div>
-                    <div class="text-right"><p class="font-black text-sm ${d.type==='pabo'?'text-emerald-500':'text-rose-500'}">৳${d.amount}</p><button onclick="settleDebt(${d.id})" class="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold mt-1">SETTLE</button></div>
-                </div>
-            `).join('');
-        }
-        function addDebt() {
-            const n = document.getElementById('debtName').value, a = parseFloat(document.getElementById('debtAmount').value);
-            if(n && a) {
-                const debt = { id:Date.now(), name:n, amount:a, date:new Date().toISOString(), type:currentDebtType, settled:false };
-                db.debts.unshift(debt);
-                // Auto Tx
-                const txType = currentDebtType==='pabo' ? 'expense' : 'income';
-                const tx = { id:Date.now(), date:new Date().toISOString(), title:`${currentDebtType==='pabo'?'Lent to':'Borrowed from'} ${n}`, amount:a, type:txType, wallet:'Cash', category:'Debt', context:activeTab };
-                if(txType==='income') db.accounts['Cash']+=a; else db.accounts['Cash']-=a;
-                db.transactions.unshift(tx);
-                saveDB(); renderAll(); document.getElementById('debtModal').classList.add('hidden');
-                syncCloud({ debts: [debt], transactions: [tx] });
             }
         }
-        function settleDebt(id) {
-            const d = db.debts.find(x=>x.id===id); d.settled = true;
-            const txType = d.type==='pabo' ? 'income' : 'expense';
-            const tx = { id:Date.now(), date:new Date().toISOString(), title:`Settled ${d.name}`, amount:d.amount, type:txType, wallet:'Cash', category:'Debt', context:activeTab };
-            if(txType==='income') db.accounts['Cash']+=d.amount; else db.accounts['Cash']-=d.amount;
-            db.transactions.unshift(tx);
-            saveDB(); renderAll();
-            syncCloud({ debts: [d], transactions: [tx] });
-        }
 
-        // SYNC
-        async function syncCloud(payload) {
-            document.getElementById('syncIndicator').classList.remove('hidden');
-            try {
-                // Must ensure correct structure for GAS
-                const data = { action: 'sync_up', userEmail: currentUser.email, userName: currentUser.name, ...payload };
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Use text/plain to avoid CORS preflight if possible
-                    body: JSON.stringify(data)
-                });
-                setTimeout(() => document.getElementById('syncIndicator').classList.add('hidden'), 2000);
-            } catch(e) { console.error("Sync Error", e); }
-        }
+        function submitManualInput() {
+            const a = parseFloat(document.getElementById('inpAmount').value);
+            const t = document.getElementById('inpTitle').value;
+            if (!a || !t) return alert("Fill amount and title.");
 
-        function manualSync() {
-            document.getElementById('syncIndicator').classList.remove('hidden');
-            // Full Push
-            const payload = { 
-                transactions: db.transactions, debts: db.debts, upcoming: db.upcoming
+            const tx = { 
+                id: Date.now(), 
+                date: new Date().toISOString(), 
+                title: t, 
+                amount: a, 
+                type: currentTxType, 
+                wallet: document.getElementById('inpWallet').value, 
+                category: document.getElementById('inpCategory').value, 
+                context: document.getElementById('inpContext').value, 
+                coords: currentLocation 
             };
-            syncCloud(payload);
+
+            if (tx.type === 'income') db.accounts[tx.wallet] += a; else db.accounts[tx.wallet] -= a;
+            db.transactions.unshift(tx);
+            saveDB(); renderAll(); closeInputModal(); syncUp({ transactions: [tx] });
+            
+            // Clear inputs
+            document.getElementById('inpAmount').value = '';
+            document.getElementById('inpTitle').value = '';
         }
 
-        async function syncDataDown() {
+        // 8. MODULE: SMART AI CENTER
+        async function processMagicInput() {
+            const text = document.getElementById('magicText').value;
+            if (!text) return;
+
+            const btn = document.querySelector('button[onclick="processMagicInput()"]');
+            btn.innerHTML = '<div class="loader"></div> Processing...';
+
             try {
-                // Simple GET request
-                const res = await fetch(`${GOOGLE_SCRIPT_URL}?email=${currentUser.email}`);
-                const json = await res.json();
-                if(json.status === 'success') {
-                    if(json.data.transactions && json.data.transactions.length > 0) db.transactions = json.data.transactions;
-                    if(json.data.debts) db.debts = json.data.debts;
-                    if(json.data.upcoming) db.upcoming = json.data.upcoming;
-                    saveDB();
-                    renderAll();
-                    showToast("Synced from Cloud!");
+                const prompt = `Task: Convert financial text to JSON items. Input: "${text}". 
+                Available Wallets: ${Object.keys(db.accounts).join(',')}. 
+                Available Categories: ${db.categories.join(',')}. 
+                Current Context: ${activeTab}.
+                Rule: If item is like "X pabe" or "Lent X", type is "debt_pabo". If "pabo X" or "Borrowed X", type is "debt_dibo".
+                JSON Format: [{"type":"expense"|"income"|"debt_pabo"|"debt_dibo"|"todo", "amount":0, "title":"", "category":"General", "wallet":"Cash"}]`;
+
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                
+                const jsonRes = await res.json();
+                const cleanText = jsonRes.candidates[0].content.parts[0].text.replace(/```json|```/g, '').trim();
+                const items = JSON.parse(cleanText);
+
+                items.forEach(item => {
+                    if (item.type === 'todo') {
+                        db.todos.unshift({ id: Date.now(), text: item.title, done: false });
+                    } else if (item.type.includes('debt')) {
+                        const dType = item.type === 'debt_pabo' ? 'pabo' : 'dibo';
+                        db.debts.unshift({ id: Date.now(), date: new Date().toISOString(), name: item.title, amount: item.amount, type: dType, settled: false });
+                        addTransactionSilence({ title: item.title, amount: item.amount, type: dType === 'pabo' ? 'expense' : 'income', wallet: 'Cash', category: 'Debt' });
+                    } else {
+                        addTransactionSilence({ ...item, date: new Date().toISOString(), context: activeTab });
+                    }
+                });
+
+                saveDB(); renderAll(); closeMagicInput();
+                document.getElementById('magicText').value = '';
+            } catch (e) {
+                // Local Fallback Regex
+                const regex = /([a-zA-Z\s]+)(\d+)/g;
+                let m; while ((m = regex.exec(text)) !== null) {
+                    addTransactionSilence({ title: m[1].trim(), amount: parseInt(m[2]), type: 'expense', wallet: 'Cash', category: 'General', context: activeTab });
                 }
-            } catch(e) { console.log("Fetch Failed"); }
+                saveDB(); renderAll(); closeMagicInput();
+            }
+            btn.innerHTML = 'PROCESS AI <i class="fas fa-magic"></i>';
         }
 
-        // MISC
-        function openMagicInput() { document.getElementById('magicModal').classList.remove('hidden'); setTimeout(()=>document.getElementById('magicSheet').classList.remove('translate-y-full'), 10); getGPS(); }
-        function closeMagicInput() { document.getElementById('magicSheet').classList.add('translate-y-full'); setTimeout(()=>document.getElementById('magicModal').classList.add('hidden'), 300); }
-        function openSettings() { document.getElementById('settingsModal').classList.remove('hidden'); }
-        function saveSettings() { GOOGLE_SCRIPT_URL = document.getElementById('scriptUrlInput').value; localStorage.setItem('tk_script_url', GOOGLE_SCRIPT_URL); document.getElementById('settingsModal').classList.add('hidden'); }
-        
-        // Notifications
-        function renderNotifications() {
-            const list = document.getElementById('notifList');
-            if(!db.notifications.length) { list.innerHTML = '<div class="text-center text-xs text-slate-300">No notifications</div>'; return; }
-            const unread = db.notifications.some(n=>!n.read);
-            if(unread) document.getElementById('notifDot').classList.remove('hidden'); else document.getElementById('notifDot').classList.add('hidden');
-            list.innerHTML = db.notifications.map(n => `<div class="p-3 bg-slate-50 rounded-xl mb-2 flex justify-between"><span class="text-xs text-slate-700">${n.text}</span>${!n.read?'<div class="h-2 w-2 bg-red-500 rounded-full"></div>':''}</div>`).join('');
-        }
-        function openNotifications() { 
-            document.getElementById('notifModal').classList.remove('hidden');
-            db.notifications.forEach(n=>n.read=true); saveDB(); renderNotifications();
+        function addTransactionSilence(tx) {
+            if (tx.type === 'income') db.accounts[tx.wallet] += tx.amount; else db.accounts[tx.wallet] -= tx.amount;
+            db.transactions.unshift({ id: Date.now(), date: new Date().toISOString(), ...tx });
         }
 
-        // Charts
+        function toggleVoiceInput() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) return alert("Browser not supported.");
+            const recognition = new SpeechRecognition();
+            recognition.onstart = () => { document.getElementById('micBtn').style.color = '#ef4444'; };
+            recognition.onresult = (e) => { document.getElementById('magicText').value += " " + e.results[0][0].transcript; };
+            recognition.onend = () => { document.getElementById('micBtn').style.color = '#94a3b8'; };
+            recognition.start();
+        }
+
+        // 9. MODULE: TASKS & REMINDERS
+        function saveTask() {
+            const t = document.getElementById('taskText').value;
+            const d = document.getElementById('taskDue').value;
+            if (t) {
+                db.todos.unshift({ id: Date.now(), text: t, due: d, done: false, notified: false });
+                saveDB(); renderTodos();
+                document.getElementById('taskModal').classList.add('hidden');
+                document.getElementById('taskText').value = "";
+            }
+        }
+
+        function renderTodos() {
+            const list = document.getElementById('fullTodoList');
+            const pending = db.todos.filter(t => !t.done);
+            list.innerHTML = pending.map(t => {
+                const isOverdue = t.due && new Date(t.due) < new Date();
+                return `
+                <div class="bg-white p-4 rounded-2xl flex items-center gap-4 shadow-sm border border-slate-50 ${isOverdue ? 'todo-overdue' : 'todo-upcoming'}">
+                    <input type="checkbox" class="h-6 w-6 accent-emerald-500 rounded-lg" onchange="markTaskDone(${t.id})">
+                    <div class="flex-1">
+                        <p class="text-sm font-extrabold text-slate-700">${t.text}</p>
+                        ${t.due ? `<p class="text-[9px] font-bold text-slate-400 mt-0.5"><i class="fas fa-clock mr-1"></i>${new Date(t.due).toLocaleString([], {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})}</p>` : ''}
+                    </div>
+                    <button onclick="deleteTask(${t.id})" class="text-slate-200"><i class="fas fa-trash"></i></button>
+                </div>`;
+            }).join('') || '<div class="text-center py-10 opacity-30 text-xs font-bold uppercase tracking-widest">No Active Tasks</div>';
+            
+            // AI Planner update
+            const urgent = pending.filter(t => t.text.toLowerCase().match(/bill|pay|rent|loan/)).length;
+            document.getElementById('aiTodoText').innerText = urgent > 0 ? `You have ${urgent} financial obligations pending.` : `Your schedule looks clean.`;
+        }
+
+        function markTaskDone(id) { 
+            const task = db.todos.find(t => t.id == id);
+            if (task) task.done = true;
+            saveDB(); setTimeout(renderTodos, 300);
+        }
+        function deleteTask(id) { db.todos = db.todos.filter(t => t.id != id); saveDB(); renderTodos(); }
+
+        function checkReminders() {
+            const now = new Date();
+            db.todos.forEach(t => {
+                if (!t.done && !t.notified && t.due && new Date(t.due) <= now) {
+                    t.notified = true;
+                    db.notifications.unshift({ id: Date.now(), text: `🚨 TASK ALERT: ${t.text}`, read: false });
+                    saveDB(); renderNotifications();
+                }
+            });
+        }
+
+        // 10. MODULE: FINANCE AI ADVISOR
         function updateCharts() {
             const ctx = document.getElementById('categoryChart').getContext('2d');
             const cats = {};
-            db.transactions.filter(t=>t.type==='expense').forEach(t=> cats[t.category] = (cats[t.category]||0)+t.amount);
-            if(catChartInstance) catChartInstance.destroy();
+            db.transactions.filter(t => t.type === 'expense').forEach(t => {
+                cats[t.category] = (cats[t.category] || 0) + t.amount;
+            });
+
+            if (catChartInstance) catChartInstance.destroy();
             catChartInstance = new Chart(ctx, {
                 type: 'doughnut',
-                data: { labels: Object.keys(cats), datasets: [{ data: Object.values(cats), backgroundColor: ['#10b981','#f43f5e','#3b82f6','#f59e0b','#8b5cf6'] }] },
-                options: { plugins: { legend: { position:'right', labels:{boxWidth:10, font:{size:10}} } }, maintainAspectRatio: false }
-            });
-        }
-        
-        async function fetchPrayerTimes() {
-            try {
-                const date = Math.floor(Date.now()/1000);
-                const res = await fetch(`https://api.aladhan.com/v1/timings/${date}?latitude=23.8103&longitude=90.4125&method=1`);
-                const d = await res.json();
-                if(d.code===200) {
-                    const t = d.data.timings;
-                    document.getElementById('nextPrayerName').innerText = 'Fajr'; 
-                    document.getElementById('sehriTime').innerText = t.Fajr;
-                    document.getElementById('iftarTime').innerText = t.Maghrib;
-                    document.getElementById('prayerList').innerHTML = ['Fajr','Dhuhr','Asr','Maghrib','Isha'].map(p=>`<div class="flex justify-between p-3 bg-white/5 rounded-xl border border-white/10 text-white text-xs"><span class="font-bold">${p}</span><span>${t[p]}</span></div>`).join('');
+                data: {
+                    labels: Object.keys(cats),
+                    datasets: [{
+                        data: Object.values(cats),
+                        backgroundColor: ['#10b981', '#f43f5e', '#3b82f6', '#f59e0b', '#8b5cf6'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 8, font: { size: 9, weight: 'bold' } } } },
+                    maintainAspectRatio: false,
+                    cutout: '70%'
                 }
-            } catch(e) {}
+            });
+
+            // Summary Stats
+            const totalExp = Object.values(cats).reduce((a, b) => a + b, 0);
+            document.getElementById('statDailyAvg').innerText = '৳' + Math.round(totalExp / 30);
+            let topCat = '--', maxVal = 0;
+            for (let c in cats) if (cats[c] > maxVal) { maxVal = cats[c]; topCat = c; }
+            document.getElementById('statTopCat').innerText = topCat;
         }
 
-        // Upcoming
-        function openUpcomingModal() { document.getElementById('upcomingModal').classList.remove('hidden'); }
-        function saveUpcoming() { 
-            const t=document.getElementById('upTitle').value, a=parseFloat(document.getElementById('upAmount').value), p=document.getElementById('upPriority').value, d=document.getElementById('upDate').value;
-            if(t&&a) { 
-                const plan = {id:Date.now(), title:t, amount:a, priority:p, date:d};
-                db.upcoming.push(plan); saveDB(); renderUpcoming(); document.getElementById('upcomingModal').classList.add('hidden'); 
-                syncCloud({ upcoming: [plan] });
+        function askAI(type) {
+            const box = document.getElementById('chatContainer');
+            let response = "...";
+            if (type === 'predict') response = "Based on your habits, you'll likely spend ৳12,000 on Food this month. Consider tracking 'Eating Out' separately.";
+            if (type === 'save') response = "You spend 30% of your income on Transport. Using a monthly pass could save you ৳1,500/month.";
+            
+            box.innerHTML += `<div class="chat-ai fade-in shadow-sm">${response}</div>`;
+            box.scrollTop = box.scrollHeight;
+        }
+
+        // 11. REMAINING UTILITIES (Upcoming, Balance, Lifestyle)
+        function renderUpcoming() {
+            const list = document.getElementById('upcomingList');
+            list.innerHTML = db.upcoming.map(u => `
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 flex justify-between items-center shadow-sm">
+                    <div>
+                        <p class="text-xs font-extrabold text-slate-800">${u.title}</p>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase">${u.priority} • ${u.date}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <p class="font-black text-xs">৳${u.amount}</p>
+                        <button onclick="deleteUpcoming(${u.id})" class="text-slate-300"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`).join('');
+            document.getElementById('upcomingCount').innerText = db.upcoming.length;
+        }
+
+        function saveUpcoming() {
+            const t = document.getElementById('upTitle').value, a = parseFloat(document.getElementById('upAmount').value), p = document.getElementById('upPriority').value, d = document.getElementById('upDate').value;
+            if (t && a) {
+                const u = { id: Date.now(), title: t, amount: a, priority: p, date: d };
+                db.upcoming.push(u); saveDB(); renderUpcoming();
+                document.getElementById('upcomingModal').classList.add('hidden');
+                syncUp({ upcoming: [u] });
             }
         }
-        function renderUpcoming() { 
-            const list = document.getElementById('upcomingList'); 
-            if (db.upcoming.length === 0) list.innerHTML = ""; // Clear if empty
-            else list.innerHTML = db.upcoming.map(u=>`<div class="bg-white p-3 rounded-xl border border-slate-100 flex justify-between mb-2"><div><p class="text-xs font-bold text-slate-800">${u.title}</p><p class="text-[10px] text-slate-400">${u.date}</p></div><div class="flex items-center gap-2"><p class="font-black text-xs">৳${u.amount}</p><button onclick="db.upcoming=db.upcoming.filter(x=>x.id!=${u.id});saveDB();renderUpcoming()" class="text-slate-300"><i class="fas fa-trash"></i></button></div></div>`).join(''); 
-            document.getElementById('upcomingCount').innerText = db.upcoming.length; 
+        function deleteUpcoming(id) { db.upcoming = db.upcoming.filter(u => u.id != id); saveDB(); renderUpcoming(); }
+
+        function saveBalanceUpdates() {
+            for (let k in db.accounts) {
+                const val = parseFloat(document.getElementById(`bal_${k}`).value) || 0;
+                db.accounts[k] = val;
+            }
+            saveDB(); renderAll(); document.getElementById('balanceModal').classList.add('hidden');
         }
 
-        function openTaskModal() { document.getElementById('taskModal').classList.remove('hidden'); }
-        function saveTask() { const t=document.getElementById('taskText').value; if(t) { db.todos.unshift({id:Date.now(), text:t, done:false}); saveDB(); renderTodos(); document.getElementById('taskModal').classList.add('hidden'); } }
-        function renderTodos() { document.getElementById('fullTodoList').innerHTML = db.todos.map(t=>`<div class="bg-white p-3 rounded-xl border border-slate-100 flex gap-3 items-center mb-2"><input type="checkbox" ${t.done?'checked':''} onchange="db.todos.find(x=>x.id==${t.id}).done=this.checked;saveDB();renderTodos()" class="accent-emerald-500"><span class="text-xs font-bold text-slate-700 ${t.done?'line-through text-slate-400':''}">${t.text}</span></div>`).join(''); }
+        async function fetchPrayerTimes() {
+            try {
+                const res = await fetch(`https://api.aladhan.com/v1/timings/${Math.floor(Date.now()/1000)}?latitude=23.8103&longitude=90.4125&method=1`);
+                const json = await res.json();
+                if (json.code === 200) {
+                    const t = json.data.timings;
+                    document.getElementById('hijriDate').innerText = `${json.data.date.hijri.day} ${json.data.date.hijri.month.en}`;
+                    document.getElementById('sehriTime').innerText = t.Fajr;
+                    document.getElementById('iftarTime').innerText = t.Maghrib;
+                    document.getElementById('nextPrayerName').innerText = "Dhuhr"; // Simplified
+                    document.getElementById('prayerList').innerHTML = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].map(p => `
+                        <div class="flex justify-between p-4 bg-white border border-slate-50 rounded-2xl text-xs font-bold text-slate-600">
+                            <span>${p.toUpperCase()}</span><span>${t[p]}</span>
+                        </div>`).join('');
+                }
+            } catch(e){}
+        }
 
-        function openBalanceUpdateModal() { document.getElementById('balanceList').innerHTML = Object.entries(db.accounts).map(([k,v])=>`<div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl"><span class="text-xs font-bold text-slate-500 uppercase">${k}</span><input id="bal_${k}" type="number" value="${v}" class="bg-transparent text-right font-bold w-24 outline-none"></div>`).join(''); document.getElementById('balanceModal').classList.remove('hidden'); }
-        function saveBalanceUpdates() { for(let k in db.accounts) { db.accounts[k] = parseFloat(document.getElementById(`bal_${k}`).value)||0; } saveDB(); renderAll(); document.getElementById('balanceModal').classList.add('hidden'); }
+        function renderNotifications() {
+            const badge = document.getElementById('notifDot');
+            const unread = db.notifications.some(n => !n.read);
+            badge.style.display = unread ? 'block' : 'none';
+            document.getElementById('notifList').innerHTML = db.notifications.map(n => `<div class="p-4 bg-slate-50 rounded-2xl text-[11px] font-bold text-slate-700 mb-2">${n.text}</div>`).join('') || '<p class="text-center text-xs text-slate-300 py-10">Inbox is empty</p>';
+        }
 
-        // EXPORT
+        function openNotifications() { document.getElementById('notifModal').classList.remove('hidden'); db.notifications.forEach(n => n.read = true); saveDB(); renderNotifications(); }
+
         function exportToCSV() {
-            let csvContent = "data:text/csv;charset=utf-8,Date,Title,Amount,Type,Category\n";
-            db.transactions.forEach(t => { csvContent += `${t.date},${t.title},${t.amount},${t.type},${t.category}\n`; });
-            const link = document.createElement("a"); link.setAttribute("href", encodeURI(csvContent)); link.setAttribute("download", "teka_koi_data.csv");
-            document.body.appendChild(link); link.click(); document.body.removeChild(link);
-        }
-        
-        function generateMonthlyReportPDF() {
-             const doc = new window.jspdf.jsPDF();
-             doc.text("Teka Koi Report", 10, 10);
-             const data = db.transactions.map(t => [new Date(t.date).toLocaleDateString(), t.title, t.amount, t.type]);
-             doc.autoTable({ head: [['Date', 'Title', 'Amount', 'Type']], body: data });
-             doc.save("report.pdf");
+            let csv = "Date,Title,Amount,Type,Category,Wallet\n";
+            db.transactions.forEach(t => { csv += `${t.date},${t.title},${t.amount},${t.type},${t.category},${t.wallet}\n`; });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = 'teka_koi_report.csv'; a.click();
         }
     </script>
 </body>
