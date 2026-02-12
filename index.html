@@ -854,6 +854,30 @@
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a'); a.href = url; a.download = 'teka_koi_report.csv'; a.click();
         }
+        function setDebtView(view) {
+    currentDebtView = view;
+    document.getElementById('btnPabo').className = view === 'pabo' ? 'flex-1 py-2 rounded-lg text-xs font-bold bg-white shadow-sm text-slate-800' : 'flex-1 py-2 rounded-lg text-xs font-bold text-slate-400';
+    document.getElementById('btnDibo').className = view === 'dibo' ? 'flex-1 py-2 rounded-lg text-xs font-bold bg-white shadow-sm text-slate-800' : 'flex-1 py-2 rounded-lg text-xs font-bold text-slate-400';
+    renderHalkhata();
+}
+
+function renderHalkhata() {
+    const list = document.getElementById('halkhataList');
+    const filtered = db.debts.filter(d => d.type === currentDebtView && !d.settled);
+    
+    list.innerHTML = filtered.map(d => `
+        <div class="bg-white p-4 rounded-2xl flex justify-between items-center border border-slate-50 shadow-sm hover:border-emerald-200">
+            <div>
+                <p class="text-sm font-extrabold text-slate-800">${d.name}</p>
+                <p class="text-[9px] text-slate-400 font-bold uppercase">${new Date(d.date).toLocaleDateString()}</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <p class="font-black text-sm ${currentDebtView === 'pabo' ? 'text-emerald-500' : 'text-rose-500'}">৳${d.amount}</p>
+                <button onclick="settleDebt(${d.id})" class="h-8 w-8 bg-slate-50 rounded-full text-slate-400 hover:text-emerald-500"><i class="fas fa-check"></i></button>
+            </div>
+        </div>
+    `).join('') || '<div class="text-center py-10 text-xs text-slate-300">No pending records</div>';
+}
     </script>
 </body>
 </html>
