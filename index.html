@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Teka Koi? - Lifestyle & Finance</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc; 
+            color: #1e293b; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        /* Animations */
+        .fade-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .toast-anim { animation: slideUpFade 3s forwards; }
+        @keyframes slideUpFade { 
+            0% { opacity: 0; transform: translate(-50%, 20px); } 
+            10% { opacity: 1; transform: translate(-50%, 0); } 
+            80% { opacity: 1; transform: translate(-50%, 0); } 
+            100% { opacity: 0; transform: translate(-50%, -20px); pointer-events: none; } 
+        }
+
+        /* Hide Scrollbar */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Custom Shadows */
+        .soft-shadow { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); }
+        .nav-shadow { box-shadow: 0 -4px 20px -5px rgba(0, 0, 0, 0.05); }
+
+        /* Voice Wave */
+        .voice-wave { display: flex; align-items: center; justify-content: center; gap: 3px; height: 20px; }
+        .bar { width: 3px; background: #fff; animation: wave 1s ease-in-out infinite; }
+        .bar:nth-child(2) { animation-delay: 0.1s; }
+        .bar:nth-child(3) { animation-delay: 0.2s; }
+        @keyframes wave { 0%, 100% { height: 5px; } 50% { height: 16px; } }
+
+        /* Tab Active State */
+        .nav-item.active i { color: #10b981; }
+        .nav-item.active span { color: #10b981; font-weight: 600; }
+        
+        /* Center Mic Button Style */
+        .mic-btn-container {
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .mic-btn-shadow {
+            box-shadow: 0 0 0 8px #f8fafc;
+        }
+
+        /* Prayer Card Gradient */
+        .prayer-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col bg-slate-50">
+
+    <!-- ================= TOP HEADER ================= -->
+    <header class="px-6 pt-10 pb-4 bg-white flex justify-between items-center sticky top-0 z-20 border-b border-slate-100">
+        <div class="flex items-center gap-3">
+            <div class="h-10 w-auto flex items-center justify-center overflow-hidden">
+                <img src="https://1000logos.net/wp-content/uploads/2021/05/Teka-logo-500x300.png" alt="Teka Logo" class="h-full object-contain filter contrast-125">
+            </div>
+            <div>
+                <h1 class="text-sm font-bold text-slate-800 tracking-tight">Teka Koi?</h1>
+                <p class="text-[10px] text-slate-400 font-medium" id="currentDate">loading...</p>
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="openManualInput('expense')" class="h-10 w-10 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-lg active:scale-95 transition-all">
+                <i class="fas fa-plus"></i>
+            </button>
+            <button onclick="openProfile()" class="h-10 w-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 active:scale-95 transition-all">
+                <i class="fas fa-cog"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main id="mainContainer" class="flex-1 overflow-y-auto no-scrollbar pb-24 relative">
+        
+        <!-- VIEW: HOME (Dashboard) -->
+        <div id="view-home" class="view-section px-6 py-6 fade-in">
+            <!-- Net Worth Card -->
+            <div class="bg-slate-900 rounded-2xl p-6 text-white soft-shadow mb-6 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10"><i class="fas fa-wallet text-6xl"></i></div>
+                <p class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Total Net Worth</p>
+                <h2 class="text-3xl font-bold mb-4">৳ <span id="dashTotalBalance">0</span></h2>
+                
+                <div class="flex gap-4 border-t border-slate-700 pt-4">
+                    <div>
+                        <p class="text-[10px] text-emerald-400 mb-0.5"><i class="fas fa-arrow-down"></i> Income</p>
+                        <p class="font-semibold text-sm">৳ <span id="dashIncome">0</span></p>
+                    </div>
+                    <div class="w-[1px] bg-slate-700"></div>
+                    <div>
+                        <p class="text-[10px] text-rose-400 mb-0.5"><i class="fas fa-arrow-up"></i> Expense</p>
+                        <p class="font-semibold text-sm">৳ <span id="dashExpense">0</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Access: Advisor -->
+            <button onclick="navTo('advisor')" class="w-full bg-indigo-50 border border-indigo-100 p-3 rounded-xl flex justify-between items-center mb-6 active:scale-95 transition-transform">
+                <div class="flex items-center gap-3">
+                    <div class="h-8 w-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center"><i class="fas fa-robot"></i></div>
+                    <span class="text-sm font-bold text-indigo-900">View Financial Insights</span>
+                </div>
+                <i class="fas fa-chevron-right text-indigo-300"></i>
+            </button>
+
+            <!-- Wallets -->
+            <h3 class="text-sm font-bold text-slate-700 mb-3">My Wallets</h3>
+            <div class="flex gap-3 overflow-x-auto no-scrollbar mb-6" id="walletList"></div>
+
+            <!-- Context Tabs -->
+            <div class="flex justify-between items-center mb-3">
+                 <h3 class="text-sm font-bold text-slate-700">Context</h3>
+                 <button onclick="editTabs()" class="text-xs text-emerald-600 font-medium">Edit</button>
+            </div>
+            <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2 mb-4" id="tabsList"></div>
+
+            <!-- Recent Activity Header -->
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-sm font-bold text-slate-700">Recent Activity</h3>
+                <button onclick="navTo('history')" class="text-xs text-slate-400">See All</button>
+            </div>
+            <div id="homeRecentList" class="space-y-3"></div>
+        </div>
+
+        <!-- VIEW: HISTORY -->
+        <div id="view-history" class="view-section hidden px-6 py-6 fade-in">
+            <h2 class="text-2xl font-bold text-slate-800 mb-4">History</h2>
+            <div class="bg-white p-2 rounded-xl border border-slate-100 mb-4 flex gap-2">
+                <input type="text" id="searchInput" placeholder="Search..." class="flex-1 bg-slate-50 rounded-lg px-3 py-2 text-sm outline-none">
+            </div>
+            <div id="fullHistoryList" class="space-y-3"></div>
+        </div>
+
+        <!-- VIEW: HALKHATA (DEBTS) -->
+        <div id="view-halkhata" class="view-section hidden px-6 py-6 fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-slate-800">Halkhata</h2>
+                <button onclick="openDebtModal()" class="text-emerald-600 text-sm font-bold"><i class="fas fa-plus-circle"></i> Add New</button>
+            </div>
+            <div class="flex bg-slate-200 p-1 rounded-xl mb-6">
+                <button onclick="setDebtView('pabo')" id="btnPabo" class="flex-1 py-2 rounded-lg text-sm font-bold bg-white text-emerald-600 shadow-sm transition-all">Pabo (Get)</button>
+                <button onclick="setDebtView('dibo')" id="btnDibo" class="flex-1 py-2 rounded-lg text-sm font-bold text-slate-500 transition-all">Dibo (Give)</button>
+            </div>
+            <div id="halkhataList" class="space-y-3"></div>
+        </div>
+
+        <!-- VIEW: LIFESTYLE (Ramadan & Namaz) -->
+        <div id="view-lifestyle" class="view-section hidden px-6 py-6 fade-in">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-slate-800">Lifestyle</h2>
+                <div class="text-right">
+                    <p class="text-xs font-bold text-emerald-600" id="hijriDate">Loading...</p>
+                    <p class="text-[10px] text-slate-400"><i class="fas fa-map-marker-alt mr-1"></i><span id="locationName">Dhaka</span></p>
+                </div>
+            </div>
+
+            <!-- Next Prayer Hero -->
+            <div class="prayer-card rounded-2xl p-6 text-white soft-shadow mb-6 relative overflow-hidden">
+                <div class="absolute -right-4 -bottom-4 opacity-10"><i class="fas fa-moon text-8xl"></i></div>
+                <p class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Next Prayer</p>
+                <div class="flex items-baseline gap-2">
+                    <h2 class="text-3xl font-bold" id="nextPrayerName">--</h2>
+                    <span class="text-xl font-light text-slate-300" id="nextPrayerTime">--:--</span>
+                </div>
+                <div class="mt-4 pt-4 border-t border-slate-700/50 flex gap-4">
+                    <div class="text-center">
+                        <p class="text-[10px] text-emerald-400 uppercase font-bold">Sehri Ends</p>
+                        <p class="text-lg font-bold" id="sehriTime">--:--</p>
+                    </div>
+                    <div class="w-[1px] bg-slate-700"></div>
+                    <div class="text-center">
+                        <p class="text-[10px] text-amber-400 uppercase font-bold">Iftar Time</p>
+                        <p class="text-lg font-bold" id="iftarTime">--:--</p>
+                    </div>
+                </div>
+                <div class="mt-3 text-[10px] text-slate-400 text-center bg-slate-800/50 rounded py-1" id="countdownMsg">
+                    Time remaining: --
+                </div>
+            </div>
+
+            <h3 class="text-sm font-bold text-slate-700 mb-3">Prayer Schedule</h3>
+            <div id="prayerList" class="space-y-2">
+                <!-- Injected via JS -->
+                <div class="animate-pulse flex space-x-4">
+                    <div class="flex-1 space-y-2 py-1">
+                        <div class="h-10 bg-slate-200 rounded"></div>
+                        <div class="h-10 bg-slate-200 rounded"></div>
+                        <div class="h-10 bg-slate-200 rounded"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: ADVISOR (Hidden from main nav, accessed via Home) -->
+        <div id="view-advisor" class="view-section hidden px-6 py-6 fade-in">
+            <div class="flex items-center gap-3 mb-4">
+                <button onclick="navTo('home')" class="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600"><i class="fas fa-arrow-left"></i></button>
+                <h2 class="text-2xl font-bold text-slate-800">AI Advisor</h2>
+            </div>
+            
+            <div class="bg-white rounded-2xl p-6 soft-shadow border border-slate-100 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600"><i class="fas fa-robot"></i></div>
+                    <h3 class="font-bold text-slate-700">Insight</h3>
+                </div>
+                <p class="text-slate-600 text-sm leading-relaxed" id="aiInsightText">Analyzing...</p>
+            </div>
+            
+            <h3 class="text-sm font-bold text-slate-700 mb-3">Smart To-Do</h3>
+            <div id="todoListWidget" class="space-y-2 mb-6"></div>
+
+            <div class="bg-white rounded-2xl p-4 soft-shadow border border-slate-100">
+                <canvas id="categoryChart" height="200"></canvas>
+            </div>
+        </div>
+
+        <div class="h-24"></div>
+    </main>
+
+    <!-- ================= BOTTOM NAVIGATION ================= -->
+    <nav class="bg-white h-20 fixed bottom-0 left-0 right-0 nav-shadow flex justify-between items-center px-4 z-40 border-t border-slate-100">
+        <!-- Left Icons -->
+        <div class="flex gap-6 w-1/3 justify-start pl-2">
+            <button onclick="navTo('home')" class="nav-item active flex flex-col items-center justify-center gap-1">
+                <i class="fas fa-home text-xl text-slate-400 transition-colors"></i>
+            </button>
+            <button onclick="navTo('history')" class="nav-item flex flex-col items-center justify-center gap-1">
+                <i class="fas fa-history text-xl text-slate-400 transition-colors"></i>
+            </button>
+        </div>
+
+        <!-- Center Mic Button -->
+        <div class="relative w-1/3 flex justify-center">
+            <div class="mic-btn-container">
+                <button id="voiceBtn" onclick="toggleVoice()" class="h-16 w-16 bg-gradient-to-tr from-emerald-500 to-emerald-700 rounded-full shadow-lg mic-btn-shadow flex items-center justify-center text-white active:scale-95 transition-all">
+                    <i class="fas fa-microphone text-2xl" id="micIcon"></i>
+                    <div id="voiceWave" class="voice-wave hidden">
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Icons -->
+        <div class="flex gap-6 w-1/3 justify-end pr-2">
+            <button onclick="navTo('halkhata')" class="nav-item flex flex-col items-center justify-center gap-1">
+                <i class="fas fa-hand-holding-dollar text-xl text-slate-400 transition-colors"></i>
+            </button>
+            <!-- LIFESTYLE TAB -->
+            <button onclick="navTo('lifestyle')" class="nav-item flex flex-col items-center justify-center gap-1">
+                <i class="fas fa-moon text-xl text-slate-400 transition-colors"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-xl z-50 flex items-center gap-3 opacity-0 pointer-events-none transition-all">
+        <i class="fas fa-check-circle text-emerald-400"></i>
+        <span id="toastMsg" class="text-sm font-medium">Success</span>
+    </div>
+
+    <!-- ================= MODALS ================= -->
+    
+    <!-- Manual Input Modal -->
+    <div id="inputModal" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-end sm:items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-sm rounded-2xl p-6 soft-shadow animate-slide-up">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-slate-800" id="inputModalTitle">Add Transaction</h3>
+                <button onclick="closeInputModal()" class="text-slate-400"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="flex gap-2 mb-4 p-1 bg-slate-100 rounded-lg">
+                <button onclick="setModalType('expense')" id="btnTypeExp" class="flex-1 py-2 rounded-md text-sm font-bold bg-white shadow-sm text-slate-800 transition-all">Expense</button>
+                <button onclick="setModalType('income')" id="btnTypeInc" class="flex-1 py-2 rounded-md text-sm font-bold text-slate-500 transition-all">Income</button>
+            </div>
+            <div class="space-y-4">
+                <input type="number" id="inpAmount" class="w-full text-3xl font-bold text-slate-800 border-b-2 border-slate-200 focus:border-emerald-500 outline-none py-2 bg-transparent" placeholder="0">
+                <input type="text" id="inpTitle" class="w-full border rounded-lg px-3 py-2 text-sm mt-1 outline-none" placeholder="Description">
+                <div class="grid grid-cols-2 gap-3">
+                    <select id="inpWallet" class="w-full border rounded-lg px-3 py-2 text-sm mt-1 outline-none bg-white"></select>
+                    <select id="inpCategory" class="w-full border rounded-lg px-3 py-2 text-sm mt-1 outline-none bg-white">
+                        <option value="Food">Food</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Bills">Bills</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Income">Income</option>
+                        <option value="General">General</option>
+                    </select>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-slate-500">
+                    <i class="fas fa-map-marker-alt" id="gpsIcon"></i>
+                    <span id="gpsStatus">Location auto-tagging on</span>
+                </div>
+                <button onclick="submitManualInput()" class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold shadow-lg mt-2">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Halkhata Modal -->
+    <div id="debtModal" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-sm rounded-2xl p-6 soft-shadow">
+            <h3 class="text-lg font-bold text-slate-800 mb-4">Add Halkhata Entry</h3>
+            <div class="flex gap-2 mb-4">
+                <button onclick="setDebtType('pabo')" id="modalBtnPabo" class="flex-1 py-2 rounded-lg bg-emerald-100 text-emerald-700 font-bold text-xs border border-emerald-200">Ami Pabo (Lend)</button>
+                <button onclick="setDebtType('dibo')" id="modalBtnDibo" class="flex-1 py-2 rounded-lg bg-slate-100 text-slate-500 font-bold text-xs border border-slate-200">Ami Dibo (Borrow)</button>
+            </div>
+            <div class="space-y-3">
+                <input type="text" id="debtName" placeholder="Person Name" class="w-full border p-2 rounded-lg text-sm">
+                <input type="number" id="debtAmount" placeholder="Amount" class="w-full border p-2 rounded-lg text-sm">
+                <input type="date" id="debtDate" class="w-full border p-2 rounded-lg text-sm">
+                <button onclick="addDebt()" class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold">Save Record</button>
+                <button onclick="closeDebtModal()" class="w-full text-slate-500 text-sm py-2">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        // --- CONSTANTS ---
+        const DEFAULT_ACCOUNTS = { 'Cash': 2000, 'Bkash': 5000, 'Bank': 50000 };
+        const DEFAULT_TABS = ['Personal', 'Family', 'Girlfriend', 'Office'];
+        
+        // --- STATE ---
+        let accounts = JSON.parse(localStorage.getItem('tk_accounts')) || DEFAULT_ACCOUNTS;
+        let tabs = JSON.parse(localStorage.getItem('tk_tabs')) || DEFAULT_TABS;
+        let transactions = JSON.parse(localStorage.getItem('tk_transactions')) || [];
+        let debts = JSON.parse(localStorage.getItem('tk_debts')) || [];
+        let todos = JSON.parse(localStorage.getItem('tk_todos')) || [];
+        
+        let activeTab = tabs[0];
+        let currentInputType = 'expense';
+        let currentDebtView = 'pabo'; 
+        let currentDebtType = 'pabo';
+        let chartInstance = null;
+        let currentLocation = null;
+        let prayerTimings = null;
+
+        // --- INIT ---
+        window.onload = function() {
+            document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' });
+            renderAll();
+            updateChart(); // Changed from initChart()
+            generateAIAdvice();
+            
+            // Auto-fetch location & Prayer Times
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(pos => {
+                    currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                    document.getElementById('gpsStatus').innerText = "GPS Active";
+                    fetchPrayerTimes(currentLocation.lat, currentLocation.lng);
+                }, () => {
+                     // Fallback to Dhaka
+                     document.getElementById('gpsStatus').innerText = "Using Default Location";
+                     fetchPrayerTimes(23.8103, 90.4125);
+                });
+            } else {
+                fetchPrayerTimes(23.8103, 90.4125); // Default
+            }
+        };
+
+        function renderAll() {
+            updateDashboard();
+            renderWallets();
+            renderContextTabs();
+            renderTransactions();
+            renderHalkhata();
+            renderTodosWidget();
+            fillFormOptions();
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            t.classList.remove('toast-anim');
+            void t.offsetWidth;
+            t.classList.add('toast-anim');
+        }
+
+        // --- NAVIGATION ---
+        function navTo(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`view-${viewId}`).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+            
+            const map = {'home':0, 'history':1, 'halkhata':2, 'lifestyle':3};
+            const navItems = document.querySelectorAll('.nav-item');
+            if(map[viewId] !== undefined) navItems[map[viewId]].classList.add('active');
+            
+            if(viewId === 'advisor') updateChart();
+        }
+
+        // --- LIFESTYLE & PRAYER API ---
+        async function fetchPrayerTimes(lat, lng) {
+            try {
+                // Using Aladhan API (Method 1: University of Islamic Sciences, Karachi - Standard for BD)
+                const date = Math.floor(Date.now() / 1000);
+                const response = await fetch(`https://api.aladhan.com/v1/timings/${date}?latitude=${lat}&longitude=${lng}&method=1`);
+                const data = await response.json();
+                
+                if(data.code === 200) {
+                    prayerTimings = data.data.timings;
+                    const meta = data.data.date;
+                    
+                    document.getElementById('hijriDate').innerText = `${meta.hijri.day} ${meta.hijri.month.en} ${meta.hijri.year}`;
+                    document.getElementById('sehriTime').innerText = formatTime12(prayerTimings.Fajr);
+                    document.getElementById('iftarTime').innerText = formatTime12(prayerTimings.Maghrib);
+                    
+                    renderPrayerList();
+                    updateNextPrayer();
+                    setInterval(updateNextPrayer, 60000); // Update every minute
+                }
+            } catch (e) {
+                console.error("Prayer API Error", e);
+                document.getElementById('prayerList').innerHTML = '<p class="text-center text-red-400 text-sm">Failed to load prayer times.</p>';
+            }
+        }
+
+        function formatTime12(time24) {
+            const [hours, minutes] = time24.split(':');
+            const h = parseInt(hours);
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            const h12 = h % 12 || 12;
+            return `${h12}:${minutes} ${ampm}`;
+        }
+
+        function renderPrayerList() {
+            if(!prayerTimings) return;
+            const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+            const container = document.getElementById('prayerList');
+            
+            container.innerHTML = prayers.map(p => `
+                <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100">
+                    <span class="font-bold text-slate-700 text-sm">${p}</span>
+                    <span class="font-medium text-slate-600 text-sm">${formatTime12(prayerTimings[p])}</span>
+                </div>
+            `).join('');
+        }
+
+        function updateNextPrayer() {
+            if(!prayerTimings) return;
+            
+            const now = new Date();
+            const timeToMin = (str) => {
+                const [h, m] = str.split(':').map(Number);
+                return h * 60 + m;
+            };
+            const currentMin = now.getHours() * 60 + now.getMinutes();
+            
+            const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+            let nextP = null;
+            let diff = 9999;
+            
+            // Check today's prayers
+            for(let p of prayers) {
+                const pMin = timeToMin(prayerTimings[p]);
+                if(pMin > currentMin && (pMin - currentMin) < diff) {
+                    diff = pMin - currentMin;
+                    nextP = p;
+                }
+            }
+
+            // If no prayer left today, next is Fajr tomorrow (Approx logic)
+            if(!nextP) {
+                nextP = 'Fajr';
+                const pMin = timeToMin(prayerTimings.Fajr);
+                diff = (24 * 60 - currentMin) + pMin;
+            }
+
+            const hLeft = Math.floor(diff / 60);
+            const mLeft = diff % 60;
+
+            document.getElementById('nextPrayerName').innerText = nextP;
+            document.getElementById('nextPrayerTime').innerText = formatTime12(prayerTimings[nextP]);
+            document.getElementById('countdownMsg').innerText = `Starts in ${hLeft}h ${mLeft}m`;
+        }
+
+        // --- CORE RENDER FUNCTIONS ---
+        function updateDashboard() {
+            let total = 0;
+            for(let key in accounts) total += accounts[key];
+            document.getElementById('dashTotalBalance').innerText = total.toLocaleString();
+
+            const currentMonth = new Date().getMonth();
+            const monthlyIncome = transactions
+                .filter(t => t.type === 'income' && new Date(t.date).getMonth() === currentMonth)
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const monthlyExpense = transactions
+                .filter(t => t.type === 'expense' && new Date(t.date).getMonth() === currentMonth)
+                .reduce((sum, t) => sum + t.amount, 0);
+
+            document.getElementById('dashIncome').innerText = monthlyIncome.toLocaleString();
+            document.getElementById('dashExpense').innerText = monthlyExpense.toLocaleString();
+        }
+
+        function renderWallets() {
+            const container = document.getElementById('walletList');
+            container.innerHTML = Object.entries(accounts).map(([name, bal]) => `
+                <div class="bg-white p-3 rounded-xl min-w-[110px] border border-slate-100 soft-shadow wallet-card cursor-pointer">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">${name}</p>
+                    <p class="text-sm font-bold text-slate-800">৳${bal.toLocaleString()}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderContextTabs() {
+            const list = document.getElementById('tabsList');
+            list.innerHTML = tabs.map(tab => `
+                <button onclick="setContext('${tab}')" 
+                    class="px-4 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap border ${activeTab === tab ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-500 border-slate-200'}">
+                    ${tab}
+                </button>
+            `).join('');
+        }
+        function setContext(tab) { activeTab = tab; renderContextTabs(); renderTransactions(); }
+        function editTabs() {
+            const newTabs = prompt("Edit Context Tabs (comma separated):", tabs.join(","));
+            if(newTabs) {
+                tabs = newTabs.split(",").map(t => t.trim());
+                if(tabs.length > 0) activeTab = tabs[0];
+                saveData(); renderAll();
+            }
+        }
+
+        // --- TRANSACTION LIST & GPS ---
+        function renderTransactions() {
+            const homeList = document.getElementById('homeRecentList');
+            const historyList = document.getElementById('fullHistoryList');
+            const contextFiltered = transactions.filter(t => t.context === activeTab);
+            const allSorted = [...transactions].sort((a,b) => new Date(b.date) - new Date(a.date));
+            
+            if(contextFiltered.length === 0) homeList.innerHTML = `<div class="text-center text-slate-400 text-xs py-4">No activity in ${activeTab}</div>`;
+            else homeList.innerHTML = contextFiltered.slice(0, 5).map(t => createTxRow(t)).join('');
+
+            historyList.innerHTML = allSorted.map(t => createTxRow(t)).join('');
+        }
+
+        function createTxRow(t) {
+            const isInc = t.type === 'income';
+            let gpsHtml = '';
+            if (t.coords) {
+                gpsHtml = `<a href="https://www.google.com/maps?q=${t.coords.lat},${t.coords.lng}" target="_blank" class="ml-2 text-rose-500 hover:text-rose-700"><i class="fas fa-map-marker-alt"></i></a>`;
+            }
+
+            return `
+            <div class="bg-white p-3 rounded-xl flex justify-between items-center border border-slate-50 soft-shadow">
+                <div class="flex items-center gap-3">
+                    <div class="h-10 w-10 rounded-full ${isInc ? 'bg-emerald-50 text-emerald-500' : 'bg-slate-50 text-slate-500'} flex items-center justify-center text-lg">
+                        ${getCategoryIcon(t.category)}
+                    </div>
+                    <div>
+                        <div class="flex items-center">
+                            <p class="font-bold text-sm text-slate-700">${t.title}</p>
+                            ${gpsHtml}
+                        </div>
+                        <p class="text-[10px] text-slate-400">${new Date(t.date).toLocaleDateString()} • ${t.wallet}</p>
+                    </div>
+                </div>
+                <p class="font-bold text-sm ${isInc ? 'text-emerald-500' : 'text-slate-800'}">${isInc ? '+' : '-'}৳${t.amount}</p>
+            </div>`;
+        }
+        function getCategoryIcon(cat) {
+            const map = {'Food':'🍔', 'Transport':'🚕', 'Bills':'⚡', 'Shopping':'🛍️', 'Income':'💰', 'General':'📄', 'Debt':'🤝'};
+            return map[cat] || '📄';
+        }
+
+        // --- HALKHATA LOGIC ---
+        function renderHalkhata() {
+            const list = document.getElementById('halkhataList');
+            const filtered = debts.filter(d => !d.settled && d.type === currentDebtView);
+
+            if(filtered.length === 0) {
+                list.innerHTML = `<div class="text-center text-slate-400 text-sm py-10">No ${currentDebtView === 'pabo' ? 'receivables' : 'payables'}.</div>`;
+                return;
+            }
+
+            list.innerHTML = filtered.map(d => `
+                <div class="bg-white p-4 rounded-xl soft-shadow border border-slate-100 flex justify-between items-center">
+                    <div>
+                        <p class="font-bold text-slate-800">${d.name}</p>
+                        <p class="text-xs text-slate-500">Date: ${new Date(d.date).toLocaleDateString()}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold text-lg ${d.type === 'pabo' ? 'text-emerald-600' : 'text-rose-500'}">৳${d.amount}</p>
+                        <button onclick="settleDebt(${d.id})" class="text-[10px] bg-slate-100 px-2 py-1 rounded text-slate-600 font-bold mt-1">Settle</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setDebtView(view) {
+            currentDebtView = view;
+            document.getElementById('btnPabo').className = view === 'pabo' ? "flex-1 py-2 rounded-lg text-sm font-bold bg-white text-emerald-600 shadow-sm transition-all" : "flex-1 py-2 rounded-lg text-sm font-bold text-slate-500 transition-all";
+            document.getElementById('btnDibo').className = view === 'dibo' ? "flex-1 py-2 rounded-lg text-sm font-bold bg-white text-rose-600 shadow-sm transition-all" : "flex-1 py-2 rounded-lg text-sm font-bold text-slate-500 transition-all";
+            renderHalkhata();
+        }
+
+        function openDebtModal() { document.getElementById('debtModal').classList.remove('hidden'); }
+        function closeDebtModal() { document.getElementById('debtModal').classList.add('hidden'); }
+        
+        function setDebtType(type) {
+            currentDebtType = type;
+            const btnP = document.getElementById('modalBtnPabo');
+            const btnD = document.getElementById('modalBtnDibo');
+            if(type === 'pabo') {
+                btnP.className = "flex-1 py-2 rounded-lg bg-emerald-100 text-emerald-700 font-bold text-xs border border-emerald-200";
+                btnD.className = "flex-1 py-2 rounded-lg bg-slate-100 text-slate-500 font-bold text-xs border border-slate-200";
+            } else {
+                btnP.className = "flex-1 py-2 rounded-lg bg-slate-100 text-slate-500 font-bold text-xs border border-slate-200";
+                btnD.className = "flex-1 py-2 rounded-lg bg-rose-100 text-rose-700 font-bold text-xs border border-rose-200";
+            }
+        }
+
+        function addDebt() {
+            const name = document.getElementById('debtName').value;
+            const amount = parseFloat(document.getElementById('debtAmount').value);
+            const date = document.getElementById('debtDate').value || new Date().toISOString();
+
+            if(!name || !amount) return alert("Fill all fields");
+
+            if(currentDebtType === 'pabo') {
+                handleTransaction({ title: `Lent to ${name}`, amount: amount, category: 'Debt', wallet: 'Cash', type: 'expense', context: activeTab });
+            } else {
+                handleTransaction({ title: `Borrowed from ${name}`, amount: amount, category: 'Debt', wallet: 'Cash', type: 'income', context: activeTab });
+            }
+
+            debts.unshift({ id: Date.now(), name, amount, date, type: currentDebtType, settled: false });
+            saveData();
+            renderHalkhata();
+            closeDebtModal();
+        }
+
+        function settleDebt(id) {
+            const debt = debts.find(d => d.id === id);
+            if(confirm(`Settle ${debt.name}'s amount of ৳${debt.amount}?`)) {
+                debt.settled = true;
+                if(debt.type === 'pabo') {
+                    handleTransaction({ title: `Settled: ${debt.name}`, amount: debt.amount, category: 'Debt', wallet: 'Cash', type: 'income', context: activeTab });
+                } else {
+                    handleTransaction({ title: `Settled: ${debt.name}`, amount: debt.amount, category: 'Debt', wallet: 'Cash', type: 'expense', context: activeTab });
+                }
+                saveData(); renderHalkhata();
+            }
+        }
+
+        // --- SMART VOICE AI ---
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-US'; 
+        let isListening = false;
+
+        function toggleVoice() {
+            if(isListening) recognition.stop();
+            else {
+                recognition.start();
+                isListening = true;
+                document.getElementById('micIcon').classList.add('hidden');
+                document.getElementById('voiceWave').classList.remove('hidden');
+                
+                if(navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(pos => {
+                        currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                    });
+                }
+            }
+        }
+
+        recognition.onresult = (e) => {
+            const text = e.results[0][0].transcript;
+            processComplexVoice(text);
+        };
+        recognition.onend = () => {
+            isListening = false;
+            document.getElementById('micIcon').classList.remove('hidden');
+            document.getElementById('voiceWave').classList.add('hidden');
+        };
+
+        function processComplexVoice(text) {
+            const segments = text.split(/,| and | ar | ebong | also /i);
+            let actionCount = 0;
+
+            segments.forEach(segment => {
+                const lower = segment.toLowerCase();
+                const numMatch = segment.match(/(\d+)/);
+                if (!numMatch) return;
+                
+                const amount = parseInt(numMatch[0]);
+                const cleanText = segment.replace(amount, '').replace(/tk|taka/gi, '').trim();
+
+                if (lower.match(/beton|salary|bonus|paichi|income/)) {
+                    handleTransaction({ title: cleanText || "Salary", amount, category: 'Income', wallet: 'Bank', type: 'income', context: activeTab, coords: currentLocation });
+                    showToast(`💰 Income Added`); actionCount++;
+                } 
+                else if (lower.match(/dhar dilam|lent|pabo/)) {
+                    debts.unshift({ id: Date.now(), name: cleanText, amount, date: new Date().toISOString(), type: 'pabo', settled: false });
+                    handleTransaction({ title: `Lent to ${cleanText}`, amount, category: 'Debt', wallet: 'Cash', type: 'expense', context: activeTab, coords: currentLocation });
+                    showToast(`🤝 Lent ৳${amount}`); actionCount++;
+                }
+                else if (lower.match(/dhar nilam|borrowed|dibo/)) {
+                    debts.unshift({ id: Date.now(), name: cleanText, amount, date: new Date().toISOString(), type: 'dibo', settled: false });
+                    handleTransaction({ title: `Borrowed from ${cleanText}`, amount, category: 'Debt', wallet: 'Cash', type: 'income', context: activeTab, coords: currentLocation });
+                    showToast(`🤝 Borrowed ৳${amount}`); actionCount++;
+                }
+                else if (lower.match(/pay|bill|due/)) {
+                     addTodo(`Pay: ${cleanText} - ৳${amount}`);
+                     showToast(`📝 Task Added`); actionCount++;
+                }
+                else {
+                    let cat = 'General';
+                    if(cleanText.match(/rickshaw|uber|bus|cng/)) cat = 'Transport';
+                    if(cleanText.match(/bajar|food|burger/)) cat = 'Food';
+                    handleTransaction({ title: cleanText || "Expense", amount, category: cat, wallet: 'Cash', type: 'expense', context: activeTab, coords: currentLocation });
+                    showToast(`💸 Expense Added`); actionCount++;
+                }
+            });
+            if(actionCount === 0) showToast("❌ No amount found.");
+            saveData(); renderAll();
+        }
+
+        // --- TRANSACTIONS & DATA ---
+        function handleTransaction(tx) {
+            if(tx.type === 'income') accounts[tx.wallet] += tx.amount;
+            else accounts[tx.wallet] -= tx.amount;
+            if(!tx.coords && currentLocation) tx.coords = currentLocation;
+            transactions.unshift({ id: Date.now(), date: new Date().toISOString(), ...tx });
+            saveData(); renderAll(); generateAIAdvice();
+        }
+
+        function addTodo(text) {
+            todos.push({ text, done: false });
+            saveData(); renderTodosWidget();
+        }
+
+        // --- MANUAL INPUT ---
+        function openManualInput(type) {
+            setModalType(type);
+            document.getElementById('inputModal').classList.remove('hidden');
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    pos => { currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude }; },
+                    err => { document.getElementById('gpsStatus').innerText = "Location access denied"; }
+                );
+            }
+        }
+        function closeInputModal() { document.getElementById('inputModal').classList.add('hidden'); }
+        
+        function setModalType(type) {
+            currentInputType = type;
+            const btnExp = document.getElementById('btnTypeExp');
+            const btnInc = document.getElementById('btnTypeInc');
+            if(type === 'expense') {
+                btnExp.className = "flex-1 py-2 rounded-md text-sm font-bold bg-white shadow-sm text-slate-800 transition-all";
+                btnInc.className = "flex-1 py-2 rounded-md text-sm font-bold text-slate-500 transition-all";
+            } else {
+                btnInc.className = "flex-1 py-2 rounded-md text-sm font-bold bg-white shadow-sm text-slate-800 transition-all";
+                btnExp.className = "flex-1 py-2 rounded-md text-sm font-bold text-slate-500 transition-all";
+            }
+        }
+
+        function fillFormOptions() {
+            const wSelect = document.getElementById('inpWallet');
+            wSelect.innerHTML = Object.keys(accounts).map(k => `<option value="${k}">${k}</option>`).join('');
+        }
+
+        function submitManualInput() {
+            const amt = parseFloat(document.getElementById('inpAmount').value);
+            const title = document.getElementById('inpTitle').value;
+            const wallet = document.getElementById('inpWallet').value;
+            const cat = document.getElementById('inpCategory').value;
+
+            if(!amt || !title) return alert("Enter details");
+
+            handleTransaction({
+                title: title,
+                amount: amt,
+                category: currentInputType === 'income' ? 'Income' : cat,
+                wallet: wallet,
+                type: currentInputType,
+                context: activeTab,
+                coords: currentLocation
+            });
+            document.getElementById('inpAmount').value = '';
+            document.getElementById('inpTitle').value = '';
+            closeInputModal();
+        }
+
+        // --- TODO WIDGET ---
+        function renderTodosWidget() {
+            const list = document.getElementById('todoListWidget');
+            list.innerHTML = todos.slice(0,3).map((t, i) => `
+                <div class="bg-white p-2 rounded-lg border border-slate-100 flex items-center gap-2">
+                    <input type="checkbox" onchange="toggleTodo(${i})" ${t.done?'checked':''} class="h-4 w-4 accent-emerald-500">
+                    <span class="${t.done?'line-through text-slate-300':'text-slate-700'} text-xs flex-1">${t.text}</span>
+                </div>
+            `).join('');
+        }
+        function promptAddTodo() { const t = prompt("Task Name:"); if(t) addTodo(t); }
+        function toggleTodo(i) { todos[i].done = !todos[i].done; saveData(); renderTodosWidget(); }
+
+        // --- ADVISOR ---
+        function generateAIAdvice() {
+            const monthlyInc = transactions.filter(t => t.type === 'income').reduce((s,t) => s+t.amount, 0) || 1;
+            const monthlyExp = transactions.filter(t => t.type === 'expense').reduce((s,t) => s+t.amount, 0);
+            const ratio = Math.round((monthlyExp / monthlyInc) * 100);
+            let msg = `Spending is <b>${ratio}%</b> of income. `;
+            if(debts.filter(d => d.type === 'dibo' && !d.settled).length > 0) msg += `<br>⚠️ You have pending debts!`;
+            document.getElementById('aiInsightText').innerHTML = msg;
+        }
+
+        // Renamed from initChart to updateChart to fix ReferenceError
+        function updateChart() {
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            const cats = {};
+            transactions.filter(t => t.type === 'expense').forEach(t => cats[t.category] = (cats[t.category] || 0) + t.amount);
+            if(chartInstance) chartInstance.destroy();
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: { labels: Object.keys(cats), datasets: [{ data: Object.values(cats), backgroundColor: ['#10b981', '#3b82f6', '#f43f5e', '#f59e0b', '#8b5cf6', '#64748b'] }] },
+                options: { plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } } } }
+            });
+        }
+
+        function saveData() {
+            localStorage.setItem('tk_accounts', JSON.stringify(accounts));
+            localStorage.setItem('tk_tabs', JSON.stringify(tabs));
+            localStorage.setItem('tk_transactions', JSON.stringify(transactions));
+            localStorage.setItem('tk_debts', JSON.stringify(debts));
+            localStorage.setItem('tk_todos', JSON.stringify(todos));
+        }
+        function openProfile() { alert("Profile: User Admin"); }
+    </script>
+</body>
+</html>
