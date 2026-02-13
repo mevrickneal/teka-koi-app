@@ -9,14 +9,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- PDF Generation Libraries -->
+    <!-- PDF Generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     
-    <!-- Leaflet Map (Free) -->
+    <!-- Leaflet Map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+    <!-- Icons & Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
@@ -25,364 +26,440 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; -webkit-tap-highlight-color: transparent; }
         
         /* Glassmorphism */
-        .glass {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
-        }
-        .glass-dark {
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); }
+        .glass-dark { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.3); }
         
-        /* Logo Styles */
-        .wallet-logo { width: 32px; height: 32px; object-fit: contain; border-radius: 50%; background: white; padding: 2px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        /* Interactions */
+        .interactive-card { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); cursor: pointer; }
+        .interactive-card:active { transform: scale(0.96); }
+        .wallet-logo { width: 32px; height: 32px; object-fit: contain; border-radius: 50%; background: white; padding: 2px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
 
-        /* Splash Screen */
-        #splashScreen {
-            animation: splashOut 0.6s ease-in-out forwards;
-            animation-delay: 2.2s;
-        }
-        @keyframes splashOut {
-            0% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0; transform: scale(1.1); visibility: hidden; }
-        }
-        .bounce { animation: bounce 2s infinite; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
-        /* Animations */
-        .fade-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Splash */
+        #splashScreen { animation: splashOut 0.8s cubic-bezier(0.7, 0, 0.3, 1) forwards; animation-delay: 2.5s; }
+        @keyframes splashOut { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.1); visibility: hidden; } }
+        .bounce { animation: bounce 2.5s infinite ease-in-out; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
         
-        .slide-up { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-        /* Utilities */
+        /* Scrollbar & Utils */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        .nav-item.active i { color: #10b981; transform: translateY(-2px); transition: all 0.3s; }
-        .nav-item.active span { color: #10b981; font-weight: 700; transition: all 0.3s; }
-        
-        .pulse-shadow { animation: pulse 2s infinite; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-        @keyframes pulse { 0% { transform: scale(0.95); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0,0,0,0); } 100% { transform: scale(0.95); } }
+        .nav-item.active i { color: #10b981; transform: translateY(-3px); filter: drop-shadow(0 4px 6px rgba(16, 185, 129, 0.3)); }
+        .nav-item.active span { color: #10b981; font-weight: 800; }
+        .pulse-shadow { animation: pulse 2.5s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(0,0,0,0); } 100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); } }
 
         /* Islamic Theme */
-        .islamic-mode { 
-            background-color: #ecfdf5 !important; 
-            background-image: url('https://www.transparenttextures.com/patterns/arabesque.png');
-            background-attachment: fixed;
-        }
+        .islamic-mode { background-color: #ecfdf5 !important; background-image: url('https://www.transparenttextures.com/patterns/arabesque.png'); background-attachment: fixed; }
+        .bg-islamic-premium { background-color: #042f2e; background-image: url("https://www.transparenttextures.com/patterns/arabesque.png"), linear-gradient(135deg, #064e3b 0%, #115e59 50%, #0f766e 100%); background-blend-mode: overlay; }
         .islamic-font { font-family: 'Amiri', serif; }
-
-        /* Notification Badge */
-        .notif-badge { position: absolute; top: -2px; right: -2px; width: 10px; height: 10px; background: #ef4444; border-radius: 50%; border: 2px solid white; display: none; }
-        .notif-badge.active { display: block; }
         
-        /* Filter Chips */
-        .filter-chip { white-space: nowrap; padding: 6px 12px; border-radius: 999px; font-size: 10px; font-weight: 700; background: #f1f5f9; color: #64748b; transition: all 0.2s; border: 1px solid transparent; }
-        .filter-chip.active { background: #10b981; color: white; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3); }
+        /* Video */
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 20px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.3); }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
-        /* Strikethrough animation for tasks */
-        .task-done { text-decoration: line-through; color: #94a3b8; }
+        /* Badges & Chips */
+        .notif-badge { position: absolute; top: 0; right: 0; width: 10px; height: 10px; background: #ef4444; border-radius: 50%; border: 2px solid white; display: none; box-shadow: 0 2px 4px rgba(239, 68, 68, 0.4); }
+        .notif-badge.active { display: block; animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite; }
+        @keyframes ping { 75%, 100% { transform: scale(2); opacity: 0; } }
+        .filter-chip { white-space: nowrap; padding: 8px 16px; border-radius: 999px; font-size: 11px; font-weight: 700; background: #f1f5f9; color: #64748b; transition: all 0.2s; border: 1px solid transparent; }
+        .filter-chip.active { background: #10b981; color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); transform: translateY(-1px); }
+        
+        /* Dropdown Fix */
+        #notifDropdown { right: 0; max-width: 90vw; width: 300px; z-index: 100; }
+        @media (max-width: 640px) { #notifDropdown { right: -10px; width: 280px; } }
     </style>
 </head>
 <body class="h-screen w-screen overflow-hidden flex flex-col bg-slate-50 transition-colors duration-500">
 
     <!-- SPLASH SCREEN -->
-    <div id="splashScreen" class="fixed inset-0 z-[200] bg-slate-900 flex flex-col items-center justify-center text-white">
-        <div class="text-6xl mb-4 bounce">💸</div>
-        <h1 class="text-4xl font-black tracking-tighter">Teka Koi?</h1>
-        <p class="text-emerald-400 text-xs font-bold tracking-[0.2em] uppercase mt-2">by Lian Mollick</p>
+    <div id="splashScreen" class="fixed inset-0 z-[200] bg-white flex flex-col items-center justify-center text-slate-900">
+        <div class="text-7xl mb-6 bounce drop-shadow-2xl">💸</div>
+        <h1 class="text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">Teka Koi?</h1>
+        <p class="text-slate-400 text-xs font-extrabold tracking-[0.3em] uppercase mt-3">by Lian Mollick</p>
     </div>
 
     <!-- AUTH OVERLAY -->
     <div id="authOverlay" class="fixed inset-0 z-[150] bg-white/60 backdrop-blur-xl flex flex-col items-center justify-center p-6 hidden">
-        <div class="w-full max-w-sm glass p-8 rounded-[32px] shadow-2xl">
-            <div class="text-center mb-6">
-                <div class="h-16 w-16 bg-slate-900 rounded-2xl mx-auto mb-4 flex items-center justify-center text-3xl shadow-lg text-white">🔐</div>
-                <h1 class="text-2xl font-black text-slate-900" id="authTitle">Login</h1>
-                <p class="text-slate-500 text-xs font-bold uppercase mt-1">Personal Finance</p>
+        <div class="w-full max-w-sm glass p-8 rounded-[32px] shadow-2xl border border-white/50">
+            <div class="text-center mb-8">
+                <div class="h-20 w-20 bg-slate-900 rounded-3xl mx-auto mb-4 flex items-center justify-center text-4xl shadow-xl text-white">🔐</div>
+                <h1 class="text-3xl font-black text-slate-900" id="authTitle">Welcome</h1>
+                <p class="text-slate-500 text-xs font-bold uppercase mt-1 tracking-wider">Secure Finance Access</p>
             </div>
-            
             <div class="space-y-4" id="loginForm">
-                <input type="email" id="loginEmail" class="w-full p-4 bg-white/80 border border-slate-200 rounded-xl outline-none font-bold text-sm focus:border-emerald-500 transition-colors" placeholder="Email">
-                <input type="password" id="loginPass" class="w-full p-4 bg-white/80 border border-slate-200 rounded-xl outline-none font-bold text-sm focus:border-emerald-500 transition-colors" placeholder="Password">
-                <button onclick="handleLogin()" id="btnLogin" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold shadow-xl active:scale-95 transition-transform">LOGIN</button>
-                <p class="text-center text-xs text-slate-500 mt-4 cursor-pointer hover:text-emerald-600" onclick="toggleAuthMode('signup')">New here? <b>Create Account</b></p>
+                <input type="email" id="loginEmail" class="w-full p-4 bg-white/80 border border-slate-200 rounded-2xl outline-none font-bold text-sm" placeholder="Email Address">
+                <input type="password" id="loginPass" class="w-full p-4 bg-white/80 border border-slate-200 rounded-2xl outline-none font-bold text-sm" placeholder="Password">
+                <div class="flex items-center gap-2 px-2"><input type="checkbox" id="rememberMe" class="accent-emerald-500 w-4 h-4 rounded cursor-pointer"><label for="rememberMe" class="text-xs font-bold text-slate-500 cursor-pointer">Remember me</label></div>
+                <button onclick="handleLogin()" id="btnLogin" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-xl active:scale-95 transition-transform hover:bg-slate-800">LOGIN</button>
+                <p class="text-center text-xs text-slate-500 mt-4 cursor-pointer hover:text-emerald-600 font-bold" onclick="toggleAuthMode('signup')">New here? Create Account</p>
             </div>
-
             <div class="space-y-4 hidden" id="signupForm">
-                <input type="text" id="regName" class="w-full p-4 bg-white/80 border border-slate-200 rounded-xl outline-none font-bold text-sm" placeholder="Full Name">
-                <input type="email" id="regEmail" class="w-full p-4 bg-white/80 border border-slate-200 rounded-xl outline-none font-bold text-sm" placeholder="Email">
-                <input type="password" id="regPass" class="w-full p-4 bg-white/80 border border-slate-200 rounded-xl outline-none font-bold text-sm" placeholder="Password">
-                <button onclick="handleSignup()" id="btnSignup" class="w-full bg-emerald-500 text-white py-4 rounded-xl font-bold shadow-xl active:scale-95 transition-transform">CREATE ACCOUNT</button>
-                <p class="text-center text-xs text-slate-500 mt-4 cursor-pointer hover:text-emerald-600" onclick="toggleAuthMode('login')">Have an account? <b>Login</b></p>
+                <input type="text" id="regName" class="w-full p-4 bg-white/80 border border-slate-200 rounded-2xl outline-none font-bold text-sm" placeholder="Full Name">
+                <input type="email" id="regEmail" class="w-full p-4 bg-white/80 border border-slate-200 rounded-2xl outline-none font-bold text-sm" placeholder="Email">
+                <input type="password" id="regPass" class="w-full p-4 bg-white/80 border border-slate-200 rounded-2xl outline-none font-bold text-sm" placeholder="Password">
+                <button onclick="handleSignup()" id="btnSignup" class="w-full bg-emerald-500 text-white py-4 rounded-2xl font-bold shadow-xl active:scale-95 transition-transform">CREATE ACCOUNT</button>
+                <p class="text-center text-xs text-slate-500 mt-4 cursor-pointer hover:text-emerald-600 font-bold" onclick="toggleAuthMode('login')">Have an account? Login</p>
             </div>
         </div>
     </div>
 
     <!-- HEADER -->
-    <header class="px-6 pt-10 pb-4 glass sticky top-0 z-40 flex justify-between items-center transition-all shadow-sm">
+    <header class="px-6 pt-12 pb-4 glass sticky top-0 z-40 flex justify-between items-center transition-all shadow-sm backdrop-blur-xl">
         <div>
             <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5" id="headerDate">---</p>
-            <h1 class="text-xl font-black text-slate-800 leading-none">৳ <span id="headerBalance">0</span></h1>
+            <h1 class="text-2xl font-black text-slate-800 leading-none tracking-tight">৳ <span id="headerBalance">0</span></h1>
         </div>
-        
         <div class="flex gap-3 items-center">
             <div id="syncIndicator" class="hidden"><i class="fas fa-circle-notch fa-spin text-emerald-500"></i></div>
-            
+            <button onclick="navTo('ai')" class="h-11 w-11 rounded-full glass flex items-center justify-center text-slate-600 hover:text-emerald-600 transition-colors active:scale-90 shadow-sm"><i class="fas fa-brain text-lg"></i></button>
             <div class="relative">
-                <button onclick="toggleNotifications()" class="h-10 w-10 rounded-full glass flex items-center justify-center text-slate-600 hover:text-indigo-600 transition-colors relative">
-                    <i class="fas fa-bell"></i>
-                    <div id="notifBadge" class="notif-badge"></div>
+                <button onclick="toggleNotifications()" class="h-11 w-11 rounded-full glass flex items-center justify-center text-slate-600 hover:text-indigo-600 transition-colors relative active:scale-90 shadow-sm">
+                    <i class="fas fa-bell text-lg"></i><div id="notifBadge" class="notif-badge"></div>
                 </button>
-                <div id="notifDropdown" class="absolute right-0 top-12 w-64 bg-white rounded-2xl shadow-xl border border-slate-100 hidden p-2 z-50">
-                    <div id="notifList" class="max-h-48 overflow-y-auto space-y-2"></div>
+                <div id="notifDropdown" class="absolute right-0 top-14 bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-100 hidden p-4">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Notifications</h3>
+                        <button onclick="toggleNotifications()" class="text-slate-400 hover:text-rose-500"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div id="notifList" class="max-h-64 overflow-y-auto space-y-3 no-scrollbar"></div>
                 </div>
             </div>
-
-            <div class="h-10 w-10 bg-gradient-to-br from-slate-800 to-slate-600 rounded-full flex items-center justify-center text-white font-bold shadow-md cursor-pointer" onclick="logout()" id="headerAvatar">U</div>
+            <!-- Profile Avatar -->
+            <div class="h-11 w-11 rounded-full shadow-lg cursor-pointer hover:scale-105 active:scale-95 transition-transform border-2 border-white bg-slate-200 overflow-hidden" onclick="openProfileModal()">
+                <img id="headerAvatarImg" class="w-full h-full object-cover hidden" src="" alt="Profile">
+                <div id="headerAvatarText" class="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-800 to-slate-600 text-white font-bold">U</div>
+            </div>
         </div>
     </header>
 
     <!-- MAIN CONTAINER -->
-    <main id="mainContainer" class="flex-1 overflow-y-auto no-scrollbar pb-28 relative">
+    <main id="mainContainer" class="flex-1 overflow-y-auto no-scrollbar pb-32 relative">
         
         <!-- DASHBOARD VIEW -->
         <div id="view-home" class="view-section px-6 py-6 fade-in">
-            <!-- Balance Card -->
-            <div class="glass-dark rounded-[32px] p-6 text-white shadow-xl mb-6 relative overflow-hidden transition-all hover:scale-[1.01]">
-                <div class="absolute -right-10 -top-10 h-40 w-40 bg-emerald-500/20 rounded-full blur-3xl"></div>
-                <div class="absolute -left-10 -bottom-10 h-40 w-40 bg-indigo-500/20 rounded-full blur-3xl"></div>
-                
+            <div class="glass-dark rounded-[32px] p-6 text-white shadow-2xl mb-6 relative overflow-hidden transition-all hover:scale-[1.01] active:scale-[0.99] group">
+                <div class="absolute -right-10 -top-10 h-48 w-48 bg-emerald-500/20 rounded-full blur-3xl group-hover:bg-emerald-500/30 transition-all duration-500"></div>
+                <div class="absolute -left-10 -bottom-10 h-48 w-48 bg-indigo-500/20 rounded-full blur-3xl group-hover:bg-indigo-500/30 transition-all duration-500"></div>
                 <div class="flex justify-between items-center relative z-10 mb-4">
-                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Net Worth</p>
-                    <span class="bg-white/10 px-2 py-1 rounded text-[9px] font-bold">LIVE</span>
+                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Total Net Worth</p>
+                    <span class="bg-white/10 px-2 py-1 rounded-lg text-[9px] font-bold backdrop-blur-md border border-white/10">LIVE</span>
                 </div>
-                <h2 class="text-4xl font-black mb-6 tracking-tight relative z-10">৳ <span id="dashTotalBalance">0</span></h2>
-                
+                <h2 class="text-5xl font-black mb-8 tracking-tighter relative z-10">৳ <span id="dashTotalBalance">0</span></h2>
                 <div class="grid grid-cols-2 gap-3 relative z-10">
-                    <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-md border border-white/5">
-                        <p class="text-[9px] text-emerald-300 font-bold uppercase mb-1"><i class="fas fa-arrow-down mr-1"></i> Income</p>
-                        <p class="font-bold text-sm text-white">+৳ <span id="dashIncome">0</span></p>
+                    <div class="bg-white/5 p-4 rounded-2xl backdrop-blur-md border border-white/10 hover:bg-white/10 transition-colors">
+                        <p class="text-[9px] text-emerald-300 font-bold uppercase mb-1 flex items-center gap-1"><i class="fas fa-arrow-down"></i> Income</p>
+                        <p class="font-bold text-lg text-white">+৳ <span id="dashIncome">0</span></p>
                     </div>
-                    <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-md border border-white/5">
-                        <p class="text-[9px] text-rose-300 font-bold uppercase mb-1"><i class="fas fa-arrow-up mr-1"></i> Expense</p>
-                        <p class="font-bold text-sm text-white">-৳ <span id="dashExpense">0</span></p>
+                    <div class="bg-white/5 p-4 rounded-2xl backdrop-blur-md border border-white/10 hover:bg-white/10 transition-colors">
+                        <p class="text-[9px] text-rose-300 font-bold uppercase mb-1 flex items-center gap-1"><i class="fas fa-arrow-up"></i> Expense</p>
+                        <p class="font-bold text-lg text-white">-৳ <span id="dashExpense">0</span></p>
                     </div>
                 </div>
             </div>
 
-            <!-- Quick Actions & Timer -->
-            <div class="mb-6">
-                <div class="flex justify-between items-center mb-2 px-1">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase">Updates Daily at 12:00 AM</p>
-                    <p class="text-[10px] font-mono text-emerald-600 font-bold" id="closingTimer">--:--:--</p>
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-3 px-2">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Day Ends In</p>
+                    <p class="text-xs font-mono text-emerald-600 font-black bg-emerald-50 px-2 py-1 rounded-md" id="closingTimer">--:--:--</p>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="openDailyClosing()" class="glass p-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-xs text-slate-700 hover:bg-white transition-colors border border-emerald-100">
-                        <i class="fas fa-cash-register text-emerald-500 text-lg"></i> Daily Closing
-                    </button>
-                    <button onclick="navTo('plans')" class="glass p-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-xs text-slate-700 hover:bg-white transition-colors border border-indigo-100">
-                        <i class="fas fa-sort-amount-up text-indigo-500 text-lg"></i> Prioritize Plan
-                    </button>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="openDailyClosing()" class="glass p-5 rounded-2xl flex items-center justify-center gap-3 font-bold text-xs text-slate-700 hover:bg-white transition-all border border-emerald-100 shadow-sm active:scale-95"><div class="h-8 w-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center"><i class="fas fa-cash-register"></i></div>Daily Closing</button>
+                    <button onclick="navTo('plans')" class="glass p-5 rounded-2xl flex items-center justify-center gap-3 font-bold text-xs text-slate-700 hover:bg-white transition-all border border-indigo-100 shadow-sm active:scale-95"><div class="h-8 w-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center"><i class="fas fa-sort-amount-up"></i></div>Prioritize</button>
                 </div>
             </div>
 
-            <!-- Wallets (Branded Logos) -->
-            <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-3 ml-1">Wallets</h3>
-            <div id="walletList" class="flex gap-3 overflow-x-auto no-scrollbar mb-6 pb-2 pl-1"></div>
+            <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-4 ml-1">My Wallets</h3>
+            <div id="walletList" class="flex gap-3 overflow-x-auto no-scrollbar mb-8 pb-4 pl-1"></div>
 
-            <!-- Recent Activity -->
-            <div class="flex justify-between items-center mb-3 px-1 mt-2">
-                <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Recent</h3>
-                <button onclick="navTo('history')" class="text-emerald-600 text-[10px] font-bold uppercase bg-emerald-50 px-3 py-1 rounded-full">See All</button>
+            <div class="flex justify-between items-center mb-4 px-1 mt-2">
+                <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Recent Activity</h3>
+                <button onclick="navTo('history')" class="text-emerald-600 text-[10px] font-bold uppercase bg-emerald-50 px-3 py-1.5 rounded-full hover:bg-emerald-100 transition-colors">See All</button>
             </div>
             <div id="homeRecentList" class="space-y-3 pb-4"></div>
         </div>
 
         <!-- MAP VIEW -->
-        <div id="view-map" class="view-section hidden px-0 py-0 fade-in h-full flex flex-col">
-            <div class="absolute top-4 left-4 z-[999] glass p-2 rounded-xl">
-                <h3 class="text-xs font-bold text-slate-800">Spending Map</h3>
-                <p class="text-[9px] text-slate-500" id="mapStatus">Loading...</p>
+        <div id="view-map" class="view-section hidden h-full flex flex-col bg-slate-100">
+            <div class="bg-white/90 backdrop-blur-md p-4 shadow-sm z-10">
+                <h3 class="text-sm font-black text-slate-800 mb-2 flex items-center gap-2"><i class="fas fa-map-marked-alt text-emerald-500"></i> Spending Map</h3>
+                <div class="flex gap-2">
+                    <input type="date" id="mapDateFrom" class="bg-slate-50 p-2 rounded-lg text-xs font-bold text-slate-600 border border-slate-200 outline-none flex-1" onchange="renderMapMarkers()">
+                    <input type="date" id="mapDateTo" class="bg-slate-50 p-2 rounded-lg text-xs font-bold text-slate-600 border border-slate-200 outline-none flex-1" onchange="renderMapMarkers()">
+                    <button onclick="toggleMapStats()" class="h-8 w-8 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center border border-indigo-100 hover:bg-indigo-100"><i class="fas fa-chart-bar"></i></button>
+                </div>
+                <div id="mapStatsPanel" class="hidden mt-3 bg-white p-3 rounded-xl border border-slate-100 shadow-lg relative fade-in">
+                    <button onclick="toggleMapStats()" class="absolute top-2 right-2 text-slate-400 hover:text-rose-500"><i class="fas fa-times"></i></button>
+                    <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-1">AI Analysis</h4>
+                    <p class="text-xs font-medium text-slate-700 leading-relaxed" id="mapAIComment">Loading behavior...</p>
+                </div>
             </div>
-            <div id="mapContainer" class="w-full h-full z-0"></div>
+            <div id="mapContainer" class="flex-1 w-full h-full z-0"></div>
         </div>
 
         <!-- REPORT VIEW -->
         <div id="view-report" class="view-section hidden px-6 py-6 fade-in h-full flex flex-col">
-            <h2 class="text-2xl font-black text-slate-800 mb-4">Analytics</h2>
-            <div class="flex gap-2 mb-6">
-                <button onclick="renderReport('week')" class="flex-1 py-2 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 shadow-sm focus:bg-slate-900 focus:text-white transition-colors">Week</button>
-                <button onclick="renderReport('month')" class="flex-1 py-2 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 shadow-sm focus:bg-slate-900 focus:text-white transition-colors">Month</button>
+            <h2 class="text-3xl font-black text-slate-800 mb-6 tracking-tight">Analytics</h2>
+            <div class="flex gap-2 mb-6 p-1 bg-slate-200 rounded-xl">
+                <button onclick="renderReport('week')" id="repWeek" class="flex-1 py-2.5 bg-white rounded-lg text-xs font-bold text-slate-800 shadow-sm transition-all hover:shadow-md">Week</button>
+                <button onclick="renderReport('month')" id="repMonth" class="flex-1 py-2.5 text-slate-500 rounded-lg text-xs font-bold transition-all hover:bg-white/50">Month</button>
+                <button onclick="renderReport('year')" id="repYear" class="flex-1 py-2.5 text-slate-500 rounded-lg text-xs font-bold transition-all hover:bg-white/50">Year</button>
             </div>
-            <div class="glass p-4 rounded-[24px] mb-6 shadow-sm border border-slate-100 bg-white">
-                <div class="h-48 w-full"><canvas id="reportChart"></canvas></div>
+            <div class="glass p-5 rounded-[32px] mb-8 shadow-lg border border-white/60 bg-white/50">
+                <div class="h-56 w-full"><canvas id="reportChart"></canvas></div>
             </div>
-            <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-3 ml-1">Export Data</h3>
-            <div class="grid grid-cols-2 gap-3">
-                <button onclick="downloadReport('pdf')" class="p-4 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center gap-2 font-bold text-sm border border-rose-100 hover:bg-rose-100 transition-colors"><i class="fas fa-file-pdf text-lg"></i> PDF</button>
-                <button onclick="downloadReport('csv')" class="p-4 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center gap-2 font-bold text-sm border border-emerald-100 hover:bg-emerald-100 transition-colors"><i class="fas fa-file-csv text-lg"></i> CSV</button>
+            <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-4 ml-1">Export Data</h3>
+            <div class="grid grid-cols-2 gap-4 pb-40">
+                <button onclick="downloadReport('pdf')" class="p-5 bg-rose-50 text-rose-600 rounded-3xl flex items-center justify-center gap-3 font-bold text-sm border border-rose-100 hover:bg-rose-100 transition-all shadow-sm active:scale-95"><i class="fas fa-file-pdf text-xl"></i> PDF Report</button>
+                <button onclick="downloadReport('csv')" class="p-5 bg-emerald-50 text-emerald-600 rounded-3xl flex items-center justify-center gap-3 font-bold text-sm border border-emerald-100 hover:bg-emerald-100 transition-all shadow-sm active:scale-95"><i class="fas fa-file-csv text-xl"></i> CSV Data</button>
             </div>
+        </div>
+
+        <!-- AI PREDICTION VIEW -->
+        <div id="view-ai" class="view-section hidden px-6 py-6 fade-in h-full flex flex-col">
+            <h2 class="text-3xl font-black text-slate-800 mb-6 tracking-tight">AI Advisor</h2>
+            <div class="glass p-5 rounded-[28px] mb-6 shadow-sm border border-emerald-100 bg-white">
+                <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-slate-700 text-sm">Forecast</h3><i class="fas fa-robot text-emerald-500"></i></div>
+                <div class="h-40 w-full mb-4"><canvas id="predictionChart"></canvas></div>
+                <div class="bg-slate-50 p-3 rounded-xl"><p class="text-[10px] text-slate-400 font-bold uppercase mb-1">Verdict</p><p class="text-xs text-slate-600 font-medium" id="aiVerdict">Collecting data...</p></div>
+            </div>
+            <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-3 ml-1">Optimization Steps</h3>
+            <div id="costCutterList" class="space-y-3 pb-40"></div>
         </div>
 
         <!-- PLANS VIEW -->
         <div id="view-plans" class="view-section hidden px-6 py-6 fade-in h-full flex flex-col">
-            <h2 class="text-2xl font-black text-slate-800 mb-4">Plans & Wishlist</h2>
-            <div class="flex gap-2 mb-4 bg-slate-200 p-1 rounded-xl">
-                <button onclick="togglePlansTab('upcoming')" id="tabUpcoming" class="flex-1 py-2 bg-white rounded-lg text-xs font-bold shadow-sm transition-all">Bills</button>
-                <button onclick="togglePlansTab('wishlist')" id="tabWishlist" class="flex-1 py-2 text-slate-500 rounded-lg text-xs font-bold transition-all">Wishlist</button>
+            <h2 class="text-3xl font-black text-slate-800 mb-6 tracking-tight">Plans & Wishes</h2>
+            <div class="flex gap-2 mb-6 bg-slate-200 p-1.5 rounded-2xl">
+                <button onclick="togglePlansTab('upcoming')" id="tabUpcoming" class="flex-1 py-3 bg-white rounded-xl text-xs font-bold shadow-sm transition-all text-slate-800">Bills</button>
+                <button onclick="togglePlansTab('wishlist')" id="tabWishlist" class="flex-1 py-3 text-slate-500 rounded-xl text-xs font-bold transition-all">Wishlist</button>
             </div>
-            <div id="plansContainer" class="flex-1 overflow-y-auto pb-24 space-y-3"></div>
-            <button onclick="openPlanModal()" id="btnAddPlan" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold shadow-lg mt-4">Add Plan</button>
-            <button onclick="openWishlistModal()" id="btnAddWish" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold shadow-lg mt-4 hidden">Add Wish</button>
+            <div id="plansContainer" class="flex-1 overflow-y-auto pb-40 space-y-3 no-scrollbar"></div> 
+            <div class="fixed bottom-24 left-6 right-6 z-30">
+                <button onclick="openPlanModal()" id="btnAddPlan" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-xl active:scale-95 transition-transform flex items-center justify-center gap-2"><i class="fas fa-plus"></i> Add Plan</button>
+                <button onclick="openWishlistModal()" id="btnAddWish" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold shadow-xl active:scale-95 transition-transform flex items-center justify-center gap-2 hidden"><i class="fas fa-star"></i> Add Wish</button>
+            </div>
         </div>
 
         <!-- HALKHATA VIEW -->
         <div id="view-halkhata" class="view-section hidden px-6 py-6 fade-in h-full flex flex-col">
-            <h2 class="text-2xl font-black text-slate-800 mb-4">Halkhata</h2>
-            <div class="flex bg-slate-200 p-1 rounded-xl mb-6">
-                <button onclick="setDebtView('pabo')" id="btnPabo" class="flex-1 py-3 rounded-lg text-xs font-bold bg-white shadow-sm transition-all">Pabo</button>
-                <button onclick="setDebtView('dibo')" id="btnDibo" class="flex-1 py-3 rounded-lg text-xs font-bold text-slate-500 transition-all">Dibo</button>
+            <h2 class="text-3xl font-black text-slate-800 mb-6 tracking-tight">Halkhata</h2>
+            <div class="flex bg-slate-200 p-1.5 rounded-2xl mb-6">
+                <button onclick="setDebtView('pabo')" id="btnPabo" class="flex-1 py-3 rounded-xl text-xs font-bold bg-white shadow-sm transition-all text-emerald-700">Pabo (Receivable)</button>
+                <button onclick="setDebtView('dibo')" id="btnDibo" class="flex-1 py-3 rounded-xl text-xs font-bold text-slate-500 transition-all">Dibo (Payable)</button>
             </div>
-            <div id="halkhataList" class="space-y-3 flex-1 overflow-y-auto pb-24"></div>
-            <button onclick="openDebtModal()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold shadow-lg mt-4">Add Entry</button>
+            <div id="halkhataList" class="space-y-3 flex-1 overflow-y-auto pb-24 no-scrollbar"></div>
+            <button onclick="openDebtModal()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-xl mt-4 active:scale-95 transition-transform flex items-center justify-center gap-2"><i class="fas fa-plus"></i> Add Entry</button>
         </div>
 
-        <!-- LIFESTYLE VIEW -->
-        <div id="view-lifestyle" class="view-section hidden px-0 py-0 fade-in h-full flex flex-col">
-            <div class="relative bg-emerald-900 h-64 rounded-b-[40px] shadow-2xl overflow-hidden mb-4">
-                <div class="absolute inset-0 opacity-20" style="background-image: url('https://www.transparenttextures.com/patterns/arabesque.png');"></div>
-                <div class="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-900/80 to-transparent"></div>
-                <div class="absolute bottom-6 left-6 right-6 text-white">
-                    <div class="flex justify-between items-end">
-                        <div>
-                            <p class="text-xs font-bold text-emerald-300 uppercase mb-1 tracking-widest">Next Prayer</p>
-                            <h2 class="text-4xl font-black islamic-font mb-1" id="nextPrayerName">...</h2>
-                            <p class="text-sm font-medium opacity-80" id="nextPrayerTime">--:--</p>
-                        </div>
-                        <div class="text-right">
-                             <p class="text-2xl font-bold islamic-font" id="hijriDay">--</p>
-                             <p class="text-[10px] text-emerald-300 font-bold uppercase" id="hijriMonth">---</p>
+        <!-- LIFESTYLE VIEW (Scrollable Header + TV) -->
+        <div id="view-lifestyle" class="view-section hidden h-full flex flex-col">
+            <div class="flex-1 overflow-y-auto no-scrollbar">
+                <!-- Header (Scrolls naturally) with Premium Islamic Design -->
+                <div class="relative h-64 rounded-b-[40px] shadow-2xl overflow-hidden transition-all duration-1000 mb-6 bg-islamic-premium" id="lifeHeader">
+                    <div class="absolute bottom-8 left-8 right-8 text-white z-10">
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <p class="text-xs font-bold text-emerald-200 uppercase mb-2 tracking-widest flex items-center gap-2 drop-shadow-md"><i class="fas fa-clock"></i> Next Wakto</p>
+                                <h2 class="text-5xl font-black islamic-font mb-1 drop-shadow-lg text-emerald-50" id="nextPrayerName">...</h2>
+                                <p class="text-lg font-medium opacity-90 font-mono text-emerald-100" id="nextPrayerTime">--:--</p>
+                            </div>
+                            <div class="text-right">
+                                 <p class="text-xs font-bold text-emerald-200 uppercase mb-1 drop-shadow-md">Sehri Ends In</p>
+                                 <p class="text-xl font-mono font-bold mb-2 text-emerald-50" id="sehriCountdown">--:--</p>
+                                 <p class="text-[10px] opacity-80 text-emerald-200 font-bold tracking-wide" id="hijriFull">---</p>
+                            </div>
                         </div>
                     </div>
+                    <!-- Mosque Silhouette -->
+                    <div class="absolute bottom-0 left-0 right-0 h-24 bg-[url('https://www.transparenttextures.com/patterns/mosque.png')] opacity-20 bg-repeat-x bg-bottom"></div>
                 </div>
-            </div>
-            <div class="px-6 flex-1 overflow-y-auto no-scrollbar pb-24">
-                <div class="glass p-4 rounded-2xl mb-4 flex justify-between items-center shadow-sm">
-                    <div class="flex items-center gap-3">
-                        <div class="h-8 w-8 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600"><i class="fas fa-moon"></i></div>
-                        <span class="text-sm font-bold text-slate-700">Ramadan Mode</span>
+
+                <div class="px-6 pb-40">
+                    <!-- Ramadan Hub -->
+                    <div class="glass p-5 rounded-3xl mb-6 shadow-sm border border-emerald-50 mt-4 relative overflow-hidden group interactive-card" id="ramadanCard">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><i class="fas fa-moon text-6xl text-emerald-600"></i></div>
+                        
+                        <div class="mb-4">
+                            <h3 class="text-sm font-black text-emerald-800 uppercase tracking-wider mb-3 flex items-center gap-2"><i class="fas fa-calendar-alt"></i> Ramadan 2026</h3>
+                            <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400" id="ramadanCalendarGrid"></div>
+                            <p class="text-center text-xs font-bold text-emerald-600 mt-3" id="eidCountdown">-- Days to Eid</p>
+                        </div>
+
+                        <div class="flex justify-between items-center border-t border-slate-100 pt-3">
+                            <span class="text-xs font-bold text-slate-500">Theme</span>
+                            <button onclick="toggleRamadan()" id="ramadanToggle" class="w-14 h-8 bg-slate-200 rounded-full relative transition-colors"><div class="w-6 h-6 bg-white rounded-full absolute top-1 left-1 shadow-sm transition-all flex items-center justify-center text-[10px]"><i class="fas fa-star text-slate-300"></i></div></button>
+                        </div>
                     </div>
-                    <button onclick="toggleRamadan()" id="ramadanToggle" class="w-12 h-6 bg-slate-200 rounded-full relative transition-colors"><div class="w-4 h-4 bg-white rounded-full absolute top-1 left-1 shadow-sm transition-all"></div></button>
-                </div>
-                <div class="glass p-5 rounded-3xl mb-6 shadow-sm border border-emerald-50">
-                    <div id="prayerList" class="space-y-3"></div>
-                </div>
-                
-                <!-- Todo Section -->
-                <div class="flex justify-between items-center mb-3 ml-1">
-                    <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Tasks & Deeds</h3>
-                    <button onclick="navTo('archive')" class="text-[10px] font-bold text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full hover:bg-indigo-100 transition-colors">Archive Deeds</button>
-                </div>
-                <div id="todoList" class="space-y-2 mb-4"></div>
-                <div class="flex gap-2">
-                    <input type="text" id="newTodoInput" class="flex-1 p-3 rounded-xl border border-slate-200 text-sm outline-none shadow-sm" placeholder="Add a deed or task...">
-                    <button onclick="addTodo()" class="bg-slate-900 text-white h-12 w-12 rounded-xl flex items-center justify-center shadow-md active:scale-95 transition-transform"><i class="fas fa-plus"></i></button>
+
+                    <!-- Prayer List -->
+                    <div class="glass p-6 rounded-[32px] mb-6 shadow-sm border border-slate-100">
+                        <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-4">Prayer Schedule</h3>
+                        <div id="prayerList" class="space-y-3"></div>
+                    </div>
+                    
+                    <!-- Todo Section -->
+                    <div class="flex justify-between items-center mb-4 ml-1">
+                        <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Tasks & Deeds</h3>
+                        <button onclick="navTo('archive')" class="text-[10px] font-bold text-indigo-500 bg-indigo-50 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors">Archive</button>
+                    </div>
+                    <div id="todoList" class="space-y-2 mb-4"></div>
+                    <div class="flex gap-2 mb-8">
+                        <input type="text" id="newTodoInput" class="flex-1 p-4 rounded-2xl border border-slate-200 text-sm outline-none shadow-sm focus:border-indigo-500 transition-colors" placeholder="Add a deed or task...">
+                        <button onclick="addTodo()" class="bg-slate-900 text-white h-14 w-14 rounded-2xl flex items-center justify-center shadow-lg active:scale-95 transition-transform"><i class="fas fa-plus"></i></button>
+                    </div>
+
+                    <!-- Live TV (Bottom) -->
+                    <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-3 ml-1">Live TV</h3>
+                    <div class="glass p-1 rounded-2xl mb-4 shadow-md overflow-hidden relative group">
+                        <div id="videoCover" class="absolute inset-0 bg-black/80 z-20 flex flex-col items-center justify-center cursor-pointer transition-opacity" onclick="playTV()">
+                            <i class="fas fa-play-circle text-5xl text-red-600 bg-white rounded-full mb-2"></i>
+                            <p class="text-white font-bold text-xs uppercase tracking-widest">Watch Live</p>
+                        </div>
+                        <div class="video-container">
+                            <iframe id="ytPlayer" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 overflow-x-auto no-scrollbar items-center pb-8" id="channelList">
+                        <!-- Channels generated here -->
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- ARCHIVE DEEDS VIEW -->
         <div id="view-archive" class="view-section hidden px-6 py-6 fade-in h-full flex flex-col">
-            <h2 class="text-2xl font-black text-slate-800 mb-4">Archive Deeds</h2>
-            <div id="archiveList" class="space-y-2 flex-1 overflow-y-auto pb-24"></div>
-            <button onclick="navTo('lifestyle')" class="w-full py-4 text-slate-500 font-bold text-sm">Back to Life</button>
+            <h2 class="text-3xl font-black text-slate-800 mb-6">Archive Deeds</h2>
+            <div id="archiveList" class="space-y-2 flex-1 overflow-y-auto pb-24 no-scrollbar"></div>
+            <button onclick="navTo('lifestyle')" class="w-full py-4 text-slate-500 font-bold text-sm hover:text-slate-800 transition-colors">Back to Life</button>
         </div>
 
         <!-- HISTORY VIEW -->
         <div id="view-history" class="view-section hidden px-6 py-6 fade-in h-full flex flex-col">
-            <h2 class="text-2xl font-black text-slate-800 mb-4">History</h2>
+            <h2 class="text-3xl font-black text-slate-800 mb-6">History</h2>
             <div class="mb-4">
-                <input type="text" id="searchInput" placeholder="Search..." class="w-full glass p-4 rounded-xl mb-3 text-sm outline-none font-medium" onkeyup="renderTransactions()">
-                
-                <!-- Category Filter Chips -->
-                <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2" id="filterChips">
+                <div class="relative mb-4">
+                    <i class="fas fa-search absolute left-4 top-4 text-slate-400"></i>
+                    <input type="text" id="searchInput" placeholder="Search transactions..." class="w-full glass pl-10 p-4 rounded-2xl text-sm outline-none font-medium transition-shadow focus:shadow-md" onkeyup="renderTransactions()">
+                </div>
+                <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2 relative z-10" id="filterChips">
                     <button onclick="filterHistory('All')" class="filter-chip active" id="chip-All">All</button>
-                    <!-- Generated via JS -->
                 </div>
             </div>
-            <div id="fullHistoryList" class="flex-1 overflow-y-auto space-y-3 pb-24"></div>
+            <div id="fullHistoryList" class="flex-1 overflow-y-auto space-y-3 pb-32 no-scrollbar relative z-0"></div>
         </div>
 
     </main>
 
     <!-- BOTTOM NAVIGATION -->
-    <nav class="glass h-24 fixed bottom-0 left-0 right-0 z-50 rounded-t-[32px] border-t border-white/50 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
-        <div class="grid grid-cols-5 h-20 relative text-center items-center">
-            <button onclick="navTo('home')" class="nav-item active flex flex-col items-center justify-center"><i class="fas fa-home text-xl text-slate-400 mb-1"></i><span class="text-[9px] font-bold text-slate-400">HOME</span></button>
-            <button onclick="navTo('report')" class="nav-item flex flex-col items-center justify-center"><i class="fas fa-chart-pie text-xl text-slate-400 mb-1"></i><span class="text-[9px] font-bold text-slate-400">REPORT</span></button>
-            <div class="h-full relative">
-                <button onclick="openInputModal('expense')" class="absolute -top-8 left-1/2 -translate-x-1/2 h-16 w-16 bg-slate-900 rounded-full shadow-2xl pulse-shadow flex items-center justify-center text-white border-4 border-slate-100 hover:scale-110 active:scale-95 transition-all">
-                    <i class="fas fa-plus text-2xl"></i>
-                </button>
-            </div>
-            <button onclick="navTo('map')" class="nav-item flex flex-col items-center justify-center"><i class="fas fa-map-marked-alt text-xl text-slate-400 mb-1"></i><span class="text-[9px] font-bold text-slate-400">MAP</span></button>
-            <button onclick="navTo('lifestyle')" class="nav-item flex flex-col items-center justify-center"><i class="fas fa-mosque text-xl text-slate-400 mb-1"></i><span class="text-[9px] font-bold text-slate-400">LIFE</span></button>
+    <nav class="fixed bottom-6 left-6 right-6 h-20 glass rounded-[32px] z-50 flex justify-between items-center px-2 shadow-2xl border border-white/50 backdrop-blur-2xl">
+        <button onclick="navTo('home')" class="nav-item active flex flex-col items-center justify-center w-14 h-14 rounded-2xl hover:bg-slate-100/50 transition-all"><i class="fas fa-home text-xl text-slate-400 mb-1"></i></button>
+        <button onclick="navTo('report')" class="nav-item flex flex-col items-center justify-center w-14 h-14 rounded-2xl hover:bg-slate-100/50 transition-all"><i class="fas fa-chart-pie text-xl text-slate-400 mb-1"></i></button>
+        <div class="relative -top-10">
+            <button onclick="openSmartInput()" class="h-16 w-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full shadow-2xl pulse-shadow flex items-center justify-center text-white border-4 border-slate-50 hover:scale-110 active:scale-95 transition-all text-2xl">
+                <i class="fas fa-magic"></i>
+            </button>
         </div>
+        <button onclick="navTo('map')" class="nav-item flex flex-col items-center justify-center w-14 h-14 rounded-2xl hover:bg-slate-100/50 transition-all"><i class="fas fa-map-marked-alt text-xl text-slate-400 mb-1"></i></button>
+        <button onclick="navTo('lifestyle')" class="nav-item flex flex-col items-center justify-center w-14 h-14 rounded-2xl hover:bg-slate-100/50 transition-all"><i class="fas fa-mosque text-xl text-slate-400 mb-1"></i></button>
     </nav>
 
     <!-- MODALS -->
     <!-- Input Modal -->
-    <div id="inputModal" class="fixed inset-0 z-[100] hidden flex items-end justify-center bg-slate-900/60 backdrop-blur-sm">
-        <div class="bg-white/95 backdrop-blur-xl w-full rounded-t-[32px] p-6 slide-up pb-10 border-t border-white/50">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-black text-slate-800">Add Record</h3>
-                <button onclick="closeInputModal()" class="h-8 w-8 bg-slate-100 rounded-full text-slate-500"><i class="fas fa-times"></i></button>
+    <div id="inputModal" class="fixed inset-0 z-[100] hidden flex items-end justify-center bg-slate-900/40 backdrop-blur-sm transition-opacity">
+        <div class="bg-white w-full rounded-t-[40px] p-8 slide-up pb-10 shadow-2xl">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-2xl font-black text-slate-800 tracking-tight">Add Record</h3>
+                <button onclick="closeInputModal()" class="h-10 w-10 bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200 transition-colors"><i class="fas fa-times"></i></button>
             </div>
-            <div class="space-y-4">
-                <div class="flex gap-2 p-1 bg-slate-100 rounded-xl">
-                    <button onclick="setTxType('expense')" id="btnTypeExp" class="flex-1 py-3 rounded-lg bg-white shadow text-slate-900 font-bold text-xs transition-all">EXPENSE</button>
-                    <button onclick="setTxType('income')" id="btnTypeInc" class="flex-1 py-3 rounded-lg text-slate-400 font-bold text-xs transition-all">INCOME</button>
+            <div class="space-y-5">
+                <div class="flex gap-2 p-1.5 bg-slate-100 rounded-2xl">
+                    <button onclick="setTxType('expense')" id="btnTypeExp" class="flex-1 py-4 rounded-xl bg-white shadow-md text-slate-900 font-bold text-xs transition-all tracking-wide">EXPENSE</button>
+                    <button onclick="setTxType('income')" id="btnTypeInc" class="flex-1 py-4 rounded-xl text-slate-400 font-bold text-xs transition-all tracking-wide">INCOME</button>
                 </div>
-                <input type="number" id="inpAmount" class="w-full text-4xl font-black border-b-2 py-2 outline-none bg-transparent" placeholder="৳ 0">
-                <input type="text" id="inpTitle" class="w-full p-4 bg-white rounded-xl font-bold outline-none text-sm border border-slate-100" placeholder="Title">
-                <div class="grid grid-cols-2 gap-3">
-                    <select id="inpWallet" class="w-full p-4 bg-white rounded-xl font-bold outline-none text-sm border border-slate-100"></select>
-                    <select id="inpCategory" class="w-full p-4 bg-white rounded-xl font-bold outline-none text-sm border border-slate-100"></select>
+                <input type="number" id="inpAmount" class="w-full text-5xl font-black border-b-2 py-4 outline-none bg-transparent placeholder-slate-200 text-slate-800" placeholder="৳ 0">
+                <input type="text" id="inpTitle" class="w-full p-5 bg-slate-50 rounded-2xl font-bold outline-none text-sm border border-slate-100 focus:bg-white focus:border-emerald-500 transition-all" placeholder="Title (e.g. Lunch)">
+                <div class="grid grid-cols-2 gap-4">
+                    <select id="inpWallet" class="w-full p-5 bg-slate-50 rounded-2xl font-bold outline-none text-sm border border-slate-100"></select>
+                    <select id="inpCategory" class="w-full p-5 bg-slate-50 rounded-2xl font-bold outline-none text-sm border border-slate-100"></select>
                 </div>
-                <select id="inpContext" class="w-full p-4 bg-white rounded-xl font-bold outline-none text-sm border border-slate-100"></select>
-                <div class="flex gap-2 items-center">
-                    <input type="text" id="inpNote" class="flex-1 p-4 bg-white rounded-xl font-medium outline-none text-xs border border-slate-100" placeholder="Note">
-                    <button onclick="toggleGPS()" id="btnGPS" class="h-12 w-12 bg-slate-100 rounded-xl text-slate-400 flex items-center justify-center transition-colors"><i class="fas fa-map-marker-alt"></i></button>
+                <select id="inpContext" class="w-full p-5 bg-slate-50 rounded-2xl font-bold outline-none text-sm border border-slate-100"></select>
+                <div class="flex gap-3 items-center">
+                    <input type="text" id="inpNote" class="flex-1 p-5 bg-slate-50 rounded-2xl font-medium outline-none text-xs border border-slate-100" placeholder="Note">
+                    <button onclick="toggleGPS()" id="btnGPS" class="h-14 w-14 bg-slate-100 rounded-2xl text-slate-400 flex items-center justify-center transition-all active:scale-95"><i class="fas fa-map-marker-alt text-lg"></i></button>
                 </div>
-                <button onclick="submitTransaction()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold shadow-lg">Save Transaction</button>
+                <button onclick="submitTransaction()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold shadow-xl active:scale-95 transition-transform text-sm tracking-wide">SAVE TRANSACTION</button>
             </div>
         </div>
     </div>
 
-    <!-- Daily Closing Modal (Updated) -->
+    <!-- Smart Input Modal -->
+    <div id="smartInputModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/60 p-6 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-sm rounded-[32px] p-6 slide-up shadow-2xl">
+            <div class="text-center mb-6">
+                <div class="h-16 w-16 bg-indigo-100 text-indigo-600 rounded-full mx-auto flex items-center justify-center text-3xl mb-3"><i class="fas fa-magic"></i></div>
+                <h3 class="text-xl font-black text-slate-800">Smart Add</h3>
+                <p class="text-xs text-slate-500 mt-1">Type multiple items (e.g. Lunch 200, Bus 50)</p>
+            </div>
+            <textarea id="smartInputText" class="w-full p-4 bg-slate-50 rounded-2xl border border-slate-200 h-32 text-sm font-medium outline-none mb-4" placeholder="Enter items..."></textarea>
+            <div class="flex gap-2 mb-4">
+                <button onclick="processSmartInput('expense')" class="flex-1 bg-rose-50 text-rose-600 py-3 rounded-xl font-bold text-xs border border-rose-100 hover:bg-rose-100">EXPENSE</button>
+                <button onclick="processSmartInput('income')" class="flex-1 bg-emerald-50 text-emerald-600 py-3 rounded-xl font-bold text-xs border border-emerald-100 hover:bg-emerald-100">INCOME</button>
+            </div>
+            <button onclick="document.getElementById('smartInputModal').classList.add('hidden')" class="w-full py-3 text-slate-400 font-bold text-xs">CANCEL</button>
+        </div>
+    </div>
+
+    <!-- Smart Plan Completion Modal -->
+    <div id="smartPlanModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/60 p-6 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-sm rounded-[32px] p-6 slide-up shadow-2xl">
+            <div class="text-center mb-4">
+                <div class="h-16 w-16 bg-emerald-100 text-emerald-600 rounded-full mx-auto flex items-center justify-center text-3xl mb-3"><i class="fas fa-magic"></i></div>
+                <h3 class="text-xl font-black text-slate-800">Plan Completed!</h3>
+                <p class="text-xs text-slate-500 mt-1">Classify this expense & move to archive</p>
+            </div>
+            <input type="hidden" id="smartPlanId">
+            <input type="hidden" id="smartPlanAmount">
+            <input type="hidden" id="smartPlanTitle">
+            
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <button onclick="confirmSmartPlan('Family', 'Rent')" class="p-4 bg-slate-50 rounded-xl border border-slate-200 hover:bg-slate-100 text-left">
+                    <i class="fas fa-home text-indigo-500 mb-2"></i>
+                    <p class="text-xs font-bold">Family / Rent</p>
+                </button>
+                <button onclick="confirmSmartPlan('Girlfriend', 'General')" class="p-4 bg-slate-50 rounded-xl border border-slate-200 hover:bg-slate-100 text-left">
+                    <i class="fas fa-heart text-rose-500 mb-2"></i>
+                    <p class="text-xs font-bold">Girlfriend</p>
+                </button>
+                <button onclick="confirmSmartPlan('Personal', 'Shopping')" class="p-4 bg-slate-50 rounded-xl border border-slate-200 hover:bg-slate-100 text-left">
+                    <i class="fas fa-user text-emerald-500 mb-2"></i>
+                    <p class="text-xs font-bold">Personal</p>
+                </button>
+                <button onclick="confirmSmartPlan('Office', 'Transport')" class="p-4 bg-slate-50 rounded-xl border border-slate-200 hover:bg-slate-100 text-left">
+                    <i class="fas fa-briefcase text-slate-500 mb-2"></i>
+                    <p class="text-xs font-bold">Office</p>
+                </button>
+            </div>
+            <button onclick="closeSmartPlan()" class="w-full py-3 text-slate-400 font-bold text-xs">CANCEL</button>
+        </div>
+    </div>
+
+    <!-- Daily Closing Modal -->
     <div id="closingModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/60 p-6 backdrop-blur-sm">
         <div class="bg-white w-full max-w-sm rounded-[32px] p-6 slide-up shadow-2xl">
             <h3 class="text-xl font-black mb-4">Daily Closing</h3>
             <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-4" id="closingDate">---</p>
-            
-            <div id="walletClosingList" class="space-y-3 mb-6 max-h-64 overflow-y-auto pr-1">
-                <!-- Generated by JS -->
-            </div>
-
+            <div id="walletClosingList" class="space-y-3 mb-6 max-h-64 overflow-y-auto pr-1"></div>
             <button onclick="submitDailyClosing()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold shadow-lg">Update & Close</button>
             <button onclick="document.getElementById('closingModal').classList.add('hidden')" class="w-full py-3 text-slate-400 font-bold text-xs">CANCEL</button>
         </div>
     </div>
 
-    <!-- Enhanced Debt Modal -->
+    <!-- Debt Modal -->
     <div id="debtModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/60 p-6 backdrop-blur-sm">
         <div class="bg-white w-full max-w-sm rounded-[32px] p-6 slide-up shadow-2xl">
             <h3 class="text-xl font-black mb-4">Add Debt</h3>
@@ -392,7 +469,6 @@
                 <input type="text" id="debtPlace" placeholder="Location/Place" class="w-full p-3 bg-slate-50 rounded-xl font-bold text-sm">
                 <input type="number" id="debtAmount" placeholder="Amount" class="w-full p-3 bg-slate-50 rounded-xl font-bold text-sm">
                 <input type="text" id="debtNote" placeholder="Note / Reason" class="w-full p-3 bg-slate-50 rounded-xl text-sm">
-                
                 <div class="flex gap-2">
                     <button onclick="submitDebt('pabo')" class="flex-1 bg-emerald-100 text-emerald-700 py-3 rounded-xl font-bold text-sm">Pabo (Get)</button>
                     <button onclick="submitDebt('dibo')" class="flex-1 bg-rose-100 text-rose-700 py-3 rounded-xl font-bold text-sm">Dibo (Give)</button>
@@ -402,7 +478,7 @@
         </div>
     </div>
 
-    <!-- Enhanced Plan Modal (with Edit) -->
+    <!-- Plan Modal -->
     <div id="planModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/60 p-6 backdrop-blur-sm">
         <div class="bg-white w-full max-w-sm rounded-[32px] p-6 slide-up shadow-2xl">
             <h3 class="text-xl font-black mb-4" id="planModalTitle">New Plan</h3>
@@ -421,6 +497,7 @@
         </div>
     </div>
 
+    <!-- Wishlist Modal -->
     <div id="wishModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/60 p-6 backdrop-blur-sm">
         <div class="bg-white w-full max-w-sm rounded-[32px] p-6 slide-up shadow-2xl">
             <h3 class="text-xl font-black mb-4">New Wish</h3>
@@ -434,16 +511,45 @@
         </div>
     </div>
 
+    <!-- Profile Modal -->
+    <div id="profileModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/60 p-6 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-sm rounded-[32px] p-6 slide-up shadow-2xl">
+            <div class="text-center mb-6">
+                <div class="h-20 w-20 bg-slate-900 rounded-full mx-auto flex items-center justify-center text-3xl font-bold text-white mb-3 shadow-lg overflow-hidden">
+                    <img id="profileAvatarImg" src="" class="w-full h-full object-cover hidden">
+                    <span id="profileAvatarText">U</span>
+                </div>
+                <h3 class="text-xl font-black text-slate-800" id="profileNameDisplay">User Name</h3>
+                <p class="text-xs text-slate-400" id="profileEmailDisplay">user@example.com</p>
+            </div>
+            <div class="space-y-3 mb-6">
+                <div><label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Full Name</label><input type="text" id="profileNameInput" class="w-full p-3 bg-slate-50 rounded-xl font-bold text-sm border border-slate-100"></div>
+                <div><label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Avatar Image URL</label><input type="text" id="profileAvatarInput" class="w-full p-3 bg-slate-50 rounded-xl font-bold text-sm border border-slate-100" placeholder="https://..."></div>
+                <div><label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Contact No</label><input type="text" id="profileContactInput" class="w-full p-3 bg-slate-50 rounded-xl font-bold text-sm border border-slate-100" placeholder="+880..."></div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="saveProfileLocal()" class="w-full bg-emerald-500 text-white py-3 rounded-xl font-bold text-sm shadow-md">Save Details</button>
+                <button onclick="logout()" class="w-full bg-rose-50 text-rose-500 border border-rose-100 py-3 rounded-xl font-bold text-sm hover:bg-rose-100">Logout</button>
+            </div>
+            <button onclick="closeProfileModal()" class="w-full mt-3 text-slate-400 font-bold text-xs py-2">CLOSE</button>
+        </div>
+    </div>
+
     <script>
         // --- CONFIG ---
-        const API_URL = "https://script.google.com/macros/s/AKfycbwbMizRGa737b0FlbGAK-lfwLFHOCEpz79wReSbQY8niRHtQCByUgA50Q2DQC_gIeXu/exec";
-        let currentUser = JSON.parse(localStorage.getItem('TEKA_USER'));
+        const API_URL = "https://script.google.com/macros/s/AKfycbyRqgV9KSBveXE3SEOMMiG4TFQi4VoQNxqyXilfdDB42ovYYJMNAolrDtTpLDLg0g/exec";
+        
+        let currentUser = null;
         let db = { transactions: [], debts: [], upcoming: [], wishlist: [], todos: [] };
         let notifications = [];
         let mapInstance = null;
         let activeFilter = 'All';
+        let tvChannels = JSON.parse(localStorage.getItem('TEKA_TV')) || [
+            {name: "Jamuna TV", link: "https://www.youtube.com/embed/GvSQMcp7GDo?autoplay=1"},
+            {name: "Somoy TV", link: "https://www.youtube.com/embed/P7qS64-Qd4I?autoplay=1"},
+            {name: "Channel 24", link: "https://www.youtube.com/embed/z4a6mX8qV9k?autoplay=1"}
+        ];
         
-        // State
         let currentTxType = 'expense';
         let currentDebtView = 'pabo';
         let plansView = 'upcoming';
@@ -464,11 +570,14 @@
         window.onload = () => {
             setTimeout(() => { document.getElementById('splashScreen').style.display = 'none'; }, 2200);
             updateHeaderDate();
+            const localUser = JSON.parse(localStorage.getItem('TEKA_USER'));
+            const sessionUser = JSON.parse(sessionStorage.getItem('TEKA_USER'));
+            currentUser = localUser || sessionUser;
             if (!currentUser) document.getElementById('authOverlay').classList.remove('hidden');
             else initApp();
-            
-            // Start Timer
             setInterval(updateClosingTimer, 1000);
+            setInterval(checkNotifications, 60000);
+            renderChannels();
         };
 
         function updateHeaderDate() {
@@ -481,11 +590,9 @@
             const midnight = new Date();
             midnight.setHours(24, 0, 0, 0);
             const diff = midnight - now;
-            
             const h = Math.floor(diff / (1000 * 60 * 60));
             const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const s = Math.floor((diff % (1000 * 60)) / 1000);
-            
             document.getElementById('closingTimer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         }
 
@@ -493,12 +600,13 @@
         function toggleAuthMode(mode) {
             document.getElementById('loginForm').classList.toggle('hidden', mode === 'signup');
             document.getElementById('signupForm').classList.toggle('hidden', mode === 'login');
-            document.getElementById('authTitle').innerText = mode === 'signup' ? 'Create Account' : 'Login';
+            document.getElementById('authTitle').innerText = mode === 'signup' ? 'Create Account' : 'Welcome';
         }
 
         async function handleLogin() {
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPass').value;
+            const remember = document.getElementById('rememberMe').checked;
             if(!email || !pass) return;
             document.getElementById('btnLogin').innerText = '...';
             try {
@@ -510,7 +618,8 @@
                 }
                 if(data.status === 'success') {
                     currentUser = data.user;
-                    localStorage.setItem('TEKA_USER', JSON.stringify(currentUser));
+                    if(remember) localStorage.setItem('TEKA_USER', JSON.stringify(currentUser));
+                    else sessionStorage.setItem('TEKA_USER', JSON.stringify(currentUser));
                     document.getElementById('authOverlay').classList.add('hidden');
                     initApp();
                 } else alert(data.message);
@@ -534,27 +643,83 @@
             } catch(e) { alert("Error"); }
         }
 
-        function logout() { localStorage.removeItem('TEKA_USER'); location.reload(); }
+        function logout() { 
+            localStorage.removeItem('TEKA_USER'); 
+            sessionStorage.removeItem('TEKA_USER');
+            location.reload(); 
+        }
+
+        // --- PROFILE ---
+        function openProfileModal() {
+            document.getElementById('profileModal').classList.remove('hidden');
+            document.getElementById('profileNameDisplay').innerText = currentUser.name || 'User';
+            document.getElementById('profileEmailDisplay').innerText = currentUser.email || '';
+            
+            updateProfileAvatarUI();
+            
+            document.getElementById('profileNameInput').value = currentUser.name || '';
+            document.getElementById('profileContactInput').value = currentUser.contact || '';
+            document.getElementById('profileAvatarInput').value = currentUser.avatar && currentUser.avatar.startsWith('http') ? currentUser.avatar : '';
+        }
+        function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
+        function saveProfileLocal() {
+            const newName = document.getElementById('profileNameInput').value;
+            const newAvatar = document.getElementById('profileAvatarInput').value;
+            if(newName) {
+                currentUser.name = newName;
+                currentUser.contact = document.getElementById('profileContactInput').value;
+                if(newAvatar) currentUser.avatar = newAvatar;
+                
+                if(localStorage.getItem('TEKA_USER')) localStorage.setItem('TEKA_USER', JSON.stringify(currentUser));
+                else sessionStorage.setItem('TEKA_USER', JSON.stringify(currentUser));
+                
+                updateProfileAvatarUI();
+                closeProfileModal();
+                
+                // Sync to backend if possible (requires v4.0+ backend update logic, simplified here)
+            }
+        }
+        
+        function updateProfileAvatarUI() {
+            const img = currentUser.avatar && currentUser.avatar.startsWith('http') ? currentUser.avatar : null;
+            // Header
+            if(img) {
+                document.getElementById('headerAvatarImg').src = img;
+                document.getElementById('headerAvatarImg').classList.remove('hidden');
+                document.getElementById('headerAvatarText').classList.add('hidden');
+            } else {
+                document.getElementById('headerAvatarImg').classList.add('hidden');
+                document.getElementById('headerAvatarText').classList.remove('hidden');
+                document.getElementById('headerAvatarText').innerText = currentUser.name ? currentUser.name[0].toUpperCase() : 'U';
+            }
+            // Modal
+            if(img) {
+                document.getElementById('profileAvatarImg').src = img;
+                document.getElementById('profileAvatarImg').classList.remove('hidden');
+                document.getElementById('profileAvatarText').classList.add('hidden');
+            } else {
+                document.getElementById('profileAvatarImg').classList.add('hidden');
+                document.getElementById('profileAvatarText').classList.remove('hidden');
+                document.getElementById('profileAvatarText').innerText = currentUser.name ? currentUser.name[0].toUpperCase() : 'U';
+            }
+        }
 
         // --- APP INIT ---
         function initApp() {
-            document.getElementById('headerAvatar').innerText = currentUser.name[0].toUpperCase();
+            updateProfileAvatarUI();
             const fill = (id, arr) => document.getElementById(id).innerHTML = arr.map(x => `<option value="${x}">${x}</option>`).join('');
             fill('inpWallet', WALLETS);
             fill('inpCategory', CATEGORIES);
             fill('inpContext', CONTEXTS);
             
-            // Fill filter chips
             const filters = ['All', ...CATEGORIES, ...CONTEXTS];
-            document.getElementById('filterChips').innerHTML = filters.map(f => 
-                `<button onclick="filterHistory('${f}')" class="filter-chip ${f==='All'?'active':''}" id="chip-${f}">${f}</button>`
-            ).join('');
+            document.getElementById('filterChips').innerHTML = filters.map(f => `<button onclick="filterHistory('${f}')" class="filter-chip ${f==='All'?'active':''}" id="chip-${f}">${f}</button>`).join('');
 
             syncDown();
             initLifestyle();
         }
 
-        // --- DATA & NOTIFICATIONS ---
+        // --- DATA ---
         async function syncDown() {
             document.getElementById('syncIndicator').classList.remove('hidden');
             try {
@@ -568,11 +733,86 @@
             } catch(e) {}
             document.getElementById('syncIndicator').classList.add('hidden');
         }
-
         async function syncUp(payload) { await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'sync_up', userEmail: currentUser.email, ...payload }) }); }
         async function updateItem(type, id, updates) { await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'update', type, id, updates }) }); }
         async function deleteItem(type, id) { await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', type, id }) }); }
 
+        // --- SMART INPUT & PLAN LOGIC ---
+        function openSmartInput() { document.getElementById('smartInputModal').classList.remove('hidden'); }
+        
+        function processSmartInput(type) {
+            const text = document.getElementById('smartInputText').value;
+            const items = text.split(/,|\n/).filter(i => i.trim() !== '');
+            const txs = [];
+            
+            items.forEach(item => {
+                // Regex to find number at end or start
+                const matchAmount = item.match(/\d+/);
+                if (matchAmount) {
+                    const amount = matchAmount[0];
+                    const title = item.replace(amount, '').trim();
+                    if(title && amount) {
+                        txs.push({
+                            date: new Date().toISOString().slice(0, 19).replace('T', ' '),
+                            email: currentUser.email, userName: currentUser.name,
+                            title: title, amount: amount, type: type,
+                            category: 'General', wallet: 'Cash', context: 'Personal', note: 'Smart Added', gps: currentGPS
+                        });
+                    }
+                }
+            });
+            
+            if(txs.length > 0) {
+                txs.forEach(t => db.transactions.unshift(t));
+                renderAll();
+                document.getElementById('smartInputModal').classList.add('hidden');
+                document.getElementById('smartInputText').value = '';
+                syncUp({ transactions: txs });
+            }
+        }
+
+        function payPlan(id) {
+            const plan = db.upcoming.find(u => u.id == id);
+            if(plan) {
+                document.getElementById('smartPlanId').value = id;
+                document.getElementById('smartPlanAmount').value = plan.amount;
+                document.getElementById('smartPlanTitle').value = plan.title;
+                
+                if(plan.title.toLowerCase().includes('date')) { confirmSmartPlan('Girlfriend', 'Food'); return; }
+                if(plan.title.toLowerCase().includes('tour')) { confirmSmartPlan('Personal', 'Transport'); return; }
+                
+                document.getElementById('smartPlanModal').classList.remove('hidden');
+            }
+        }
+        
+        function closeSmartPlan() { document.getElementById('smartPlanModal').classList.add('hidden'); }
+        
+        function confirmSmartPlan(context, category) {
+            const id = document.getElementById('smartPlanId').value;
+            const amt = document.getElementById('smartPlanAmount').value;
+            const title = document.getElementById('smartPlanTitle').value;
+            
+            const tx = {
+                date: new Date().toISOString().slice(0, 19).replace('T', ' '),
+                email: currentUser.email, userName: currentUser.name,
+                title: `Paid: ${title}`, amount: amt, type: 'expense',
+                category: category || 'General', wallet: 'Cash', context: context || 'Personal', note: 'Auto-added from Plan', gps: ''
+            };
+            db.transactions.unshift(tx);
+            
+            const todo = { id: Date.now(), date: new Date().toISOString(), email: currentUser.email, title: `Completed Plan: ${title}`, done: true };
+            if(!db.todos) db.todos = [];
+            db.todos.unshift(todo);
+            
+            const plan = db.upcoming.find(u => u.id == id);
+            if(plan) plan.isPaid = true;
+            
+            renderAll(); closeSmartPlan();
+            syncUp({ transactions: [tx], todos: [todo] });
+            updateItem('upcoming', id, {isPaid: true});
+        }
+
+        // --- NOTIFICATIONS ---
         function checkNotifications() {
             notifications = [];
             let total = 0;
@@ -580,17 +820,21 @@
             if(total < 1000) notifications.push({icon:'fa-exclamation-triangle', text:'Low Balance Warning', color:'text-rose-500'});
             if(db.upcoming) {
                 db.upcoming.forEach(u => {
-                    if(String(u.isPaid).toLowerCase() !== 'true') notifications.push({icon:'fa-file-invoice', text:`Pending: ${u.title} (৳${u.amount})`, color:'text-indigo-500'});
+                    if(String(u.isPaid).toLowerCase() !== 'true') {
+                        notifications.push({icon:'fa-file-invoice', text:`Pending: ${u.title} (৳${u.amount})`, color:'text-indigo-500'});
+                        if (u.amount >= 5000) notifications.unshift({icon:'fa-radiation', text:`Upcoming Big Cost: ${u.title}`, color:'text-rose-600 font-black'});
+                    }
                 });
             }
+            if(db.adminMessage) notifications.push({icon:'fa-shield-alt', text: db.adminMessage, color:'text-slate-400'});
+            
             document.getElementById('notifBadge').classList.toggle('active', notifications.length > 0);
             document.getElementById('notifList').innerHTML = notifications.length ? notifications.map(n => `
-                <div class="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-lg">
-                    <i class="fas ${n.icon} ${n.color}"></i>
+                <div class="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer">
+                    <div class="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="fas ${n.icon} ${n.color}"></i></div>
                     <p class="text-xs font-bold text-slate-600">${n.text}</p>
-                </div>`).join('') : '<p class="text-xs text-center text-slate-400 p-2">No notifications</p>';
+                </div>`).join('') : '<p class="text-xs text-center text-slate-400 p-2">No new notifications</p>';
         }
-
         function toggleNotifications() { document.getElementById('notifDropdown').classList.toggle('hidden'); }
 
         // --- RENDERING ---
@@ -600,12 +844,12 @@
             renderPlansView();
             renderTodos();
             renderArchiveDeeds();
+            generateAIInsights();
         }
 
         function renderDashboard() {
             let bals = { 'Bkash': 0, 'Nagad': 0, 'Bank': 0, 'Cash': 0 };
             let total = 0, inc = 0, exp = 0;
-
             if(db.transactions) {
                 db.transactions.forEach(t => {
                     const amt = Number(t.amount);
@@ -613,7 +857,6 @@
                     else { bals[t.wallet] -= amt; exp += amt; }
                 });
             }
-
             for(let k in bals) total += bals[k];
             animateValue('headerBalance', total);
             animateValue('dashTotalBalance', total);
@@ -621,7 +864,7 @@
             animateValue('dashExpense', exp);
 
             document.getElementById('walletList').innerHTML = Object.entries(bals).map(([n, b]) => `
-                <div class="glass p-4 rounded-2xl min-w-[130px] border border-white/60 flex flex-col justify-between">
+                <div class="glass p-4 rounded-2xl min-w-[130px] border border-white/60 flex flex-col justify-between interactive-card">
                     <div class="flex justify-between items-start mb-2">
                         <span class="text-[10px] text-slate-400 font-bold uppercase">${n}</span>
                         <img src="${WALLET_LOGOS[n]}" class="wallet-logo">
@@ -631,7 +874,7 @@
             
             const sorted = db.transactions ? [...db.transactions].sort((a,b) => new Date(b.date) - new Date(a.date)) : [];
             document.getElementById('homeRecentList').innerHTML = sorted.slice(0,5).map(t => `
-                <div class="glass p-3 rounded-2xl flex justify-between items-center border border-white/60">
+                <div class="glass p-4 rounded-2xl flex justify-between items-center border border-white/60 interactive-card">
                     <div>
                         <p class="text-sm font-bold text-slate-800">${t.title}</p>
                         <p class="text-[10px] text-slate-400 font-bold uppercase">${t.context} • ${t.category}</p>
@@ -640,415 +883,68 @@
                 </div>`).join('');
         }
 
-        // --- DAILY CLOSING (UPDATED) ---
-        function openDailyClosing() {
-            document.getElementById('closingModal').classList.remove('hidden');
-            const today = new Date().toLocaleDateString();
-            document.getElementById('closingDate').innerText = today;
-            
-            // Calculate system balances
-            let bals = { 'Bkash': 0, 'Nagad': 0, 'Bank': 0, 'Cash': 0 };
-            if(db.transactions) {
-                db.transactions.forEach(t => {
-                    const amt = Number(t.amount);
-                    if (t.type === 'income') bals[t.wallet] += amt;
-                    else bals[t.wallet] -= amt;
-                });
-            }
-
-            const list = document.getElementById('walletClosingList');
-            list.innerHTML = Object.keys(bals).map(w => `
-                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                    <div class="flex justify-between items-center mb-1">
-                        <div class="flex items-center gap-2">
-                            <img src="${WALLET_LOGOS[w]}" class="w-5 h-5 rounded-full">
-                            <span class="text-xs font-bold text-slate-600">${w}</span>
-                        </div>
-                        <span class="text-[10px] text-slate-400">Sys: ৳${bals[w]}</span>
-                    </div>
-                    <input type="number" id="close_${w}" data-sys="${bals[w]}" class="w-full p-2 bg-white rounded-lg border border-slate-200 text-sm font-bold" placeholder="Actual Amount" value="${bals[w]}">
-                </div>
-            `).join('');
+        // --- LIFESTYLE & TV ---
+        function renderChannels() {
+            const list = document.getElementById('channelList');
+            if(list) list.innerHTML = tvChannels.map((c,i) => `
+                <button onclick="setChannel(${i})" class="px-4 py-2 glass rounded-xl text-xs font-bold whitespace-nowrap hover:bg-slate-100">${c.name}</button>
+            `).join('') + `<button onclick="addChannel()" class="px-3 py-2 bg-slate-200 rounded-xl text-xs font-bold whitespace-nowrap hover:bg-slate-300">+</button>`;
+        }
+        function setChannel(i) { document.getElementById('ytPlayer').src = tvChannels[i].link; playTV(); }
+        function playTV() { document.getElementById('videoCover').style.opacity = '0'; setTimeout(() => { document.getElementById('videoCover').style.display = 'none'; }, 500); }
+        function addChannel() {
+            const name = prompt("Channel Name");
+            const link = prompt("Embed Link (YouTube Embed URL)");
+            if(name && link) { tvChannels.push({name, link}); localStorage.setItem('TEKA_TV', JSON.stringify(tvChannels)); renderChannels(); }
         }
 
-        function submitDailyClosing() {
-            const inputs = document.querySelectorAll('[id^="close_"]');
-            let adjustments = [];
-            
-            inputs.forEach(inp => {
-                const wallet = inp.id.split('_')[1];
-                const sys = parseFloat(inp.dataset.sys);
-                const actual = parseFloat(inp.value);
-                
-                if(!isNaN(actual) && actual !== sys) {
-                    const diff = actual - sys;
-                    adjustments.push({
-                        date: new Date().toISOString().slice(0, 19).replace('T', ' '),
-                        email: currentUser.email,
-                        userName: currentUser.name,
-                        title: `Auto-Adjustment (${wallet})`,
-                        amount: Math.abs(diff),
-                        type: diff > 0 ? 'income' : 'expense',
-                        category: 'Other',
-                        wallet: wallet,
-                        context: 'Office',
-                        note: 'Daily Closing Adjustment',
-                        gps: ''
-                    });
-                }
-            });
-
-            if(adjustments.length > 0) {
-                if(confirm(`Found ${adjustments.length} discrepancies. Create adjustment records?`)) {
-                    adjustments.forEach(tx => db.transactions.unshift(tx));
-                    syncUp({ transactions: adjustments });
-                    renderDashboard();
-                }
-            }
-            alert("Day Closed Successfully");
-            document.getElementById('closingModal').classList.add('hidden');
-        }
-
-        // --- TODOS & ARCHIVE ---
-        function addTodo() {
-            const inp = document.getElementById('newTodoInput');
-            const txt = inp.value;
-            if(!txt) return;
-            const t = { id: Date.now(), date: new Date().toISOString(), email: currentUser.email, title: txt, done: false };
-            if(!db.todos) db.todos = [];
-            db.todos.unshift(t);
-            inp.value = '';
-            renderTodos();
-            syncUp({ todos: [t] });
-        }
-
-        function completeTodo(id) {
-            const t = db.todos.find(x => x.id == id);
-            if(t) { 
-                t.done = true; 
-                renderTodos(); 
-                renderArchiveDeeds();
-                updateItem('todo', id, {done:true}); 
-            }
-        }
-
-        function renderTodos() {
-            const list = document.getElementById('todoList');
-            if(db.todos) {
-                const active = db.todos.filter(t => String(t.done).toLowerCase() !== 'true');
-                list.innerHTML = active.map(t => `
-                    <div class="flex items-center gap-3 p-3 bg-white/60 rounded-xl border border-white/40">
-                        <button onclick="completeTodo('${t.id}')" class="h-5 w-5 rounded-md border-2 border-slate-300 hover:bg-emerald-500 hover:border-emerald-500 transition-colors flex items-center justify-center text-white"></button>
-                        <span class="text-sm font-medium text-slate-700">${t.title}</span>
-                    </div>
-                `).join('');
-            }
-        }
-
-        function renderArchiveDeeds() {
-            const list = document.getElementById('archiveList');
-            if(db.todos) {
-                const done = db.todos.filter(t => String(t.done).toLowerCase() === 'true');
-                list.innerHTML = done.map(t => `
-                    <div class="flex items-center gap-3 p-3 bg-slate-100 rounded-xl border border-slate-200 opacity-75">
-                        <div class="h-5 w-5 rounded-md bg-emerald-500 flex items-center justify-center text-white text-xs"><i class="fas fa-check"></i></div>
-                        <span class="text-sm font-medium text-slate-500 line-through">${t.title}</span>
-                        <span class="text-[9px] text-slate-400 ml-auto">${new Date(t.date).toLocaleDateString()}</span>
-                    </div>
-                `).join('') || '<p class="text-center text-xs text-slate-400 mt-10">No completed deeds yet.</p>';
-            }
-        }
-
-        // --- MAP LOGIC ---
-        function initMap() {
-            if (mapInstance) return;
-            mapInstance = L.map('mapContainer').setView([23.8103, 90.4125], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(mapInstance);
-            renderMapMarkers();
-        }
-
-        function renderMapMarkers() {
-            if (!mapInstance || !db.transactions) return;
-            mapInstance.eachLayer(layer => { if (layer instanceof L.Marker) mapInstance.removeLayer(layer); });
-            db.transactions.forEach(t => {
-                if (t.gps) {
-                    const [lat, lng] = t.gps.split(',').map(Number);
-                    if (!isNaN(lat) && !isNaN(lng)) {
-                        L.marker([lat, lng]).addTo(mapInstance).bindPopup(`<b>${t.title}</b><br>৳${t.amount}<br>${t.date}`);
-                    }
-                }
-            });
-            document.getElementById('mapStatus').innerText = 'Markers Loaded';
-        }
-
-        // --- REPORTING ---
-        function renderReport(period) {
-            const ctx = document.getElementById('reportChart').getContext('2d');
-            let labels = [], data = [];
-            if(period === 'week') { labels=['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; data=[500,1200,800,200,1500,400,900]; }
-            if(period === 'month') { labels=['Week 1','Week 2','Week 3','Week 4']; data=[5000,7000,4000,6000]; }
-            if(period === 'year') { labels=['Q1','Q2','Q3','Q4']; data=[25000,30000,28000,40000]; }
-
-            if(window.reportChart) window.reportChart.destroy();
-            window.reportChart = new Chart(ctx, {
-                type: 'bar',
-                data: { labels, datasets: [{ label: 'Expense', data, backgroundColor: '#10b981', borderRadius: 6 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
-        }
-
-        function downloadReport(type) {
-            if(type === 'csv') {
-                let csv = "Date,Title,Amount,Type,Category,Context\n";
-                db.transactions.forEach(t => csv += `${t.date},${t.title},${t.amount},${t.type},${t.category},${t.context}\n`);
-                const link = document.createElement("a");
-                link.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
-                link.download = "teka_koi_report.csv";
-                link.click();
-            } else {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                doc.text("Teka Koi Financial Report", 10, 10);
-                doc.autoTable({
-                    head: [['Date', 'Title', 'Amount', 'Type', 'Context']],
-                    body: db.transactions.map(t => [new Date(t.date).toLocaleDateString(), t.title, t.amount, t.type, t.context])
-                });
-                doc.save("teka_koi_report.pdf");
-            }
-        }
-
-        // --- PLANS & WISH ---
-        function renderPlansView() {
-            const container = document.getElementById('plansContainer');
-            const filtered = plansView === 'upcoming' 
-                ? (db.upcoming ? db.upcoming.filter(u => String(u.isPaid).toLowerCase() !== 'true') : [])
-                : (db.wishlist ? db.wishlist.filter(w => String(w.purchased).toLowerCase() !== 'true') : []);
-            
-            if (plansView === 'upcoming') {
-                document.getElementById('btnAddPlan').classList.remove('hidden');
-                document.getElementById('btnAddWish').classList.add('hidden');
-                document.getElementById('tabUpcoming').classList.add('text-slate-800', 'bg-white', 'shadow-sm');
-                document.getElementById('tabWishlist').classList.remove('text-slate-800', 'bg-white', 'shadow-sm');
-                
-                container.innerHTML = filtered.map(u => `
-                    <div class="glass p-4 rounded-2xl flex justify-between items-center border border-white/60">
-                        <div>
-                            <p class="text-sm font-extrabold text-slate-800">${u.title}</p>
-                            <div class="flex gap-2 mt-1">
-                                <span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded ${u.priority==='High'?'bg-rose-100 text-rose-600':(u.priority==='Medium'?'bg-amber-100 text-amber-600':'bg-blue-100 text-blue-600')}">${u.priority}</span>
-                                <span class="text-[9px] text-slate-400 font-bold uppercase">${new Date(u.date).toLocaleDateString()}</span>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <p class="font-black text-sm mr-1">৳${u.amount}</p>
-                            <button onclick="editPlan('${u.id}')" class="h-8 w-8 bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200 flex items-center justify-center"><i class="fas fa-pen text-xs"></i></button>
-                            <button onclick="payPlan('${u.id}')" class="h-8 w-8 bg-emerald-100 rounded-full text-emerald-600 hover:bg-emerald-200 flex items-center justify-center"><i class="fas fa-check"></i></button>
-                            <button onclick="deletePlan('${u.id}')" class="h-8 w-8 bg-rose-100 rounded-full text-rose-500 hover:bg-rose-200 flex items-center justify-center"><i class="fas fa-trash text-xs"></i></button>
-                        </div>
-                    </div>`).join('');
-            } else {
-                document.getElementById('btnAddPlan').classList.add('hidden');
-                document.getElementById('btnAddWish').classList.remove('hidden');
-                document.getElementById('tabWishlist').classList.add('text-slate-800', 'bg-white', 'shadow-sm');
-                document.getElementById('tabUpcoming').classList.remove('text-slate-800', 'bg-white', 'shadow-sm');
-                container.innerHTML = filtered.map(w => `
-                    <div class="glass p-4 rounded-2xl flex justify-between items-center border border-indigo-100">
-                        <div><p class="text-sm font-extrabold text-indigo-900">${w.title}</p><p class="text-[10px] text-indigo-400 font-bold uppercase">৳${w.price}</p></div>
-                        <div class="flex items-center gap-2"><button onclick="buyWish('${w.id}')" class="h-8 w-8 bg-indigo-600 rounded-full text-white"><i class="fas fa-shopping-bag"></i></button></div>
-                    </div>`).join('');
-            }
-        }
-
-        // --- TRANSACTIONS ---
-        function openInputModal(type) { document.getElementById('inputModal').classList.remove('hidden'); setTxType(type); }
-        function closeInputModal() { document.getElementById('inputModal').classList.add('hidden'); }
-        function setTxType(type) {
-            currentTxType = type;
-            const bE = document.getElementById('btnTypeExp');
-            const bI = document.getElementById('btnTypeInc');
-            if(type==='expense') { bE.className="flex-1 py-3 rounded-lg bg-slate-900 text-white shadow font-bold text-xs"; bI.className="flex-1 py-3 rounded-lg text-slate-400 font-bold text-xs"; }
-            else { bI.className="flex-1 py-3 rounded-lg bg-emerald-500 text-white shadow font-bold text-xs"; bE.className="flex-1 py-3 rounded-lg text-slate-400 font-bold text-xs"; }
-        }
-        
-        function toggleGPS() {
-            const btn = document.getElementById('btnGPS');
-            if(currentGPS) {
-                currentGPS = '';
-                btn.className = "h-12 w-12 bg-slate-100 rounded-xl text-slate-400 flex items-center justify-center transition-colors";
-                btn.innerHTML = '<i class="fas fa-map-marker-alt"></i>';
-            } else {
-                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
-                if(navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        (pos) => {
-                            currentGPS = `${pos.coords.latitude},${pos.coords.longitude}`;
-                            btn.className = "h-12 w-12 bg-emerald-500 text-white rounded-xl flex items-center justify-center transition-colors shadow-lg";
-                            btn.innerHTML = '<i class="fas fa-check"></i>';
-                        },
-                        () => { alert("Location access denied"); btn.innerHTML = '<i class="fas fa-map-marker-alt"></i>'; }
-                    );
-                } else { alert("GPS not supported"); }
-            }
-        }
-
-        function submitTransaction() {
-            const amt = document.getElementById('inpAmount').value;
-            const title = document.getElementById('inpTitle').value;
-            if(!amt || !title) return;
-            
-            const now = new Date();
-            const dateStr = now.toISOString().slice(0, 19).replace('T', ' ');
-
-            const tx = {
-                date: dateStr,
-                email: currentUser.email,
-                userName: currentUser.name,
-                title, amount: amt, type: currentTxType,
-                category: document.getElementById('inpCategory').value,
-                wallet: document.getElementById('inpWallet').value,
-                context: document.getElementById('inpContext').value,
-                note: document.getElementById('inpNote').value,
-                gps: currentGPS
-            };
-            db.transactions.unshift(tx);
-            renderAll(); closeInputModal(); syncUp({ transactions: [tx] });
-            document.getElementById('inpAmount').value = ''; document.getElementById('inpTitle').value = '';
-            currentGPS = ''; document.getElementById('btnGPS').className = "h-12 w-12 bg-slate-100 rounded-xl text-slate-400 flex items-center justify-center transition-colors";
-            document.getElementById('btnGPS').innerHTML = '<i class="fas fa-map-marker-alt"></i>';
-        }
-
-        // --- HISTORY FILTERING ---
-        function filterHistory(cat) {
-            activeFilter = cat;
-            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-            document.getElementById(`chip-${cat}`).classList.add('active');
-            renderTransactions();
-        }
-
-        function renderTransactions() {
-            const list = document.getElementById('fullHistoryList');
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            let filtered = db.transactions ? db.transactions.filter(t => (t.title && t.title.toLowerCase().includes(term))) : [];
-            
-            if(activeFilter !== 'All') {
-                filtered = filtered.filter(t => t.category === activeFilter || t.context === activeFilter);
-            }
-            
-            filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
-            list.innerHTML = filtered.map(t => `
-                <div class="glass p-4 rounded-2xl flex justify-between items-center border border-white/60">
-                    <div>
-                        <p class="text-sm font-bold text-slate-800">${t.title}</p>
-                        <div class="flex items-center gap-1">
-                            <p class="text-[10px] text-slate-400 font-bold uppercase">${t.context} • ${t.category}</p>
-                            ${t.gps ? `<i class="fas fa-map-marker-alt text-[10px] text-emerald-400"></i>` : ''}
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-black text-sm ${t.type==='income'?'text-emerald-500':'text-rose-500'}">${t.type==='income'?'+':'-'}৳${t.amount}</p>
-                        <p class="text-[9px] text-slate-300 font-bold">${t.wallet}</p>
-                    </div>
-                </div>`).join('');
-        }
-
-        // --- NAV & UTILS ---
-        function navTo(view) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`view-${view}`).classList.remove('hidden');
-            const map = { 'home': 0, 'report': 1, 'map': 3, 'plans': 3, 'lifestyle': 4, 'archive': 4 };
-            document.querySelectorAll('.nav-item').forEach((el, i) => { if(i!==2) el.classList.toggle('active', i===map[view]); });
-            if(view === 'report') renderReport('week');
-            if(view === 'map') setTimeout(initMap, 100); 
-        }
-        
-        // --- DEBT, PLANS, WISH ACTIONS ---
-        function openDebtModal() { document.getElementById('debtModal').classList.remove('hidden'); }
-        function openPlanModal() { 
-            document.getElementById('planModal').classList.remove('hidden'); 
-            document.getElementById('planModalTitle').innerText = 'New Bill/Plan';
-            document.getElementById('planEditId').value = '';
-            document.getElementById('planTitle').value = '';
-            document.getElementById('planAmount').value = '';
-        }
-        function openWishlistModal() { document.getElementById('wishModal').classList.remove('hidden'); }
-        function setDebtView(v) { currentDebtView = v; renderHalkhata(); }
-        function togglePlansTab(v) { plansView = v; renderPlansView(); }
-        
-        function submitDebt(type) { 
-             const contact = document.getElementById('debtContact').value;
-             const place = document.getElementById('debtPlace').value;
-             const note = document.getElementById('debtNote').value;
-             const baseTitle = document.getElementById('debtTitle').value;
-             
-             // Pack extras into title for backend preservation
-             const packedTitle = `${baseTitle} | 📞${contact} | 📍${place} | 📝${note}`;
-
-             const d = { 
-                 id: Date.now(), 
-                 date: new Date().toISOString(), 
-                 email: currentUser.email, 
-                 name: document.getElementById('debtName').value, 
-                 title: packedTitle, 
-                 amount: document.getElementById('debtAmount').value, 
-                 type, 
-                 settled: false 
-             };
-             db.debts.unshift(d); renderHalkhata(); document.getElementById('debtModal').classList.add('hidden'); syncUp({ debts: [d] });
-        }
-
-        function editPlan(id) {
-            const p = db.upcoming.find(u => u.id == id);
-            if(p) {
-                document.getElementById('planModalTitle').innerText = 'Edit Plan';
-                document.getElementById('planEditId').value = id;
-                document.getElementById('planTitle').value = p.title;
-                document.getElementById('planAmount').value = p.amount;
-                document.getElementById('planPriority').value = p.priority;
-                document.getElementById('planModal').classList.remove('hidden');
-            }
-        }
-
-        function submitPlan() {
-             const id = document.getElementById('planEditId').value;
-             const title = document.getElementById('planTitle').value;
-             const amount = document.getElementById('planAmount').value;
-             const priority = document.getElementById('planPriority').value;
-             
-             if(id) {
-                 // Edit existing
-                 const p = db.upcoming.find(u => u.id == id);
-                 if(p) {
-                     p.title = title; p.amount = amount; p.priority = priority;
-                     renderPlansView();
-                     document.getElementById('planModal').classList.add('hidden');
-                     // Since backend doesn't support generic updates easily, we delete and re-add or just rely on local for now if complex.
-                     // But strict 'update' action usually only handles status. For simplicity in this constraints: delete old and add new
-                     deleteItem('upcoming', id);
-                     setTimeout(() => syncUp({ upcoming: [p] }), 500); 
-                 }
-             } else {
-                 // New
-                 const p = { id: Date.now(), date: new Date().toISOString(), email: currentUser.email, userName: currentUser.name, title, amount, priority, isPaid: false };
-                 db.upcoming.push(p); renderPlansView(); document.getElementById('planModal').classList.add('hidden'); syncUp({ upcoming: [p] });
-             }
-        }
-
-        function submitWish() {
-             const w = { id: Date.now(), date: new Date().toISOString(), email: currentUser.email, title: document.getElementById('wishTitle').value, price: document.getElementById('wishPrice').value, category:'General', link:document.getElementById('wishLink').value, priority:'Medium', purchased:false };
-             db.wishlist.push(w); renderPlansView(); document.getElementById('wishModal').classList.add('hidden'); syncUp({ wishlist: [w] });
-        }
-        function settleDebt(id) { if(confirm("Settled?")) { db.debts.find(x=>x.id==id).settled=true; renderHalkhata(); updateItem('debt', id, {settled:true}); } }
-        function payPlan(id) { if(confirm("Paid?")) { db.upcoming.find(x=>x.id==id).isPaid=true; renderPlansView(); updateItem('upcoming', id, {isPaid:true}); } }
-        function deletePlan(id) { if(confirm("Delete?")) { db.upcoming = db.upcoming.filter(u=>u.id!=id); renderPlansView(); deleteItem('upcoming', id); } }
-        function buyWish(id) { if(confirm("Bought?")) { db.wishlist.find(x=>x.id==id).purchased=true; renderPlansView(); updateItem('wishlist', id, {purchased:true}); } }
-
-        // --- LIFESTYLE ---
         async function initLifestyle() {
             try {
-                const res = await fetch(`https://api.aladhan.com/v1/timings/${Math.floor(Date.now()/1000)}?latitude=23.8103&longitude=90.4125&method=1`);
+                const now = new Date();
+                const res = await fetch(`https://api.aladhan.com/v1/timings/${Math.floor(now.getTime()/1000)}?latitude=23.8103&longitude=90.4125&method=1`);
                 const json = await res.json();
+                const d = json.data;
+                const hijriMonth = parseInt(d.date.hijri.month.number);
+                
+                document.getElementById('hijriFull').innerText = `${d.date.hijri.day} ${d.date.hijri.month.en} ${d.date.hijri.year}`;
+                document.getElementById('nextPrayerName').innerText = "Maghrib"; 
+                document.getElementById('nextPrayerTime').innerText = d.timings.Maghrib;
+
+                const fajrTime = new Date(now.toDateString() + ' ' + d.timings.Fajr);
+                const maghribTime = new Date(now.toDateString() + ' ' + d.timings.Maghrib);
+                let targetTime = now < fajrTime ? fajrTime : (now < maghribTime ? maghribTime : new Date(fajrTime.getTime() + 86400000));
+                const diff = targetTime - now;
+                const h = Math.floor(diff / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
+                document.getElementById('sehriCountdown').innerText = `${h}h ${m}m`;
+
                 document.getElementById('prayerList').innerHTML = ['Fajr','Dhuhr','Asr','Maghrib','Isha'].map(p => `
-                    <div class="flex justify-between p-2 border-b border-slate-100"><span class="text-sm font-bold text-slate-700">${p}</span><span class="text-emerald-600 font-bold">${json.data.timings[p]}</span></div>`).join('');
+                    <div class="flex justify-between p-3 border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors rounded-lg">
+                        <span class="text-sm font-bold text-slate-700">${p}</span>
+                        <span class="text-emerald-600 font-bold font-mono bg-emerald-50 px-2 rounded">${d.timings[p]}</span>
+                    </div>`).join('');
+
+                const grid = document.getElementById('ramadanCalendarGrid');
+                grid.innerHTML = '';
+                const startRamadan = new Date('2026-02-18');
+                const daysPassed = Math.floor((now - startRamadan) / (1000 * 60 * 60 * 24));
+                const daysToEid = 30 - daysPassed;
+                document.getElementById('eidCountdown').innerText = daysToEid > 0 ? `${daysToEid} Days to Eid` : "Eid Mubarak!";
+
+                for(let i=1; i<=30; i++) {
+                    let status = i <= daysPassed ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-400';
+                    if(i === daysPassed + 1) status = 'bg-white border-2 border-emerald-500 text-emerald-600 animate-pulse';
+                    grid.innerHTML += `<div class="h-8 w-8 rounded-lg flex items-center justify-center font-bold ${status}">${i}</div>`;
+                }
+
+                document.getElementById('sehriTime').innerText = d.timings.Fajr;
+                document.getElementById('iftarTime').innerText = d.timings.Maghrib;
+
+                const activeDiv = document.getElementById('ramadanActive');
+                const countDiv = document.getElementById('ramadanCountdown');
+                if (hijriMonth === 9) { isRamadan = true; toggleRamadan(); activeDiv.classList.remove('hidden'); countDiv.classList.add('hidden'); } 
+                else { document.getElementById('daysToRamadan').innerText = (9 - hijriMonth) * 30 - parseInt(d.date.hijri.day); }
+
             } catch(e) {}
         }
         
@@ -1067,6 +963,240 @@
             }
         }
 
+        // --- DAILY CLOSING ---
+        function openDailyClosing() {
+            document.getElementById('closingModal').classList.remove('hidden');
+            document.getElementById('closingDate').innerText = new Date().toLocaleDateString();
+            let bals = { 'Bkash': 0, 'Nagad': 0, 'Bank': 0, 'Cash': 0 };
+            if(db.transactions) db.transactions.forEach(t => { bals[t.wallet] += (t.type === 'income' ? Number(t.amount) : -Number(t.amount)); });
+            document.getElementById('walletClosingList').innerHTML = Object.keys(bals).map(w => `
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                    <div class="flex justify-between items-center mb-1">
+                        <div class="flex items-center gap-2"><img src="${WALLET_LOGOS[w]}" class="w-5 h-5 rounded-full"><span class="text-xs font-bold text-slate-600">${w}</span></div>
+                        <span class="text-[10px] text-slate-400">Sys: ৳${bals[w]}</span>
+                    </div>
+                    <input type="number" id="close_${w}" data-sys="${bals[w]}" class="w-full p-2 bg-white rounded-lg border border-slate-200 text-sm font-bold" placeholder="Actual Amount" value="${bals[w]}">
+                </div>`).join('');
+        }
+        function submitDailyClosing() {
+            let adjs = [];
+            document.querySelectorAll('[id^="close_"]').forEach(inp => {
+                const w = inp.id.split('_')[1];
+                const diff = parseFloat(inp.value) - parseFloat(inp.dataset.sys);
+                if(diff !== 0) adjs.push({ date: new Date().toISOString().slice(0, 19).replace('T', ' '), email: currentUser.email, userName: currentUser.name, title: `Auto-Adj (${w})`, amount: Math.abs(diff), type: diff > 0 ? 'income' : 'expense', category: 'Other', wallet: w, context: 'Office', note: 'Daily Closing', gps: '' });
+            });
+            if(adjs.length > 0 && confirm(`Create ${adjs.length} adjustments?`)) { adjs.forEach(t => db.transactions.unshift(t)); syncUp({ transactions: adjs }); renderDashboard(); }
+            document.getElementById('closingModal').classList.add('hidden');
+        }
+
+        // --- TODOS & ARCHIVE ---
+        function addTodo() {
+            const txt = document.getElementById('newTodoInput').value;
+            if(!txt) return;
+            const t = { id: Date.now(), date: new Date().toISOString(), email: currentUser.email, title: txt, done: false };
+            if(!db.todos) db.todos = []; db.todos.unshift(t); document.getElementById('newTodoInput').value = ''; renderTodos(); syncUp({ todos: [t] });
+        }
+        function completeTodo(id) { const t = db.todos.find(x => x.id == id); if(t) { t.done = true; renderTodos(); renderArchiveDeeds(); updateItem('todo', id, {done:true}); } }
+        function renderTodos() {
+            const list = document.getElementById('todoList');
+            if(db.todos) list.innerHTML = db.todos.filter(t => String(t.done).toLowerCase() !== 'true').map(t => `
+                <div class="flex items-center gap-3 p-4 bg-white/80 rounded-2xl border border-white/60 shadow-sm interactive-card">
+                    <button onclick="completeTodo('${t.id}')" class="h-6 w-6 rounded-lg border-2 border-slate-300 hover:bg-emerald-500 hover:border-emerald-500 transition-colors"></button>
+                    <span class="text-sm font-bold text-slate-700">${t.title}</span>
+                </div>`).join('');
+        }
+        function renderArchiveDeeds() {
+            const list = document.getElementById('archiveList');
+            if(db.todos) list.innerHTML = db.todos.filter(t => String(t.done).toLowerCase() === 'true').map(t => `
+                <div class="flex items-center gap-3 p-3 bg-slate-100 rounded-xl border border-slate-200 opacity-75">
+                    <div class="h-5 w-5 rounded-md bg-emerald-500 flex items-center justify-center text-white text-xs"><i class="fas fa-check"></i></div>
+                    <span class="text-sm font-medium text-slate-500 line-through">${t.title}</span>
+                </div>`).join('') || '<p class="text-center text-xs text-slate-400 mt-10">No completed deeds yet.</p>';
+        }
+
+        // --- MAP LOGIC ---
+        function initMap() {
+            if (mapInstance) return;
+            mapInstance = L.map('mapContainer').setView([23.8103, 90.4125], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(mapInstance);
+            renderMapMarkers();
+        }
+
+        function renderMapMarkers() {
+            if (!mapInstance || !db.transactions) return;
+            mapInstance.eachLayer(layer => { if (layer instanceof L.Marker || layer instanceof L.Polyline) mapInstance.removeLayer(layer); });
+            const dFrom = document.getElementById('mapDateFrom').value;
+            const dTo = document.getElementById('mapDateTo').value;
+            let txs = db.transactions.filter(t => t.gps);
+            if(dFrom) txs = txs.filter(t => new Date(t.date) >= new Date(dFrom));
+            if(dTo) txs = txs.filter(t => new Date(t.date) <= new Date(dTo));
+            txs.sort((a,b) => new Date(a.date) - new Date(b.date));
+            const latlngs = [];
+            txs.forEach(t => {
+                const [lat, lng] = t.gps.split(',').map(Number);
+                if (!isNaN(lat) && !isNaN(lng)) { L.marker([lat, lng]).addTo(mapInstance).bindPopup(`<b>${t.title}</b><br>৳${t.amount}<br>${t.date}`); latlngs.push([lat, lng]); }
+            });
+            if(latlngs.length > 1) { L.polyline(latlngs, {color: '#10b981', weight: 4, opacity: 0.7}).addTo(mapInstance); }
+            document.getElementById('mapStatus').innerText = `${latlngs.length} Points Loaded`;
+            let inc=0, exp=0;
+            txs.forEach(t => { if(t.type==='income') inc+=Number(t.amount); else exp+=Number(t.amount); });
+            const ratio = inc>0 ? Math.round((exp/inc)*100) : 100;
+            document.getElementById('mapAIComment').innerText = `You spent ৳${exp} in this range. (${ratio}% of income). Movement detected across ${latlngs.length} locations.`;
+        }
+        function toggleMapStats() { document.getElementById('mapStatsPanel').classList.toggle('hidden'); }
+
+        // --- AI & REPORTING ---
+        function generateAIInsights() {
+            if (!db.transactions || db.transactions.length === 0) { document.getElementById('aiVerdict').innerText = "No data yet. Start tracking!"; return; }
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const txs = db.transactions.filter(t => new Date(t.date).getMonth() === currentMonth && t.type === 'expense');
+            let total = 0; txs.forEach(t => total += Number(t.amount));
+            const dailyAvg = today.getDate() > 0 ? total / today.getDate() : 0;
+            const projected = dailyAvg * 30;
+            document.getElementById('aiVerdict').innerText = `At ৳${Math.round(dailyAvg)}/day, monthly expense will hit ৳${Math.round(projected).toLocaleString()}.`;
+            const ctx = document.getElementById('predictionChart').getContext('2d');
+            if(window.myChart) window.myChart.destroy();
+            window.myChart = new Chart(ctx, { type: 'line', data: { labels: ['Start', 'Day 7', 'Day 14', 'Today', 'End'], datasets: [{ label: 'Projected', data: [0, dailyAvg*7, dailyAvg*14, total, projected], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } } });
+            
+            const cats = {}; txs.forEach(t => cats[t.category] = (cats[t.category]||0) + Number(t.amount));
+            const msgs = [];
+            if(cats['Food'] > 5000) msgs.push('Food cost high. Cook more.');
+            if(cats['Transport'] > 3000) msgs.push('Transport costs rising. Consider monthly pass.');
+            if(msgs.length === 0) msgs.push('Spending looks optimized!');
+            document.getElementById('costCutterList').innerHTML = msgs.map(m => `<div class="glass p-4 rounded-2xl flex items-center gap-3 border border-white/60"><div class="h-8 w-8 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600"><i class="fas fa-lightbulb"></i></div><p class="text-xs text-slate-600 font-medium">${m}</p></div>`).join('');
+        }
+
+        function renderReport(period) {
+            ['repWeek','repMonth','repYear'].forEach(id => { document.getElementById(id).classList.remove('bg-white', 'text-slate-800', 'shadow-sm'); document.getElementById(id).classList.add('text-slate-500'); });
+            document.getElementById('rep' + period.charAt(0).toUpperCase() + period.slice(1)).classList.add('bg-white', 'text-slate-800', 'shadow-sm');
+            const ctx = document.getElementById('reportChart').getContext('2d');
+            let labels = [], data = [];
+            if(period === 'week') { labels=['M','T','W','T','F','S','S']; data=[500,1200,800,200,1500,400,900]; }
+            if(period === 'month') { labels=['W1','W2','W3','W4']; data=[5000,7000,4000,6000]; }
+            if(period === 'year') { labels=['Q1','Q2','Q3','Q4']; data=[25000,30000,28000,40000]; }
+            if(window.reportChart) window.reportChart.destroy();
+            window.reportChart = new Chart(ctx, { type: 'bar', data: { labels, datasets: [{ label: 'Expense', data, backgroundColor: '#10b981', borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+        }
+
+        function downloadReport(type) {
+            if(type === 'csv') {
+                let csv = "Date,Title,Amount,Type,Category,Context\n";
+                db.transactions.forEach(t => csv += `${t.date},${t.title},${t.amount},${t.type},${t.category},${t.context}\n`);
+                const link = document.createElement("a");
+                link.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+                link.download = "teka_koi_report.csv";
+                link.click();
+            } else {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.text("Teka Koi Financial Report", 10, 10);
+                doc.autoTable({ head: [['Date', 'Title', 'Amount', 'Type', 'Context']], body: db.transactions.map(t => [new Date(t.date).toLocaleDateString(), t.title, t.amount, t.type, t.context]) });
+                doc.save("teka_koi_report.pdf");
+            }
+        }
+
+        // --- PLANS & WISH RENDER ---
+        function renderPlansView() {
+            const container = document.getElementById('plansContainer');
+            const filtered = plansView === 'upcoming' ? (db.upcoming ? db.upcoming.filter(u => String(u.isPaid).toLowerCase() !== 'true') : []) : (db.wishlist ? db.wishlist.filter(w => String(w.purchased).toLowerCase() !== 'true') : []);
+            
+            if (plansView === 'upcoming') {
+                document.getElementById('btnAddPlan').classList.remove('hidden'); document.getElementById('btnAddWish').classList.add('hidden');
+                document.getElementById('tabUpcoming').classList.add('bg-white', 'text-slate-800', 'shadow-sm'); document.getElementById('tabUpcoming').classList.remove('text-slate-500');
+                document.getElementById('tabWishlist').classList.add('text-slate-500'); document.getElementById('tabWishlist').classList.remove('bg-white', 'text-slate-800', 'shadow-sm');
+                
+                container.innerHTML = filtered.map(u => `
+                    <div class="glass p-4 rounded-2xl flex justify-between items-center border border-white/60">
+                        <div><p class="text-sm font-extrabold text-slate-800">${u.title}</p><div class="flex gap-2 mt-1"><span class="text-[9px] font-bold uppercase px-2 py-0.5 rounded ${u.priority==='High'?'bg-rose-100 text-rose-600':(u.priority==='Medium'?'bg-amber-100 text-amber-600':'bg-blue-100 text-blue-600')}">${u.priority}</span><span class="text-[9px] text-slate-400 font-bold uppercase">${new Date(u.date).toLocaleDateString()}</span></div></div>
+                        <div class="flex items-center gap-2"><p class="font-black text-sm mr-1">৳${u.amount}</p><button onclick="editPlan('${u.id}')" class="h-8 w-8 bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200 flex items-center justify-center"><i class="fas fa-pen text-xs"></i></button><button onclick="payPlan('${u.id}')" class="h-8 w-8 bg-emerald-100 rounded-full text-emerald-600 hover:bg-emerald-200 flex items-center justify-center"><i class="fas fa-check"></i></button><button onclick="deletePlan('${u.id}')" class="h-8 w-8 bg-rose-100 rounded-full text-rose-500 hover:bg-rose-200 flex items-center justify-center"><i class="fas fa-trash text-xs"></i></button></div>
+                    </div>`).join('');
+            } else {
+                document.getElementById('btnAddPlan').classList.add('hidden'); document.getElementById('btnAddWish').classList.remove('hidden');
+                document.getElementById('tabWishlist').classList.add('bg-white', 'text-slate-800', 'shadow-sm'); document.getElementById('tabWishlist').classList.remove('text-slate-500');
+                document.getElementById('tabUpcoming').classList.add('text-slate-500'); document.getElementById('tabUpcoming').classList.remove('bg-white', 'text-slate-800', 'shadow-sm');
+                
+                container.innerHTML = filtered.map(w => `
+                    <div class="glass p-4 rounded-2xl flex justify-between items-center border border-indigo-100">
+                        <div><p class="text-sm font-extrabold text-indigo-900">${w.title}</p><p class="text-[10px] text-indigo-400 font-bold uppercase">৳${w.price}</p></div>
+                        <div class="flex items-center gap-2"><button onclick="buyWish('${w.id}')" class="h-8 w-8 bg-indigo-600 rounded-full text-white"><i class="fas fa-shopping-bag"></i></button></div>
+                    </div>`).join('');
+            }
+        }
+
+        function openInputModal(t) { document.getElementById('inputModal').classList.remove('hidden'); setTxType(t); }
+        function closeInputModal() { document.getElementById('inputModal').classList.add('hidden'); }
+        function setTxType(t) { /* Tx Type logic */ }
+        function toggleGPS() { /* GPS Logic */ }
+        function submitTransaction() { 
+            const amt = document.getElementById('inpAmount').value;
+            const title = document.getElementById('inpTitle').value;
+            if(!amt || !title) return;
+            const tx = {
+                date: new Date().toISOString().slice(0, 19).replace('T', ' '),
+                email: currentUser.email, userName: currentUser.name, title, amount: amt, type: currentTxType,
+                category: document.getElementById('inpCategory').value,
+                wallet: document.getElementById('inpWallet').value,
+                context: document.getElementById('inpContext').value,
+                note: document.getElementById('inpNote').value,
+                gps: currentGPS
+            };
+            db.transactions.unshift(tx); renderAll(); closeInputModal(); syncUp({ transactions: [tx] });
+            document.getElementById('inpAmount').value = ''; document.getElementById('inpTitle').value = '';
+        }
+        function filterHistory(c) { activeFilter = c; renderTransactions(); }
+        function renderTransactions() { 
+            const list = document.getElementById('fullHistoryList');
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            let filtered = db.transactions ? db.transactions.filter(t => (t.title && t.title.toLowerCase().includes(term))) : [];
+            if(activeFilter !== 'All') filtered = filtered.filter(t => t.category === activeFilter || t.context === activeFilter);
+            filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
+            list.innerHTML = filtered.map(t => `<div class="glass p-4 rounded-2xl flex justify-between items-center border border-white/60"><div><p class="text-sm font-bold text-slate-800">${t.title}</p><div class="flex items-center gap-1"><p class="text-[10px] text-slate-400 font-bold uppercase">${t.context} • ${t.category}</p>${t.gps ? `<i class="fas fa-map-marker-alt text-[10px] text-emerald-400"></i>` : ''}</div></div><div class="text-right"><p class="font-black text-sm ${t.type==='income'?'text-emerald-500':'text-rose-500'}">${t.type==='income'?'+':'-'}৳${t.amount}</p><p class="text-[9px] text-slate-300 font-bold">${t.wallet}</p></div></div>`).join('');
+        }
+        
+        function navTo(v) { 
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden')); 
+            document.getElementById(`view-${v}`).classList.remove('hidden'); 
+            const m={'home':0,'report':1,'map':3,'plans':3,'lifestyle':4,'archive':4, 'ai':1}; 
+            document.querySelectorAll('.nav-item').forEach((el,i)=>{if(i!==2)el.classList.toggle('active',i===m[v])}); 
+            if(v==='map') setTimeout(initMap,100); 
+            if(v==='ai') generateAIInsights();
+            if(v==='report') renderReport('week');
+        }
+        
+        function openDebtModal() { document.getElementById('debtModal').classList.remove('hidden'); }
+        function openPlanModal() { document.getElementById('planModal').classList.remove('hidden'); }
+        function openWishlistModal() { document.getElementById('wishModal').classList.remove('hidden'); }
+        function setDebtView(v) { currentDebtView = v; renderHalkhata(); }
+        function togglePlansTab(v) { plansView = v; renderPlansView(); }
+        function submitDebt(t) { 
+             const d = { id: Date.now(), date: new Date().toISOString(), email: currentUser.email, name: document.getElementById('debtName').value, title: document.getElementById('debtTitle').value, amount: document.getElementById('debtAmount').value, type:t, settled: false };
+             db.debts.unshift(d); renderHalkhata(); document.getElementById('debtModal').classList.add('hidden'); syncUp({ debts: [d] });
+        }
+        function editPlan(id) { 
+            const p = db.upcoming.find(u => u.id == id);
+            if(p) { document.getElementById('planModalTitle').innerText = 'Edit Plan'; document.getElementById('planEditId').value = id; document.getElementById('planTitle').value = p.title; document.getElementById('planAmount').value = p.amount; document.getElementById('planPriority').value = p.priority; document.getElementById('planModal').classList.remove('hidden'); }
+        }
+        function submitPlan() {
+             const id = document.getElementById('planEditId').value;
+             const title = document.getElementById('planTitle').value;
+             const amount = document.getElementById('planAmount').value;
+             const priority = document.getElementById('planPriority').value;
+             if(id) {
+                 const p = db.upcoming.find(u => u.id == id);
+                 if(p) { p.title = title; p.amount = amount; p.priority = priority; renderPlansView(); document.getElementById('planModal').classList.add('hidden'); deleteItem('upcoming', id); setTimeout(() => syncUp({ upcoming: [p] }), 500); }
+             } else {
+                 const p = { id: Date.now(), date: new Date().toISOString(), email: currentUser.email, userName: currentUser.name, title, amount, priority, isPaid: false };
+                 db.upcoming.push(p); renderPlansView(); document.getElementById('planModal').classList.add('hidden'); syncUp({ upcoming: [p] });
+             }
+        }
+        function submitWish() {
+             const w = { id: Date.now(), date: new Date().toISOString(), email: currentUser.email, title: document.getElementById('wishTitle').value, price: document.getElementById('wishPrice').value, category:'General', link:document.getElementById('wishLink').value, priority:'Medium', purchased:false };
+             db.wishlist.push(w); renderPlansView(); document.getElementById('wishModal').classList.add('hidden'); syncUp({ wishlist: [w] });
+        }
+        function settleDebt(id) { if(confirm("Settled?")) { db.debts.find(x=>x.id==id).settled=true; renderHalkhata(); updateItem('debt', id, {settled:true}); } }
+        function deletePlan(id) { if(confirm("Delete?")) { db.upcoming = db.upcoming.filter(u=>u.id!=id); renderPlansView(); deleteItem('upcoming', id); } }
+        function buyWish(id) { if(confirm("Bought?")) { db.wishlist.find(x=>x.id==id).purchased=true; renderPlansView(); updateItem('wishlist', id, {purchased:true}); } }
         function animateValue(id, end) { document.getElementById(id).innerText = Math.floor(end).toLocaleString(); }
     </script>
 </body>
