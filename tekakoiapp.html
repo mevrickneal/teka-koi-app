@@ -9,15 +9,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- PDF Generation -->
+    <!-- PDF Generation Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     
-    <!-- Leaflet Map -->
+    <!-- Leaflet Map (Free) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- Icons & Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
@@ -25,53 +24,93 @@
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; -webkit-tap-highlight-color: transparent; }
         
-        /* Glassmorphism */
-        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); }
-        .glass-dark { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.3); }
+        /* Glassmorphism Premium */
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+        }
+        .glass-dark {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.3);
+        }
         
-        /* Interactions */
+        /* Interactive Elements */
         .interactive-card { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); cursor: pointer; }
         .interactive-card:active { transform: scale(0.96); }
+        
+        /* Logo Styles */
         .wallet-logo { width: 32px; height: 32px; object-fit: contain; border-radius: 50%; background: white; padding: 2px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
 
-        /* Splash */
-        #splashScreen { animation: splashOut 0.8s cubic-bezier(0.7, 0, 0.3, 1) forwards; animation-delay: 2.5s; }
-        @keyframes splashOut { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.1); visibility: hidden; } }
+        /* Splash Screen */
+        #splashScreen {
+            animation: splashOut 0.8s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+            animation-delay: 2.2s;
+        }
+        @keyframes splashOut {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(1.1); visibility: hidden; }
+        }
         .bounce { animation: bounce 2.5s infinite ease-in-out; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-        
+
+        /* Animations */
         .fade-in { animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        
         .slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-        /* Scrollbar & Utils */
+        /* Utilities */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
         .nav-item.active i { color: #10b981; transform: translateY(-3px); filter: drop-shadow(0 4px 6px rgba(16, 185, 129, 0.3)); }
         .nav-item.active span { color: #10b981; font-weight: 800; }
+        .nav-item { transition: all 0.3s; }
+        
         .pulse-shadow { animation: pulse 2.5s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(0,0,0,0); } 100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); } }
 
         /* Islamic Theme */
-        .islamic-mode { background-color: #ecfdf5 !important; background-image: url('https://www.transparenttextures.com/patterns/arabesque.png'); background-attachment: fixed; }
-        .bg-islamic-premium { background-color: #042f2e; background-image: url("https://www.transparenttextures.com/patterns/arabesque.png"), linear-gradient(135deg, #064e3b 0%, #115e59 50%, #0f766e 100%); background-blend-mode: overlay; }
+        .islamic-mode { 
+            background-color: #ecfdf5 !important; 
+            background-image: url('https://www.transparenttextures.com/patterns/arabesque.png');
+            background-attachment: fixed;
+        }
         .islamic-font { font-family: 'Amiri', serif; }
-        
-        /* Video */
-        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 20px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.3); }
-        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
-        /* Badges & Chips */
-        .notif-badge { position: absolute; top: 0; right: 0; width: 10px; height: 10px; background: #ef4444; border-radius: 50%; border: 2px solid white; display: none; box-shadow: 0 2px 4px rgba(239, 68, 68, 0.4); }
+        /* Notification Badge */
+        .notif-badge { position: absolute; top: 0px; right: 0px; width: 10px; height: 10px; background: #ef4444; border-radius: 50%; border: 2px solid white; display: none; box-shadow: 0 2px 4px rgba(239, 68, 68, 0.4); }
         .notif-badge.active { display: block; animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite; }
         @keyframes ping { 75%, 100% { transform: scale(2); opacity: 0; } }
+        
+        /* Filter Chips */
         .filter-chip { white-space: nowrap; padding: 8px 16px; border-radius: 999px; font-size: 11px; font-weight: 700; background: #f1f5f9; color: #64748b; transition: all 0.2s; border: 1px solid transparent; }
         .filter-chip.active { background: #10b981; color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); transform: translateY(-1px); }
+
+        /* Video Container */
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 20px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.3); }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
-        /* Dropdown Fix */
-        #notifDropdown { right: 0; max-width: 90vw; width: 300px; z-index: 100; }
-        @media (max-width: 640px) { #notifDropdown { right: -10px; width: 280px; } }
+        /* Islamic Header Premium Background */
+        .bg-islamic-premium {
+            background-color: #042f2e;
+            background-image: url("https://www.transparenttextures.com/patterns/arabesque.png"), linear-gradient(135deg, #064e3b 0%, #115e59 50%, #0f766e 100%);
+            background-blend-mode: overlay;
+        }
+        
+        /* Dropdown responsiveness */
+        #notifDropdown { right: 0; max-width: 90vw; }
+        @media (min-width: 640px) { #notifDropdown { width: 320px; right: 0; } }
+
+        /* Grayscale for passed days */
+        .day-passed { filter: grayscale(100%); opacity: 0.6; }
     </style>
 </head>
 <body class="h-screen w-screen overflow-hidden flex flex-col bg-slate-50 transition-colors duration-500">
@@ -87,13 +126,13 @@
     <div id="authOverlay" class="fixed inset-0 z-[150] bg-white/60 backdrop-blur-xl flex flex-col items-center justify-center p-6 hidden">
         <div class="w-full max-w-sm glass p-8 rounded-[32px] shadow-2xl border border-white/50">
             <div class="text-center mb-8">
-                <div class="h-20 w-20 bg-slate-900 rounded-3xl mx-auto mb-4 flex items-center justify-center text-4xl shadow-xl text-white">🔐</div>
+                <div class="h-20 w-20 bg-slate-900 rounded-3xl mx-auto mb-4 flex items-center justify-center text-4xl shadow-xl text-white rotate-3 hover:rotate-0 transition-transform duration-500">🔐</div>
                 <h1 class="text-3xl font-black text-slate-900" id="authTitle">Welcome</h1>
                 <p class="text-slate-500 text-xs font-bold uppercase mt-1 tracking-wider">Secure Finance Access</p>
             </div>
             <div class="space-y-4" id="loginForm">
-                <input type="email" id="loginEmail" class="w-full p-4 bg-white/80 border border-slate-200 rounded-2xl outline-none font-bold text-sm" placeholder="Email Address">
-                <input type="password" id="loginPass" class="w-full p-4 bg-white/80 border border-slate-200 rounded-2xl outline-none font-bold text-sm" placeholder="Password">
+                <input type="email" id="loginEmail" class="w-full p-4 bg-white/80 border border-slate-200 rounded-2xl outline-none font-bold text-sm focus:border-emerald-500 transition-all" placeholder="Email Address">
+                <input type="password" id="loginPass" class="w-full p-4 bg-white/80 border border-slate-200 rounded-2xl outline-none font-bold text-sm focus:border-emerald-500 transition-all" placeholder="Password">
                 <div class="flex items-center gap-2 px-2"><input type="checkbox" id="rememberMe" class="accent-emerald-500 w-4 h-4 rounded cursor-pointer"><label for="rememberMe" class="text-xs font-bold text-slate-500 cursor-pointer">Remember me</label></div>
                 <button onclick="handleLogin()" id="btnLogin" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-xl active:scale-95 transition-transform hover:bg-slate-800">LOGIN</button>
                 <p class="text-center text-xs text-slate-500 mt-4 cursor-pointer hover:text-emerald-600 font-bold" onclick="toggleAuthMode('signup')">New here? Create Account</p>
@@ -121,11 +160,8 @@
                 <button onclick="toggleNotifications()" class="h-11 w-11 rounded-full glass flex items-center justify-center text-slate-600 hover:text-indigo-600 transition-colors relative active:scale-90 shadow-sm">
                     <i class="fas fa-bell text-lg"></i><div id="notifBadge" class="notif-badge"></div>
                 </button>
-                <div id="notifDropdown" class="absolute right-0 top-14 bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-100 hidden p-4">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Notifications</h3>
-                        <button onclick="toggleNotifications()" class="text-slate-400 hover:text-rose-500"><i class="fas fa-times"></i></button>
-                    </div>
+                <div id="notifDropdown" class="absolute right-0 top-14 w-72 bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-100 hidden p-4 z-50">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Notifications</h3>
                     <div id="notifList" class="max-h-64 overflow-y-auto space-y-3 no-scrollbar"></div>
                 </div>
             </div>
@@ -142,6 +178,14 @@
         
         <!-- DASHBOARD VIEW -->
         <div id="view-home" class="view-section px-6 py-6 fade-in">
+            <!-- Quran Verse Card -->
+            <div class="glass p-4 rounded-2xl mb-6 shadow-sm border border-emerald-50 relative overflow-hidden group">
+                <div class="absolute -right-6 -top-6 text-6xl opacity-5"><i class="fas fa-quran"></i></div>
+                <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-2"><i class="fas fa-star text-xs mr-1"></i> Daily Verse</p>
+                <p class="text-sm font-medium text-slate-700 italic font-serif leading-relaxed" id="quranVerseText">"Loading verse..."</p>
+                <p class="text-[10px] font-bold text-slate-400 mt-2 text-right" id="quranVerseRef"></p>
+            </div>
+
             <div class="glass-dark rounded-[32px] p-6 text-white shadow-2xl mb-6 relative overflow-hidden transition-all hover:scale-[1.01] active:scale-[0.99] group">
                 <div class="absolute -right-10 -top-10 h-48 w-48 bg-emerald-500/20 rounded-full blur-3xl group-hover:bg-emerald-500/30 transition-all duration-500"></div>
                 <div class="absolute -left-10 -bottom-10 h-48 w-48 bg-indigo-500/20 rounded-full blur-3xl group-hover:bg-indigo-500/30 transition-all duration-500"></div>
@@ -269,7 +313,7 @@
                                 <p class="text-lg font-medium opacity-90 font-mono text-emerald-100" id="nextPrayerTime">--:--</p>
                             </div>
                             <div class="text-right">
-                                 <p class="text-xs font-bold text-emerald-200 uppercase mb-1 drop-shadow-md">Sehri Ends In</p>
+                                 <p class="text-xs font-bold text-emerald-200 uppercase mb-1 drop-shadow-md" id="nextEventLabel">Sehri Ends In</p>
                                  <p class="text-xl font-mono font-bold mb-2 text-emerald-50" id="sehriCountdown">--:--</p>
                                  <p class="text-[10px] opacity-80 text-emerald-200 font-bold tracking-wide" id="hijriFull">---</p>
                             </div>
@@ -390,7 +434,7 @@
                 <select id="inpContext" class="w-full p-5 bg-slate-50 rounded-2xl font-bold outline-none text-sm border border-slate-100"></select>
                 <div class="flex gap-3 items-center">
                     <input type="text" id="inpNote" class="flex-1 p-5 bg-slate-50 rounded-2xl font-medium outline-none text-xs border border-slate-100" placeholder="Note">
-                    <button onclick="toggleGPS()" id="btnGPS" class="h-14 w-14 bg-slate-100 rounded-2xl text-slate-400 flex items-center justify-center transition-all active:scale-95"><i class="fas fa-map-marker-alt text-lg"></i></button>
+                    <button onclick="toggleGPS()" id="btnGPS" class="h-14 w-14 bg-slate-100 rounded-2xl text-slate-400 flex items-center justify-center transition-all active:scale-95 gap-2"><i class="fas fa-map-marker-alt text-lg"></i> <span id="gpsStatusText" class="text-[10px]"></span></button>
                 </div>
                 <button onclick="submitTransaction()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold shadow-xl active:scale-95 transition-transform text-sm tracking-wide">SAVE TRANSACTION</button>
             </div>
@@ -544,10 +588,20 @@
         let notifications = [];
         let mapInstance = null;
         let activeFilter = 'All';
+        let prayerTimings = {};
+        
         let tvChannels = JSON.parse(localStorage.getItem('TEKA_TV')) || [
             {name: "Jamuna TV", link: "https://www.youtube.com/embed/GvSQMcp7GDo?autoplay=1"},
             {name: "Somoy TV", link: "https://www.youtube.com/embed/P7qS64-Qd4I?autoplay=1"},
             {name: "Channel 24", link: "https://www.youtube.com/embed/z4a6mX8qV9k?autoplay=1"}
+        ];
+        
+        const quranVerses = [
+            {text: "Indeed, with hardship [will be] ease.", ref: "Surah Ash-Sharh 94:6"},
+            {text: "And He found you lost and guided [you].", ref: "Surah Ad-Duhaa 93:7"},
+            {text: "So remember Me; I will remember you.", ref: "Surah Al-Baqarah 2:152"},
+            {text: "And We have certainly made the Qur'an easy for remembrance, so is there any who will remember?", ref: "Surah Al-Qamar 54:17"},
+            {text: "Allah does not burden a soul beyond that it can bear.", ref: "Surah Al-Baqarah 2:286"}
         ];
         
         let currentTxType = 'expense';
@@ -570,19 +624,37 @@
         window.onload = () => {
             setTimeout(() => { document.getElementById('splashScreen').style.display = 'none'; }, 2200);
             updateHeaderDate();
+            renderQuranVerse();
+            
             const localUser = JSON.parse(localStorage.getItem('TEKA_USER'));
             const sessionUser = JSON.parse(sessionStorage.getItem('TEKA_USER'));
             currentUser = localUser || sessionUser;
+            
             if (!currentUser) document.getElementById('authOverlay').classList.remove('hidden');
             else initApp();
+            
             setInterval(updateClosingTimer, 1000);
             setInterval(checkNotifications, 60000);
+            setInterval(updateNextPrayer, 1000);
             renderChannels();
         };
+
+        function renderQuranVerse() {
+            const v = quranVerses[Math.floor(Math.random() * quranVerses.length)];
+            document.getElementById('quranVerseText').innerText = `"${v.text}"`;
+            document.getElementById('quranVerseRef').innerText = v.ref;
+        }
 
         function updateHeaderDate() {
             const d = new Date();
             document.getElementById('headerDate').innerText = d.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' });
+            
+            const hr = d.getHours();
+            const header = document.getElementById('lifeHeader');
+            if(header) {
+                if (hr >= 6 && hr < 18) header.className = "relative h-64 rounded-b-[40px] shadow-2xl overflow-hidden transition-all duration-1000 mb-6 bg-islamic-premium"; // Day style
+                else header.className = "relative h-64 rounded-b-[40px] shadow-2xl overflow-hidden transition-all duration-1000 mb-6 bg-gradient-night"; // Night style
+            }
         }
         
         function updateClosingTimer() {
@@ -676,7 +748,17 @@
                 updateProfileAvatarUI();
                 closeProfileModal();
                 
-                // Sync to backend if possible (requires v4.0+ backend update logic, simplified here)
+                // Sync to backend
+                fetch(API_URL, {
+                    method: 'POST', 
+                    body: JSON.stringify({ 
+                        action: 'update_profile', 
+                        email: currentUser.email, 
+                        name: newName, 
+                        contact: currentUser.contact, 
+                        avatar: newAvatar 
+                    })
+                });
             }
         }
         
@@ -746,7 +828,6 @@
             const txs = [];
             
             items.forEach(item => {
-                // Regex to find number at end or start
                 const matchAmount = item.match(/\d+/);
                 if (matchAmount) {
                     const amount = matchAmount[0];
@@ -907,16 +988,10 @@
                 const hijriMonth = parseInt(d.date.hijri.month.number);
                 
                 document.getElementById('hijriFull').innerText = `${d.date.hijri.day} ${d.date.hijri.month.en} ${d.date.hijri.year}`;
-                document.getElementById('nextPrayerName').innerText = "Maghrib"; 
-                document.getElementById('nextPrayerTime').innerText = d.timings.Maghrib;
-
-                const fajrTime = new Date(now.toDateString() + ' ' + d.timings.Fajr);
-                const maghribTime = new Date(now.toDateString() + ' ' + d.timings.Maghrib);
-                let targetTime = now < fajrTime ? fajrTime : (now < maghribTime ? maghribTime : new Date(fajrTime.getTime() + 86400000));
-                const diff = targetTime - now;
-                const h = Math.floor(diff / 3600000);
-                const m = Math.floor((diff % 3600000) / 60000);
-                document.getElementById('sehriCountdown').innerText = `${h}h ${m}m`;
+                
+                // Store timings globally for live update
+                prayerTimings = d.timings;
+                updateNextPrayer(); // Initial call
 
                 document.getElementById('prayerList').innerHTML = ['Fajr','Dhuhr','Asr','Maghrib','Isha'].map(p => `
                     <div class="flex justify-between p-3 border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors rounded-lg">
@@ -926,15 +1001,42 @@
 
                 const grid = document.getElementById('ramadanCalendarGrid');
                 grid.innerHTML = '';
+                // Ramadan 2026 Start: Approx Feb 18, 2026
                 const startRamadan = new Date('2026-02-18');
-                const daysPassed = Math.floor((now - startRamadan) / (1000 * 60 * 60 * 24));
+                const todayMidnight = new Date(); todayMidnight.setHours(0,0,0,0);
+                
+                const daysPassed = Math.floor((todayMidnight - startRamadan) / (1000 * 60 * 60 * 24));
                 const daysToEid = 30 - daysPassed;
                 document.getElementById('eidCountdown').innerText = daysToEid > 0 ? `${daysToEid} Days to Eid` : "Eid Mubarak!";
+                
+                const banglaDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+                const toBangla = (n) => n.toString().split('').map(d => banglaDigits[d]).join('');
 
                 for(let i=1; i<=30; i++) {
-                    let status = i <= daysPassed ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-400';
-                    if(i === daysPassed + 1) status = 'bg-white border-2 border-emerald-500 text-emerald-600 animate-pulse';
-                    grid.innerHTML += `<div class="h-8 w-8 rounded-lg flex items-center justify-center font-bold ${status}">${i}</div>`;
+                    let status = 'bg-slate-100 text-slate-400';
+                    let dayClass = '';
+                    
+                    if(i < daysPassed + 1) { 
+                        // Passed
+                        status = 'bg-slate-200 text-slate-400 day-passed'; 
+                    } else if (i === daysPassed + 1) {
+                        // Today
+                        status = 'bg-white border-2 border-emerald-500 text-emerald-600 animate-pulse font-black shadow-md';
+                    } else {
+                        // Future
+                        status = 'bg-emerald-50 text-emerald-600 font-medium';
+                    }
+                    
+                    // Calculate English Date for this Ramadan Day
+                    let rDate = new Date(startRamadan);
+                    rDate.setDate(startRamadan.getDate() + (i - 1));
+                    let engDateStr = rDate.getDate();
+
+                    grid.innerHTML += `
+                        <div class="flex flex-col items-center justify-center p-1 rounded-lg ${status} ${dayClass} h-10 w-full relative">
+                            <span class="text-xs font-serif leading-none">${toBangla(i)}</span>
+                            <span class="text-[8px] opacity-60 leading-none mt-0.5">${engDateStr}</span>
+                        </div>`;
                 }
 
                 document.getElementById('sehriTime').innerText = d.timings.Fajr;
@@ -946,6 +1048,56 @@
                 else { document.getElementById('daysToRamadan').innerText = (9 - hijriMonth) * 30 - parseInt(d.date.hijri.day); }
 
             } catch(e) {}
+        }
+        
+        function updateNextPrayer() {
+            if (!prayerTimings || Object.keys(prayerTimings).length === 0) return;
+            
+            const now = new Date();
+            const timeStr = now.toTimeString().slice(0, 5); // HH:MM
+            
+            const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+            let nextP = null;
+            
+            for (let p of prayers) {
+                if (timeStr < prayerTimings[p]) {
+                    nextP = p;
+                    break;
+                }
+            }
+            
+            if (!nextP) {
+                // Next is Fajr tomorrow
+                nextP = 'Fajr';
+                // Logic for tomorrow calculation if needed, simplified here
+            }
+            
+            document.getElementById('nextPrayerName').innerText = nextP;
+            document.getElementById('nextPrayerTime').innerText = prayerTimings[nextP];
+            
+            // Sehri vs Iftar Logic
+            const fajrTime = new Date(now.toDateString() + ' ' + prayerTimings.Fajr);
+            const maghribTime = new Date(now.toDateString() + ' ' + prayerTimings.Maghrib);
+            
+            if (now < fajrTime) {
+                document.getElementById('nextEventLabel').innerText = "Sehri Ends In";
+                const diff = fajrTime - now;
+                const h = Math.floor(diff / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
+                const s = Math.floor((diff % 60000) / 1000);
+                document.getElementById('sehriCountdown').innerText = `${h}h ${m}m ${s}s`;
+            } else if (now < maghribTime) {
+                document.getElementById('nextEventLabel').innerText = "Iftar In";
+                const diff = maghribTime - now;
+                const h = Math.floor(diff / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
+                const s = Math.floor((diff % 60000) / 1000);
+                document.getElementById('sehriCountdown').innerText = `${h}h ${m}m ${s}s`;
+            } else {
+                document.getElementById('nextEventLabel').innerText = "Sehri (Tomorrow)";
+                // Simplified for night cycle
+                document.getElementById('sehriCountdown').innerText = "--:--";
+            }
         }
         
         function toggleRamadan() {
@@ -1033,7 +1185,9 @@
             txs.sort((a,b) => new Date(a.date) - new Date(b.date));
             const latlngs = [];
             txs.forEach(t => {
-                const [lat, lng] = t.gps.split(',').map(Number);
+                // Robust parsing: Remove quotes if any, split by comma
+                const rawGPS = t.gps.replace(/['"]/g, '');
+                const [lat, lng] = rawGPS.split(',').map(Number);
                 if (!isNaN(lat) && !isNaN(lng)) { L.marker([lat, lng]).addTo(mapInstance).bindPopup(`<b>${t.title}</b><br>৳${t.amount}<br>${t.date}`); latlngs.push([lat, lng]); }
             });
             if(latlngs.length > 1) { L.polyline(latlngs, {color: '#10b981', weight: 4, opacity: 0.7}).addTo(mapInstance); }
@@ -1127,7 +1281,29 @@
         function openInputModal(t) { document.getElementById('inputModal').classList.remove('hidden'); setTxType(t); }
         function closeInputModal() { document.getElementById('inputModal').classList.add('hidden'); }
         function setTxType(t) { /* Tx Type logic */ }
-        function toggleGPS() { /* GPS Logic */ }
+        function toggleGPS() { 
+            const btn = document.getElementById('btnGPS');
+            const txt = document.getElementById('gpsStatusText');
+            if(currentGPS) {
+                currentGPS = '';
+                btn.className = "h-14 w-14 bg-slate-100 rounded-2xl text-slate-400 flex items-center justify-center transition-all active:scale-95";
+                btn.innerHTML = '<i class="fas fa-map-marker-alt text-lg"></i>';
+                txt.innerText = '';
+            } else {
+                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+                if(navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => {
+                            currentGPS = `${pos.coords.latitude},${pos.coords.longitude}`;
+                            btn.className = "h-14 w-14 bg-emerald-500 text-white rounded-2xl flex items-center justify-center transition-all active:scale-95 shadow-lg";
+                            btn.innerHTML = '<i class="fas fa-check"></i>';
+                            txt.innerText = currentGPS;
+                        },
+                        () => { alert("Location access denied"); btn.innerHTML = '<i class="fas fa-map-marker-alt text-lg"></i>'; }
+                    );
+                } else { alert("GPS not supported"); }
+            }
+        }
         function submitTransaction() { 
             const amt = document.getElementById('inpAmount').value;
             const title = document.getElementById('inpTitle').value;
