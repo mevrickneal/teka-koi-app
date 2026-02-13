@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Teka Koi? - Project Neal</title>
+    <title>Teka Koi? - by Lian Mollick</title>
     
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -72,7 +72,11 @@
         @keyframes pulse { 0% { transform: scale(0.95); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0,0,0,0); } 100% { transform: scale(0.95); } }
 
         /* Islamic Theme */
-        .islamic-mode { background-color: #ecfdf5; background-image: url('https://www.transparenttextures.com/patterns/arabesque.png'); }
+        .islamic-mode { 
+            background-color: #ecfdf5 !important; 
+            background-image: url('https://www.transparenttextures.com/patterns/arabesque.png');
+            background-attachment: fixed;
+        }
         .islamic-font { font-family: 'Amiri', serif; }
 
         /* Notification Badge */
@@ -82,15 +86,18 @@
         /* Filter Chips */
         .filter-chip { white-space: nowrap; padding: 6px 12px; border-radius: 999px; font-size: 10px; font-weight: 700; background: #f1f5f9; color: #64748b; transition: all 0.2s; border: 1px solid transparent; }
         .filter-chip.active { background: #10b981; color: white; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3); }
+
+        /* Strikethrough animation for tasks */
+        .task-done { text-decoration: line-through; color: #94a3b8; }
     </style>
 </head>
-<body class="h-screen w-screen overflow-hidden flex flex-col bg-slate-50">
+<body class="h-screen w-screen overflow-hidden flex flex-col bg-slate-50 transition-colors duration-500">
 
     <!-- SPLASH SCREEN -->
     <div id="splashScreen" class="fixed inset-0 z-[200] bg-slate-900 flex flex-col items-center justify-center text-white">
         <div class="text-6xl mb-4 bounce">💸</div>
         <h1 class="text-4xl font-black tracking-tighter">Teka Koi?</h1>
-        <p class="text-emerald-400 text-xs font-bold tracking-[0.3em] uppercase mt-2">Project Neal</p>
+        <p class="text-emerald-400 text-xs font-bold tracking-[0.2em] uppercase mt-2">by Lian Mollick</p>
     </div>
 
     <!-- AUTH OVERLAY -->
@@ -99,7 +106,7 @@
             <div class="text-center mb-6">
                 <div class="h-16 w-16 bg-slate-900 rounded-2xl mx-auto mb-4 flex items-center justify-center text-3xl shadow-lg text-white">🔐</div>
                 <h1 class="text-2xl font-black text-slate-900" id="authTitle">Login</h1>
-                <p class="text-slate-500 text-xs font-bold uppercase mt-1">Project Neal Finance</p>
+                <p class="text-slate-500 text-xs font-bold uppercase mt-1">Personal Finance</p>
             </div>
             
             <div class="space-y-4" id="loginForm">
@@ -171,14 +178,20 @@
                 </div>
             </div>
 
-            <!-- Quick Actions -->
-            <div class="grid grid-cols-2 gap-3 mb-6">
-                <button onclick="openDailyClosing()" class="glass p-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-xs text-slate-700 hover:bg-white transition-colors border border-emerald-100">
-                    <i class="fas fa-cash-register text-emerald-500 text-lg"></i> Daily Closing
-                </button>
-                <button onclick="navTo('plans')" class="glass p-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-xs text-slate-700 hover:bg-white transition-colors border border-indigo-100">
-                    <i class="fas fa-sort-amount-up text-indigo-500 text-lg"></i> Prioritize Plan
-                </button>
+            <!-- Quick Actions & Timer -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2 px-1">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Updates Daily at 12:00 AM</p>
+                    <p class="text-[10px] font-mono text-emerald-600 font-bold" id="closingTimer">--:--:--</p>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="openDailyClosing()" class="glass p-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-xs text-slate-700 hover:bg-white transition-colors border border-emerald-100">
+                        <i class="fas fa-cash-register text-emerald-500 text-lg"></i> Daily Closing
+                    </button>
+                    <button onclick="navTo('plans')" class="glass p-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-xs text-slate-700 hover:bg-white transition-colors border border-indigo-100">
+                        <i class="fas fa-sort-amount-up text-indigo-500 text-lg"></i> Prioritize Plan
+                    </button>
+                </div>
             </div>
 
             <!-- Wallets (Branded Logos) -->
@@ -272,13 +285,25 @@
                 <div class="glass p-5 rounded-3xl mb-6 shadow-sm border border-emerald-50">
                     <div id="prayerList" class="space-y-3"></div>
                 </div>
-                <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-3 ml-1">Tasks</h3>
+                
+                <!-- Todo Section -->
+                <div class="flex justify-between items-center mb-3 ml-1">
+                    <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Tasks & Deeds</h3>
+                    <button onclick="navTo('archive')" class="text-[10px] font-bold text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full hover:bg-indigo-100 transition-colors">Archive Deeds</button>
+                </div>
                 <div id="todoList" class="space-y-2 mb-4"></div>
                 <div class="flex gap-2">
-                    <input type="text" id="newTodoInput" class="flex-1 p-3 rounded-xl border border-slate-200 text-sm outline-none" placeholder="Add a task...">
-                    <button onclick="addTodo()" class="bg-slate-900 text-white h-12 w-12 rounded-xl flex items-center justify-center"><i class="fas fa-plus"></i></button>
+                    <input type="text" id="newTodoInput" class="flex-1 p-3 rounded-xl border border-slate-200 text-sm outline-none shadow-sm" placeholder="Add a deed or task...">
+                    <button onclick="addTodo()" class="bg-slate-900 text-white h-12 w-12 rounded-xl flex items-center justify-center shadow-md active:scale-95 transition-transform"><i class="fas fa-plus"></i></button>
                 </div>
             </div>
+        </div>
+
+        <!-- ARCHIVE DEEDS VIEW -->
+        <div id="view-archive" class="view-section hidden px-6 py-6 fade-in h-full flex flex-col">
+            <h2 class="text-2xl font-black text-slate-800 mb-4">Archive Deeds</h2>
+            <div id="archiveList" class="space-y-2 flex-1 overflow-y-auto pb-24"></div>
+            <button onclick="navTo('lifestyle')" class="w-full py-4 text-slate-500 font-bold text-sm">Back to Life</button>
         </div>
 
         <!-- HISTORY VIEW -->
@@ -342,33 +367,17 @@
         </div>
     </div>
 
-    <!-- Daily Closing Modal -->
+    <!-- Daily Closing Modal (Updated) -->
     <div id="closingModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/60 p-6 backdrop-blur-sm">
         <div class="bg-white w-full max-w-sm rounded-[32px] p-6 slide-up shadow-2xl">
             <h3 class="text-xl font-black mb-4">Daily Closing</h3>
             <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-4" id="closingDate">---</p>
             
-            <div class="grid grid-cols-2 gap-3 mb-4">
-                <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-100">
-                    <p class="text-[9px] text-emerald-500 font-bold uppercase">Today Income</p>
-                    <p class="font-black text-lg text-slate-800" id="closeIncome">0</p>
-                </div>
-                <div class="bg-rose-50 p-3 rounded-xl border border-rose-100">
-                    <p class="text-[9px] text-rose-500 font-bold uppercase">Today Expense</p>
-                    <p class="font-black text-lg text-slate-800" id="closeExpense">0</p>
-                </div>
-            </div>
-            
-            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-4">
-                <p class="text-xs font-bold text-slate-500 mb-2">Cash Verification</p>
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-xs">System Cash:</span>
-                    <span class="font-bold" id="sysCash">0</span>
-                </div>
-                <input type="number" id="actualCash" class="w-full p-2 rounded-lg border border-slate-200 text-sm font-bold" placeholder="Enter Physical Cash Amount">
+            <div id="walletClosingList" class="space-y-3 mb-6 max-h-64 overflow-y-auto pr-1">
+                <!-- Generated by JS -->
             </div>
 
-            <button onclick="submitDailyClosing()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold shadow-lg">Close Day</button>
+            <button onclick="submitDailyClosing()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold shadow-lg">Update & Close</button>
             <button onclick="document.getElementById('closingModal').classList.add('hidden')" class="w-full py-3 text-slate-400 font-bold text-xs">CANCEL</button>
         </div>
     </div>
@@ -457,11 +466,27 @@
             updateHeaderDate();
             if (!currentUser) document.getElementById('authOverlay').classList.remove('hidden');
             else initApp();
+            
+            // Start Timer
+            setInterval(updateClosingTimer, 1000);
         };
 
         function updateHeaderDate() {
             const d = new Date();
             document.getElementById('headerDate').innerText = d.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' });
+        }
+        
+        function updateClosingTimer() {
+            const now = new Date();
+            const midnight = new Date();
+            midnight.setHours(24, 0, 0, 0);
+            const diff = midnight - now;
+            
+            const h = Math.floor(diff / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('closingTimer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         }
 
         // --- AUTH ---
@@ -574,6 +599,7 @@
             renderHalkhata();
             renderPlansView();
             renderTodos();
+            renderArchiveDeeds();
         }
 
         function renderDashboard() {
@@ -614,60 +640,123 @@
                 </div>`).join('');
         }
 
-        // --- DAILY CLOSING ---
+        // --- DAILY CLOSING (UPDATED) ---
         function openDailyClosing() {
             document.getElementById('closingModal').classList.remove('hidden');
             const today = new Date().toLocaleDateString();
             document.getElementById('closingDate').innerText = today;
             
-            let inc = 0, exp = 0, sysCash = 0;
-            const now = new Date();
-            
-            // Calculate today stats
-            db.transactions.forEach(t => {
-                const tDate = new Date(t.date);
-                if(tDate.toLocaleDateString() === today) {
-                    if(t.type === 'income') inc += Number(t.amount);
-                    else exp += Number(t.amount);
-                }
-                // Calculate system cash balance (Total)
-                if(t.wallet === 'Cash') {
-                    sysCash += (t.type === 'income' ? Number(t.amount) : -Number(t.amount));
-                }
-            });
-            
-            document.getElementById('closeIncome').innerText = '৳' + inc.toLocaleString();
-            document.getElementById('closeExpense').innerText = '৳' + exp.toLocaleString();
-            document.getElementById('sysCash').innerText = '৳' + sysCash.toLocaleString();
+            // Calculate system balances
+            let bals = { 'Bkash': 0, 'Nagad': 0, 'Bank': 0, 'Cash': 0 };
+            if(db.transactions) {
+                db.transactions.forEach(t => {
+                    const amt = Number(t.amount);
+                    if (t.type === 'income') bals[t.wallet] += amt;
+                    else bals[t.wallet] -= amt;
+                });
+            }
+
+            const list = document.getElementById('walletClosingList');
+            list.innerHTML = Object.keys(bals).map(w => `
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                    <div class="flex justify-between items-center mb-1">
+                        <div class="flex items-center gap-2">
+                            <img src="${WALLET_LOGOS[w]}" class="w-5 h-5 rounded-full">
+                            <span class="text-xs font-bold text-slate-600">${w}</span>
+                        </div>
+                        <span class="text-[10px] text-slate-400">Sys: ৳${bals[w]}</span>
+                    </div>
+                    <input type="number" id="close_${w}" data-sys="${bals[w]}" class="w-full p-2 bg-white rounded-lg border border-slate-200 text-sm font-bold" placeholder="Actual Amount" value="${bals[w]}">
+                </div>
+            `).join('');
         }
 
         function submitDailyClosing() {
-            const sys = parseInt(document.getElementById('sysCash').innerText.replace(/[^\d-]/g, ''));
-            const actual = parseInt(document.getElementById('actualCash').value);
+            const inputs = document.querySelectorAll('[id^="close_"]');
+            let adjustments = [];
             
-            if(!isNaN(actual) && actual !== sys) {
-                const diff = actual - sys;
-                if(confirm(`Discrepancy of ৳${diff}. Add adjustment record?`)) {
-                    const tx = {
+            inputs.forEach(inp => {
+                const wallet = inp.id.split('_')[1];
+                const sys = parseFloat(inp.dataset.sys);
+                const actual = parseFloat(inp.value);
+                
+                if(!isNaN(actual) && actual !== sys) {
+                    const diff = actual - sys;
+                    adjustments.push({
                         date: new Date().toISOString().slice(0, 19).replace('T', ' '),
                         email: currentUser.email,
                         userName: currentUser.name,
-                        title: 'Cash Adjustment',
+                        title: `Auto-Adjustment (${wallet})`,
                         amount: Math.abs(diff),
                         type: diff > 0 ? 'income' : 'expense',
                         category: 'Other',
-                        wallet: 'Cash',
+                        wallet: wallet,
                         context: 'Office',
                         note: 'Daily Closing Adjustment',
                         gps: ''
-                    };
-                    db.transactions.unshift(tx);
-                    syncUp({ transactions: [tx] });
+                    });
+                }
+            });
+
+            if(adjustments.length > 0) {
+                if(confirm(`Found ${adjustments.length} discrepancies. Create adjustment records?`)) {
+                    adjustments.forEach(tx => db.transactions.unshift(tx));
+                    syncUp({ transactions: adjustments });
+                    renderDashboard();
                 }
             }
             alert("Day Closed Successfully");
             document.getElementById('closingModal').classList.add('hidden');
-            renderAll();
+        }
+
+        // --- TODOS & ARCHIVE ---
+        function addTodo() {
+            const inp = document.getElementById('newTodoInput');
+            const txt = inp.value;
+            if(!txt) return;
+            const t = { id: Date.now(), date: new Date().toISOString(), email: currentUser.email, title: txt, done: false };
+            if(!db.todos) db.todos = [];
+            db.todos.unshift(t);
+            inp.value = '';
+            renderTodos();
+            syncUp({ todos: [t] });
+        }
+
+        function completeTodo(id) {
+            const t = db.todos.find(x => x.id == id);
+            if(t) { 
+                t.done = true; 
+                renderTodos(); 
+                renderArchiveDeeds();
+                updateItem('todo', id, {done:true}); 
+            }
+        }
+
+        function renderTodos() {
+            const list = document.getElementById('todoList');
+            if(db.todos) {
+                const active = db.todos.filter(t => String(t.done).toLowerCase() !== 'true');
+                list.innerHTML = active.map(t => `
+                    <div class="flex items-center gap-3 p-3 bg-white/60 rounded-xl border border-white/40">
+                        <button onclick="completeTodo('${t.id}')" class="h-5 w-5 rounded-md border-2 border-slate-300 hover:bg-emerald-500 hover:border-emerald-500 transition-colors flex items-center justify-center text-white"></button>
+                        <span class="text-sm font-medium text-slate-700">${t.title}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function renderArchiveDeeds() {
+            const list = document.getElementById('archiveList');
+            if(db.todos) {
+                const done = db.todos.filter(t => String(t.done).toLowerCase() === 'true');
+                list.innerHTML = done.map(t => `
+                    <div class="flex items-center gap-3 p-3 bg-slate-100 rounded-xl border border-slate-200 opacity-75">
+                        <div class="h-5 w-5 rounded-md bg-emerald-500 flex items-center justify-center text-white text-xs"><i class="fas fa-check"></i></div>
+                        <span class="text-sm font-medium text-slate-500 line-through">${t.title}</span>
+                        <span class="text-[9px] text-slate-400 ml-auto">${new Date(t.date).toLocaleDateString()}</span>
+                    </div>
+                `).join('') || '<p class="text-center text-xs text-slate-400 mt-10">No completed deeds yet.</p>';
+            }
         }
 
         // --- MAP LOGIC ---
@@ -866,7 +955,7 @@
         function navTo(view) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
             document.getElementById(`view-${view}`).classList.remove('hidden');
-            const map = { 'home': 0, 'report': 1, 'map': 3, 'plans': 3, 'lifestyle': 4 };
+            const map = { 'home': 0, 'report': 1, 'map': 3, 'plans': 3, 'lifestyle': 4, 'archive': 4 };
             document.querySelectorAll('.nav-item').forEach((el, i) => { if(i!==2) el.classList.toggle('active', i===map[view]); });
             if(view === 'report') renderReport('week');
             if(view === 'map') setTimeout(initMap, 100); 
@@ -962,6 +1051,22 @@
                     <div class="flex justify-between p-2 border-b border-slate-100"><span class="text-sm font-bold text-slate-700">${p}</span><span class="text-emerald-600 font-bold">${json.data.timings[p]}</span></div>`).join('');
             } catch(e) {}
         }
+        
+        function toggleRamadan() {
+            isRamadan = !isRamadan;
+            const t = document.getElementById('ramadanToggle').children[0];
+            const b = document.getElementById('ramadanToggle');
+            if(isRamadan) { 
+                t.style.transform='translateX(24px)'; 
+                b.classList.replace('bg-slate-200','bg-emerald-500'); 
+                document.body.classList.add('islamic-mode'); 
+            } else { 
+                t.style.transform='translateX(0)'; 
+                b.classList.replace('bg-emerald-500','bg-slate-200'); 
+                document.body.classList.remove('islamic-mode'); 
+            }
+        }
+
         function animateValue(id, end) { document.getElementById(id).innerText = Math.floor(end).toLocaleString(); }
     </script>
 </body>
