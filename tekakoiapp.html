@@ -231,7 +231,10 @@
         <!-- MAP VIEW -->
         <div id="view-map" class="view-section hidden h-full flex flex-col bg-slate-100">
             <div class="bg-white/90 backdrop-blur-md p-4 shadow-sm z-10">
-                <h3 class="text-sm font-black text-slate-800 mb-2 flex items-center gap-2"><i class="fas fa-map-marked-alt text-emerald-500"></i> Spending Map</h3>
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-sm font-black text-slate-800 flex items-center gap-2"><i class="fas fa-map-marked-alt text-emerald-500"></i> Spending Map</h3>
+                    <span id="mapStatus" class="text-[10px] font-bold text-slate-400">Ready</span>
+                </div>
                 <div class="flex gap-2">
                     <input type="date" id="mapDateFrom" class="bg-slate-50 p-2 rounded-lg text-xs font-bold text-slate-600 border border-slate-200 outline-none flex-1" onchange="renderMapMarkers()">
                     <input type="date" id="mapDateTo" class="bg-slate-50 p-2 rounded-lg text-xs font-bold text-slate-600 border border-slate-200 outline-none flex-1" onchange="renderMapMarkers()">
@@ -247,12 +250,12 @@
         </div>
 
         <!-- REPORT VIEW -->
-        <div id="view-report" class="view-section hidden px-6 py-6 fade-in h-full flex flex-col">
+        <div id="view-report" class="view-section hidden px-6 py-6 fade-in flex flex-col">
             <h2 class="text-3xl font-black text-slate-800 mb-6 tracking-tight">Analytics</h2>
             <div class="flex gap-2 mb-6 p-1 bg-slate-200 rounded-xl">
                 <button onclick="renderReport('week')" id="repWeek" class="flex-1 py-2.5 bg-white rounded-lg text-xs font-bold text-slate-800 shadow-sm transition-all hover:shadow-md">Week</button>
                 <button onclick="renderReport('month')" id="repMonth" class="flex-1 py-2.5 text-slate-500 rounded-lg text-xs font-bold transition-all hover:bg-white/50">Month</button>
-                <button onclick="renderReport('people')" id="repPeople" class="flex-1 py-2.5 text-slate-500 rounded-lg text-xs font-bold transition-all hover:bg-white/50">People</button>
+                <button onclick="renderReport('year')" id="repYear" class="flex-1 py-2.5 text-slate-500 rounded-lg text-xs font-bold transition-all hover:bg-white/50">Year</button>
             </div>
             <div class="glass p-5 rounded-[32px] mb-8 shadow-lg border border-white/60 bg-white/50">
                 <div class="h-56 w-full"><canvas id="reportChart"></canvas></div>
@@ -585,7 +588,7 @@
 
     <script>
         // --- CONFIG ---
-        const API_URL = "https://script.google.com/macros/s/AKfycbwWR2hyd9-md6ZT-BB8QjIFJyx5Uu4EKCn3qRMylnMj6eybGpDwNnFHu-qTj89n8Ego/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbyRqgV9KSBveXE3SEOMMiG4TFQi4VoQNxqyXilfdDB42ovYYJMNAolrDtTpLDLg0g/exec";
         
         let currentUser = null;
         let db = { transactions: [], debts: [], upcoming: [], wishlist: [], todos: [] };
