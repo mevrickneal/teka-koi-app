@@ -104,13 +104,11 @@
             background-image: url("https://www.transparenttextures.com/patterns/arabesque.png"), linear-gradient(135deg, #064e3b 0%, #115e59 50%, #0f766e 100%);
             background-blend-mode: overlay;
         }
+        .bg-gradient-night { background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%); }
         
         /* Dropdown responsiveness */
-        #notifDropdown { right: 0; max-width: 90vw; }
-        @media (min-width: 640px) { #notifDropdown { width: 320px; right: 0; } }
-
-        /* Grayscale for passed days */
-        .day-passed { filter: grayscale(100%); opacity: 0.6; }
+        #notifDropdown { right: 0; max-width: 90vw; width: 300px; z-index: 100; }
+        @media (max-width: 640px) { #notifDropdown { right: -10px; width: 280px; } }
     </style>
 </head>
 <body class="h-screen w-screen overflow-hidden flex flex-col bg-slate-50 transition-colors duration-500">
@@ -160,8 +158,11 @@
                 <button onclick="toggleNotifications()" class="h-11 w-11 rounded-full glass flex items-center justify-center text-slate-600 hover:text-indigo-600 transition-colors relative active:scale-90 shadow-sm">
                     <i class="fas fa-bell text-lg"></i><div id="notifBadge" class="notif-badge"></div>
                 </button>
-                <div id="notifDropdown" class="absolute right-0 top-14 w-72 bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-100 hidden p-4 z-50">
-                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Notifications</h3>
+                <div id="notifDropdown" class="absolute right-0 top-14 bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-100 hidden p-4 z-50">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Notifications</h3>
+                        <button onclick="toggleNotifications()" class="text-slate-400 hover:text-rose-500"><i class="fas fa-times"></i></button>
+                    </div>
                     <div id="notifList" class="max-h-64 overflow-y-auto space-y-3 no-scrollbar"></div>
                 </div>
             </div>
@@ -178,7 +179,7 @@
         
         <!-- DASHBOARD VIEW -->
         <div id="view-home" class="view-section px-6 py-6 fade-in">
-            <!-- Quran Verse Card -->
+            <!-- Quran Verse -->
             <div class="glass p-4 rounded-2xl mb-6 shadow-sm border border-emerald-50 relative overflow-hidden group">
                 <div class="absolute -right-6 -top-6 text-6xl opacity-5"><i class="fas fa-quran"></i></div>
                 <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-2"><i class="fas fa-star text-xs mr-1"></i> Daily Verse</p>
@@ -251,7 +252,7 @@
             <div class="flex gap-2 mb-6 p-1 bg-slate-200 rounded-xl">
                 <button onclick="renderReport('week')" id="repWeek" class="flex-1 py-2.5 bg-white rounded-lg text-xs font-bold text-slate-800 shadow-sm transition-all hover:shadow-md">Week</button>
                 <button onclick="renderReport('month')" id="repMonth" class="flex-1 py-2.5 text-slate-500 rounded-lg text-xs font-bold transition-all hover:bg-white/50">Month</button>
-                <button onclick="renderReport('year')" id="repYear" class="flex-1 py-2.5 text-slate-500 rounded-lg text-xs font-bold transition-all hover:bg-white/50">Year</button>
+                <button onclick="renderReport('people')" id="repPeople" class="flex-1 py-2.5 text-slate-500 rounded-lg text-xs font-bold transition-all hover:bg-white/50">People</button>
             </div>
             <div class="glass p-5 rounded-[32px] mb-8 shadow-lg border border-white/60 bg-white/50">
                 <div class="h-56 w-full"><canvas id="reportChart"></canvas></div>
@@ -300,7 +301,7 @@
             <button onclick="openDebtModal()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-xl mt-4 active:scale-95 transition-transform flex items-center justify-center gap-2"><i class="fas fa-plus"></i> Add Entry</button>
         </div>
 
-        <!-- LIFESTYLE VIEW (Scrollable Header + TV) -->
+        <!-- LIFESTYLE VIEW (Updated) -->
         <div id="view-lifestyle" class="view-section hidden h-full flex flex-col">
             <div class="flex-1 overflow-y-auto no-scrollbar">
                 <!-- Header (Scrolls naturally) with Premium Islamic Design -->
@@ -308,7 +309,7 @@
                     <div class="absolute bottom-8 left-8 right-8 text-white z-10">
                         <div class="flex justify-between items-end">
                             <div>
-                                <p class="text-xs font-bold text-emerald-200 uppercase mb-2 tracking-widest flex items-center gap-2 drop-shadow-md"><i class="fas fa-clock"></i> Next Wakto</p>
+                                <p class="text-xs font-bold text-emerald-200 uppercase mb-2 tracking-widest flex items-center gap-2 drop-shadow-md"><i class="fas fa-clock"></i> Next Prayer</p>
                                 <h2 class="text-5xl font-black islamic-font mb-1 drop-shadow-lg text-emerald-50" id="nextPrayerName">...</h2>
                                 <p class="text-lg font-medium opacity-90 font-mono text-emerald-100" id="nextPrayerTime">--:--</p>
                             </div>
@@ -425,6 +426,9 @@
                     <button onclick="setTxType('expense')" id="btnTypeExp" class="flex-1 py-4 rounded-xl bg-white shadow-md text-slate-900 font-bold text-xs transition-all tracking-wide">EXPENSE</button>
                     <button onclick="setTxType('income')" id="btnTypeInc" class="flex-1 py-4 rounded-xl text-slate-400 font-bold text-xs transition-all tracking-wide">INCOME</button>
                 </div>
+                <!-- DATE INPUT ADDED -->
+                <input type="datetime-local" id="inpDate" class="w-full p-4 bg-slate-50 rounded-2xl font-bold outline-none text-sm border border-slate-100 text-slate-600">
+                
                 <input type="number" id="inpAmount" class="w-full text-5xl font-black border-b-2 py-4 outline-none bg-transparent placeholder-slate-200 text-slate-800" placeholder="৳ 0">
                 <input type="text" id="inpTitle" class="w-full p-5 bg-slate-50 rounded-2xl font-bold outline-none text-sm border border-slate-100 focus:bg-white focus:border-emerald-500 transition-all" placeholder="Title (e.g. Lunch)">
                 <div class="grid grid-cols-2 gap-4">
@@ -434,7 +438,7 @@
                 <select id="inpContext" class="w-full p-5 bg-slate-50 rounded-2xl font-bold outline-none text-sm border border-slate-100"></select>
                 <div class="flex gap-3 items-center">
                     <input type="text" id="inpNote" class="flex-1 p-5 bg-slate-50 rounded-2xl font-medium outline-none text-xs border border-slate-100" placeholder="Note">
-                    <button onclick="toggleGPS()" id="btnGPS" class="h-14 w-14 bg-slate-100 rounded-2xl text-slate-400 flex items-center justify-center transition-all active:scale-95 gap-2"><i class="fas fa-map-marker-alt text-lg"></i> <span id="gpsStatusText" class="text-[10px]"></span></button>
+                    <button onclick="toggleGPS()" id="btnGPS" class="h-14 w-14 bg-slate-100 rounded-2xl text-slate-400 flex items-center justify-center transition-all active:scale-95 gap-2 px-3"><i class="fas fa-map-marker-alt text-lg"></i> <span id="gpsStatusText" class="text-[10px] font-bold"></span></button>
                 </div>
                 <button onclick="submitTransaction()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold shadow-xl active:scale-95 transition-transform text-sm tracking-wide">SAVE TRANSACTION</button>
             </div>
@@ -581,7 +585,7 @@
 
     <script>
         // --- CONFIG ---
-        const API_URL = "https://script.google.com/macros/s/AKfycbyRqgV9KSBveXE3SEOMMiG4TFQi4VoQNxqyXilfdDB42ovYYJMNAolrDtTpLDLg0g/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbwWR2hyd9-md6ZT-BB8QjIFJyx5Uu4EKCn3qRMylnMj6eybGpDwNnFHu-qTj89n8Ego/exec";
         
         let currentUser = null;
         let db = { transactions: [], debts: [], upcoming: [], wishlist: [], todos: [] };
@@ -637,6 +641,11 @@
             setInterval(checkNotifications, 60000);
             setInterval(updateNextPrayer, 1000);
             renderChannels();
+            
+            // Set default date input to now (local timezone compliant)
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('inpDate').value = now.toISOString().slice(0,16);
         };
 
         function renderQuranVerse() {
@@ -833,8 +842,10 @@
                     const amount = matchAmount[0];
                     const title = item.replace(amount, '').trim();
                     if(title && amount) {
+                        const now = new Date();
+                        const dateStr = now.toISOString().slice(0, 19).replace('T', ' ');
                         txs.push({
-                            date: new Date().toISOString().slice(0, 19).replace('T', ' '),
+                            date: dateStr,
                             email: currentUser.email, userName: currentUser.name,
                             title: title, amount: amount, type: type,
                             category: 'General', wallet: 'Cash', context: 'Personal', note: 'Smart Added', gps: currentGPS
@@ -872,16 +883,19 @@
             const id = document.getElementById('smartPlanId').value;
             const amt = document.getElementById('smartPlanAmount').value;
             const title = document.getElementById('smartPlanTitle').value;
+            const now = new Date();
+            const dateStr = now.toISOString().slice(0, 19).replace('T', ' ');
             
             const tx = {
-                date: new Date().toISOString().slice(0, 19).replace('T', ' '),
+                date: dateStr,
                 email: currentUser.email, userName: currentUser.name,
                 title: `Paid: ${title}`, amount: amt, type: 'expense',
-                category: category || 'General', wallet: 'Cash', context: context || 'Personal', note: 'Auto-added from Plan', gps: ''
+                category: category || 'General', wallet: 'Cash',
+                context: context || 'Personal', note: 'Auto-added from Plan', gps: ''
             };
             db.transactions.unshift(tx);
             
-            const todo = { id: Date.now(), date: new Date().toISOString(), email: currentUser.email, title: `Completed Plan: ${title}`, done: true };
+            const todo = { id: Date.now(), date: dateStr, email: currentUser.email, title: `Completed Plan: ${title}`, done: true };
             if(!db.todos) db.todos = [];
             db.todos.unshift(todo);
             
@@ -1069,7 +1083,6 @@
             if (!nextP) {
                 // Next is Fajr tomorrow
                 nextP = 'Fajr';
-                // Logic for tomorrow calculation if needed, simplified here
             }
             
             document.getElementById('nextPrayerName').innerText = nextP;
@@ -1095,7 +1108,6 @@
                 document.getElementById('sehriCountdown').innerText = `${h}h ${m}m ${s}s`;
             } else {
                 document.getElementById('nextEventLabel').innerText = "Sehri (Tomorrow)";
-                // Simplified for night cycle
                 document.getElementById('sehriCountdown').innerText = "--:--";
             }
         }
@@ -1135,9 +1147,16 @@
             document.querySelectorAll('[id^="close_"]').forEach(inp => {
                 const w = inp.id.split('_')[1];
                 const diff = parseFloat(inp.value) - parseFloat(inp.dataset.sys);
-                if(diff !== 0) adjs.push({ date: new Date().toISOString().slice(0, 19).replace('T', ' '), email: currentUser.email, userName: currentUser.name, title: `Auto-Adj (${w})`, amount: Math.abs(diff), type: diff > 0 ? 'income' : 'expense', category: 'Other', wallet: w, context: 'Office', note: 'Daily Closing', gps: '' });
+                if(!isNaN(diff) && diff !== 0) {
+                    adjs.push({ date: new Date().toISOString().slice(0, 19).replace('T', ' '), email: currentUser.email, userName: currentUser.name, title: `Auto-Adj (${w})`, amount: Math.abs(diff), type: diff > 0 ? 'income' : 'expense', category: 'Other', wallet: w, context: 'Office', note: 'Daily Closing', gps: '' });
+                }
             });
-            if(adjs.length > 0 && confirm(`Create ${adjs.length} adjustments?`)) { adjs.forEach(t => db.transactions.unshift(t)); syncUp({ transactions: adjs }); renderDashboard(); }
+            if(adjs.length > 0) {
+                alert(`Adjusting for ${adjs.length} wallets.`);
+                adjs.forEach(t => db.transactions.unshift(t)); 
+                syncUp({ transactions: adjs }); 
+                renderDashboard(); 
+            } else { alert("No discrepancies found!"); }
             document.getElementById('closingModal').classList.add('hidden');
         }
 
@@ -1185,7 +1204,6 @@
             txs.sort((a,b) => new Date(a.date) - new Date(b.date));
             const latlngs = [];
             txs.forEach(t => {
-                // Robust parsing: Remove quotes if any, split by comma
                 const rawGPS = t.gps.replace(/['"]/g, '');
                 const [lat, lng] = rawGPS.split(',').map(Number);
                 if (!isNaN(lat) && !isNaN(lng)) { L.marker([lat, lng]).addTo(mapInstance).bindPopup(`<b>${t.title}</b><br>৳${t.amount}<br>${t.date}`); latlngs.push([lat, lng]); }
@@ -1222,15 +1240,82 @@
         }
 
         function renderReport(period) {
-            ['repWeek','repMonth','repYear'].forEach(id => { document.getElementById(id).classList.remove('bg-white', 'text-slate-800', 'shadow-sm'); document.getElementById(id).classList.add('text-slate-500'); });
-            document.getElementById('rep' + period.charAt(0).toUpperCase() + period.slice(1)).classList.add('bg-white', 'text-slate-800', 'shadow-sm');
-            const ctx = document.getElementById('reportChart').getContext('2d');
+            // Button Styling Update
+            ['repWeek','repMonth','repPeople','repYear'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) { el.classList.remove('bg-white', 'text-slate-800', 'shadow-sm'); el.classList.add('text-slate-500'); }
+            });
+            const activeBtn = document.getElementById('rep' + period.charAt(0).toUpperCase() + period.slice(1));
+            if(activeBtn) { activeBtn.classList.add('bg-white', 'text-slate-800', 'shadow-sm'); activeBtn.classList.remove('text-slate-500'); }
+
+            const ctx = document.getElementById('reportChart');
+            if(!ctx) return;
+            const context = ctx.getContext('2d');
+            
+            // Safe Destroy
+            if(window.reportChart instanceof Chart) { window.reportChart.destroy(); } 
+            else if (window.reportChart && typeof window.reportChart.destroy === 'function') { window.reportChart.destroy(); }
+
+            // Logic
+            const now = new Date();
             let labels = [], data = [];
-            if(period === 'week') { labels=['M','T','W','T','F','S','S']; data=[500,1200,800,200,1500,400,900]; }
-            if(period === 'month') { labels=['W1','W2','W3','W4']; data=[5000,7000,4000,6000]; }
-            if(period === 'year') { labels=['Q1','Q2','Q3','Q4']; data=[25000,30000,28000,40000]; }
-            if(window.reportChart) window.reportChart.destroy();
-            window.reportChart = new Chart(ctx, { type: 'bar', data: { labels, datasets: [{ label: 'Expense', data, backgroundColor: '#10b981', borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+            let chartType = 'bar';
+            const txs = db.transactions.filter(t => t.type === 'expense');
+            
+            if (period === 'people') {
+                chartType = 'doughnut';
+                const people = {};
+                txs.forEach(t => {
+                    const person = t.context || 'Other';
+                    people[person] = (people[person] || 0) + Number(t.amount);
+                });
+                labels = Object.keys(people);
+                data = Object.values(people);
+            }
+            else if (period === 'week') {
+                for(let i=6; i>=0; i--) {
+                    const d = new Date(now); d.setDate(d.getDate() - i);
+                    labels.push(d.toLocaleDateString('en-US', {weekday:'short'}));
+                    const dayStr = d.toISOString().split('T')[0];
+                    const dailyTotal = txs.filter(t => t.date.startsWith(dayStr)).reduce((sum, t) => sum + Number(t.amount), 0);
+                    data.push(dailyTotal);
+                }
+            }
+            else if (period === 'month') {
+                const daysInMonth = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+                labels = Array.from({length: daysInMonth}, (_, i) => i + 1);
+                data = new Array(daysInMonth).fill(0);
+                const monthStr = now.toISOString().slice(0, 7); 
+                txs.filter(t => t.date.startsWith(monthStr)).forEach(t => { const day = parseInt(t.date.split('-')[2]); if(day) data[day-1] += Number(t.amount); });
+            }
+            else if (period === 'year') {
+                labels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                data = new Array(12).fill(0);
+                const yearStr = now.getFullYear().toString();
+                txs.filter(t => t.date.startsWith(yearStr)).forEach(t => { const month = parseInt(t.date.split('-')[1]); if(month) data[month-1] += Number(t.amount); });
+            }
+
+            window.reportChart = new Chart(context, {
+                type: chartType,
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Expense',
+                        data,
+                        backgroundColor: chartType === 'doughnut' 
+                            ? ['#10b981', '#f43f5e', '#3b82f6', '#f59e0b', '#8b5cf6', '#6366f1'] 
+                            : '#10b981',
+                        borderRadius: 4,
+                        barThickness: period === 'month' ? 4 : 12
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: chartType === 'doughnut', position: 'bottom' } },
+                    scales: chartType === 'doughnut' ? {} : { y: { beginAtZero: true, grid: { display: false } }, x: { grid: { display: false } } }
+                }
+            });
         }
 
         function downloadReport(type) {
@@ -1278,15 +1363,29 @@
             }
         }
 
-        function openInputModal(t) { document.getElementById('inputModal').classList.remove('hidden'); setTxType(t); }
+        function openInputModal(t) { 
+            document.getElementById('inputModal').classList.remove('hidden'); 
+            setTxType(t);
+            // Default date to now (local time)
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('inpDate').value = now.toISOString().slice(0,16);
+        }
         function closeInputModal() { document.getElementById('inputModal').classList.add('hidden'); }
-        function setTxType(t) { /* Tx Type logic */ }
+        function setTxType(t) { 
+            currentTxType = t;
+            const bE = document.getElementById('btnTypeExp');
+            const bI = document.getElementById('btnTypeInc');
+            if(t==='expense') { bE.className="flex-1 py-4 rounded-xl bg-white shadow-md text-slate-900 font-bold text-xs transition-all tracking-wide"; bI.className="flex-1 py-4 rounded-xl text-slate-400 font-bold text-xs transition-all tracking-wide"; }
+            else { bI.className="flex-1 py-4 rounded-xl bg-emerald-500 text-white shadow font-bold text-xs"; bE.className="flex-1 py-4 rounded-xl text-slate-400 font-bold text-xs"; }
+        }
+        
         function toggleGPS() { 
             const btn = document.getElementById('btnGPS');
             const txt = document.getElementById('gpsStatusText');
             if(currentGPS) {
                 currentGPS = '';
-                btn.className = "h-14 w-14 bg-slate-100 rounded-2xl text-slate-400 flex items-center justify-center transition-all active:scale-95";
+                btn.className = "h-14 w-14 bg-slate-100 rounded-2xl text-slate-400 flex items-center justify-center transition-all active:scale-95 gap-2 px-3";
                 btn.innerHTML = '<i class="fas fa-map-marker-alt text-lg"></i>';
                 txt.innerText = '';
             } else {
@@ -1295,9 +1394,9 @@
                     navigator.geolocation.getCurrentPosition(
                         (pos) => {
                             currentGPS = `${pos.coords.latitude},${pos.coords.longitude}`;
-                            btn.className = "h-14 w-14 bg-emerald-500 text-white rounded-2xl flex items-center justify-center transition-all active:scale-95 shadow-lg";
+                            btn.className = "h-14 w-auto bg-emerald-500 text-white rounded-2xl flex items-center justify-center transition-all active:scale-95 shadow-lg px-4 gap-2";
                             btn.innerHTML = '<i class="fas fa-check"></i>';
-                            txt.innerText = currentGPS;
+                            txt.innerText = 'Loc Set';
                         },
                         () => { alert("Location access denied"); btn.innerHTML = '<i class="fas fa-map-marker-alt text-lg"></i>'; }
                     );
@@ -1307,9 +1406,13 @@
         function submitTransaction() { 
             const amt = document.getElementById('inpAmount').value;
             const title = document.getElementById('inpTitle').value;
+            // Get date from picker or fallback to now
+            const dateVal = document.getElementById('inpDate').value;
+            const dateStr = dateVal ? new Date(dateVal).toISOString().slice(0, 19).replace('T', ' ') : new Date().toISOString().slice(0, 19).replace('T', ' ');
+
             if(!amt || !title) return;
             const tx = {
-                date: new Date().toISOString().slice(0, 19).replace('T', ' '),
+                date: dateStr,
                 email: currentUser.email, userName: currentUser.name, title, amount: amt, type: currentTxType,
                 category: document.getElementById('inpCategory').value,
                 wallet: document.getElementById('inpWallet').value,
@@ -1317,8 +1420,17 @@
                 note: document.getElementById('inpNote').value,
                 gps: currentGPS
             };
-            db.transactions.unshift(tx); renderAll(); closeInputModal(); syncUp({ transactions: [tx] });
+            db.transactions.unshift(tx); renderAll(); 
+            // FIXED: Close modal immediately, sync later
+            closeInputModal(); 
+            setTimeout(() => syncUp({ transactions: [tx] }), 50); 
             document.getElementById('inpAmount').value = ''; document.getElementById('inpTitle').value = '';
+            // Reset GPS button
+            currentGPS = '';
+            const btn = document.getElementById('btnGPS');
+            btn.className = "h-14 w-14 bg-slate-100 rounded-2xl text-slate-400 flex items-center justify-center transition-all active:scale-95 gap-2 px-3";
+            btn.innerHTML = '<i class="fas fa-map-marker-alt text-lg"></i>';
+            document.getElementById('gpsStatusText').innerText = '';
         }
         function filterHistory(c) { activeFilter = c; renderTransactions(); }
         function renderTransactions() { 
@@ -1327,7 +1439,7 @@
             let filtered = db.transactions ? db.transactions.filter(t => (t.title && t.title.toLowerCase().includes(term))) : [];
             if(activeFilter !== 'All') filtered = filtered.filter(t => t.category === activeFilter || t.context === activeFilter);
             filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
-            list.innerHTML = filtered.map(t => `<div class="glass p-4 rounded-2xl flex justify-between items-center border border-white/60"><div><p class="text-sm font-bold text-slate-800">${t.title}</p><div class="flex items-center gap-1"><p class="text-[10px] text-slate-400 font-bold uppercase">${t.context} • ${t.category}</p>${t.gps ? `<i class="fas fa-map-marker-alt text-[10px] text-emerald-400"></i>` : ''}</div></div><div class="text-right"><p class="font-black text-sm ${t.type==='income'?'text-emerald-500':'text-rose-500'}">${t.type==='income'?'+':'-'}৳${t.amount}</p><p class="text-[9px] text-slate-300 font-bold">${t.wallet}</p></div></div>`).join('');
+            list.innerHTML = filtered.map(t => `<div class="glass p-4 rounded-2xl flex justify-between items-center border border-white/60"><div><p class="text-sm font-bold text-slate-800">${t.title}</p><div class="flex items-center gap-1"><p class="text-[10px] text-slate-400 font-bold uppercase">${t.context} • ${t.category}</p><span class="text-[9px] text-slate-300 ml-1">${new Date(t.date).toLocaleDateString()}</span>${t.gps ? `<i class="fas fa-map-marker-alt text-[10px] text-emerald-400 ml-1"></i>` : ''}</div></div><div class="text-right"><p class="font-black text-sm ${t.type==='income'?'text-emerald-500':'text-rose-500'}">${t.type==='income'?'+':'-'}৳${t.amount}</p><p class="text-[9px] text-slate-300 font-bold">${t.wallet}</p></div></div>`).join('');
         }
         
         function navTo(v) { 
