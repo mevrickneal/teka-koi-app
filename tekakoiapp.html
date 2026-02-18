@@ -8,14 +8,13 @@
     <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- PDF Generation Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-    
-    <!-- Leaflet Map (Free) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -23,90 +22,38 @@
 
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; -webkit-tap-highlight-color: transparent; }
-        
-        /* Glassmorphism Premium */
-        .glass {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
-        }
-        .glass-dark {
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.3);
-        }
-        
-        /* Interactive Elements */
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); }
+        .glass-dark { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.3); }
         .interactive-card { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); cursor: pointer; }
         .interactive-card:active { transform: scale(0.96); }
-        
-        /* Logo Styles */
         .wallet-logo { width: 32px; height: 32px; object-fit: contain; border-radius: 50%; background: white; padding: 2px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-
-        /* Splash Screen */
-        #splashScreen {
-            animation: splashOut 0.8s cubic-bezier(0.7, 0, 0.3, 1) forwards;
-            animation-delay: 2.2s;
-        }
-        @keyframes splashOut {
-            0% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0; transform: scale(1.1); visibility: hidden; }
-        }
+        #splashScreen { animation: splashOut 0.8s cubic-bezier(0.7, 0, 0.3, 1) forwards; animation-delay: 2.2s; }
+        @keyframes splashOut { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.1); visibility: hidden; } }
         .bounce { animation: bounce 2.5s infinite ease-in-out; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-
-        /* Animations */
         .fade-in { animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        
         .slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-        /* Utilities */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
         .nav-item.active i { color: #10b981; transform: translateY(-3px); filter: drop-shadow(0 4px 6px rgba(16, 185, 129, 0.3)); }
         .nav-item.active span { color: #10b981; font-weight: 800; }
-        .nav-item { transition: all 0.3s; }
-        
         .pulse-shadow { animation: pulse 2.5s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(0,0,0,0); } 100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); } }
-
-        /* Islamic Theme */
-        .islamic-mode { 
-            background-color: #ecfdf5 !important; 
-            background-image: url('https://www.transparenttextures.com/patterns/arabesque.png');
-            background-attachment: fixed;
-        }
+        .islamic-mode { background-color: #ecfdf5 !important; background-image: url('https://www.transparenttextures.com/patterns/arabesque.png'); background-attachment: fixed; }
+        .bg-islamic-premium { background-color: #042f2e; background-image: url("https://www.transparenttextures.com/patterns/arabesque.png"), linear-gradient(135deg, #064e3b 0%, #115e59 50%, #0f766e 100%); background-blend-mode: overlay; }
+        .bg-gradient-night { background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%); }
         .islamic-font { font-family: 'Amiri', serif; }
-
-        /* Notification Badge */
         .notif-badge { position: absolute; top: 0px; right: 0px; width: 10px; height: 10px; background: #ef4444; border-radius: 50%; border: 2px solid white; display: none; box-shadow: 0 2px 4px rgba(239, 68, 68, 0.4); }
         .notif-badge.active { display: block; animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite; }
         @keyframes ping { 75%, 100% { transform: scale(2); opacity: 0; } }
-        
-        /* Filter Chips */
         .filter-chip { white-space: nowrap; padding: 8px 16px; border-radius: 999px; font-size: 11px; font-weight: 700; background: #f1f5f9; color: #64748b; transition: all 0.2s; border: 1px solid transparent; }
         .filter-chip.active { background: #10b981; color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); transform: translateY(-1px); }
-
-        /* Video Container */
         .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 20px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.3); }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .bg-gradient-sunrise { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
         
-        /* Islamic Header Premium Background */
-        .bg-islamic-premium {
-            background-color: #042f2e;
-            background-image: url("https://www.transparenttextures.com/patterns/arabesque.png"), linear-gradient(135deg, #064e3b 0%, #115e59 50%, #0f766e 100%);
-            background-blend-mode: overlay;
-        }
-        .bg-gradient-night { background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%); }
-        
-        /* Dropdown responsiveness */
         #notifDropdown { right: 0; max-width: 90vw; width: 300px; z-index: 100; }
         @media (max-width: 640px) { #notifDropdown { right: -10px; width: 280px; } }
     </style>
@@ -124,7 +71,7 @@
     <div id="authOverlay" class="fixed inset-0 z-[150] bg-white/60 backdrop-blur-xl flex flex-col items-center justify-center p-6 hidden">
         <div class="w-full max-w-sm glass p-8 rounded-[32px] shadow-2xl border border-white/50">
             <div class="text-center mb-8">
-                <div class="h-20 w-20 bg-slate-900 rounded-3xl mx-auto mb-4 flex items-center justify-center text-4xl shadow-xl text-white rotate-3 hover:rotate-0 transition-transform duration-500">🔐</div>
+                <div class="h-20 w-20 bg-slate-900 rounded-3xl mx-auto mb-4 flex items-center justify-center text-4xl shadow-xl text-white">🔐</div>
                 <h1 class="text-3xl font-black text-slate-900" id="authTitle">Welcome</h1>
                 <p class="text-slate-500 text-xs font-bold uppercase mt-1 tracking-wider">Secure Finance Access</p>
             </div>
@@ -231,10 +178,7 @@
         <!-- MAP VIEW -->
         <div id="view-map" class="view-section hidden h-full flex flex-col bg-slate-100">
             <div class="bg-white/90 backdrop-blur-md p-4 shadow-sm z-10">
-                <div class="flex justify-between items-center mb-2">
-                    <h3 class="text-sm font-black text-slate-800 flex items-center gap-2"><i class="fas fa-map-marked-alt text-emerald-500"></i> Spending Map</h3>
-                    <span id="mapStatus" class="text-[10px] font-bold text-slate-400">Ready</span>
-                </div>
+                <h3 class="text-sm font-black text-slate-800 mb-2 flex items-center gap-2"><i class="fas fa-map-marked-alt text-emerald-500"></i> Spending Map</h3>
                 <div class="flex gap-2">
                     <input type="date" id="mapDateFrom" class="bg-slate-50 p-2 rounded-lg text-xs font-bold text-slate-600 border border-slate-200 outline-none flex-1" onchange="renderMapMarkers()">
                     <input type="date" id="mapDateTo" class="bg-slate-50 p-2 rounded-lg text-xs font-bold text-slate-600 border border-slate-200 outline-none flex-1" onchange="renderMapMarkers()">
@@ -250,7 +194,7 @@
         </div>
 
         <!-- REPORT VIEW -->
-        <div id="view-report" class="view-section hidden px-6 py-6 fade-in flex flex-col">
+        <div id="view-report" class="view-section hidden px-6 py-6 fade-in h-full flex flex-col">
             <h2 class="text-3xl font-black text-slate-800 mb-6 tracking-tight">Analytics</h2>
             <div class="flex gap-2 mb-6 p-1 bg-slate-200 rounded-xl">
                 <button onclick="renderReport('week')" id="repWeek" class="flex-1 py-2.5 bg-white rounded-lg text-xs font-bold text-slate-800 shadow-sm transition-all hover:shadow-md">Week</button>
@@ -588,7 +532,9 @@
 
     <script>
         // --- CONFIG ---
-        const API_URL = "https://script.google.com/macros/s/AKfycbyRqgV9KSBveXE3SEOMMiG4TFQi4VoQNxqyXilfdDB42ovYYJMNAolrDtTpLDLg0g/exec";
+        const SUPABASE_URL = "https://ljmhkvfgpbzkmwiukeqw.supabase.co"; 
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxqbWhrdmZncGJ6a213aXVrZXF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyNjg2MTQsImV4cCI6MjA4Njg0NDYxNH0.Mp9KYiL7B_5mHETZIyYBVy1hUhyJ5YyqdUUBXOekn98"; 
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
         let currentUser = null;
         let db = { transactions: [], debts: [], upcoming: [], wishlist: [], todos: [] };
@@ -598,7 +544,7 @@
         let prayerTimings = {};
         
         let tvChannels = JSON.parse(localStorage.getItem('TEKA_TV')) || [
-            {name: "Jamuna TV", link: "https://www.youtube.com/embed/GvSQMcp7GDo?autoplay=1"},
+            {name: "Channel i TV", link: "https://www.youtube.com/watch?v=o6SJvPy15o4"},
             {name: "Somoy TV", link: "https://www.youtube.com/embed/P7qS64-Qd4I?autoplay=1"},
             {name: "Channel 24", link: "https://www.youtube.com/embed/z4a6mX8qV9k?autoplay=1"}
         ];
@@ -645,7 +591,6 @@
             setInterval(updateNextPrayer, 1000);
             renderChannels();
             
-            // Set default date input to now (local timezone compliant)
             const now = new Date();
             now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
             document.getElementById('inpDate').value = now.toISOString().slice(0,16);
@@ -664,8 +609,8 @@
             const hr = d.getHours();
             const header = document.getElementById('lifeHeader');
             if(header) {
-                if (hr >= 6 && hr < 18) header.className = "relative h-64 rounded-b-[40px] shadow-2xl overflow-hidden transition-all duration-1000 mb-6 bg-islamic-premium"; // Day style
-                else header.className = "relative h-64 rounded-b-[40px] shadow-2xl overflow-hidden transition-all duration-1000 mb-6 bg-gradient-night"; // Night style
+                if (hr >= 6 && hr < 18) header.className = "relative h-64 rounded-b-[40px] shadow-2xl overflow-hidden transition-all duration-1000 mb-6 bg-islamic-premium"; 
+                else header.className = "relative h-64 rounded-b-[40px] shadow-2xl overflow-hidden transition-all duration-1000 mb-6 bg-gradient-night"; 
             }
         }
         
@@ -694,20 +639,37 @@
             if(!email || !pass) return;
             document.getElementById('btnLogin').innerText = '...';
             try {
-                let res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'login', email, password: btoa(pass) }) });
-                let data = await res.json();
-                if(data.status !== 'success') {
-                     res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'login', email, password: pass }) });
-                     data = await res.json();
-                }
-                if(data.status === 'success') {
-                    currentUser = data.user;
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('email', email)
+                    .eq('password', btoa(pass)) 
+                    .single();
+
+                if (data) {
+                    currentUser = data;
                     if(remember) localStorage.setItem('TEKA_USER', JSON.stringify(currentUser));
                     else sessionStorage.setItem('TEKA_USER', JSON.stringify(currentUser));
                     document.getElementById('authOverlay').classList.add('hidden');
                     initApp();
-                } else alert(data.message);
-            } catch(e) { alert("Connect Error"); }
+                } else {
+                     const { data: data2 } = await supabaseClient
+                        .from('users')
+                        .select('*')
+                        .eq('email', email)
+                        .eq('password', pass)
+                        .single();
+                     if (data2) {
+                        currentUser = data2;
+                        if(remember) localStorage.setItem('TEKA_USER', JSON.stringify(currentUser));
+                        else sessionStorage.setItem('TEKA_USER', JSON.stringify(currentUser));
+                        document.getElementById('authOverlay').classList.add('hidden');
+                        initApp();
+                     } else {
+                        alert("Invalid credentials");
+                     }
+                }
+            } catch(e) { alert("Connect Error: " + e.message); }
             document.getElementById('btnLogin').innerText = 'LOGIN';
         }
 
@@ -716,15 +678,18 @@
             const email = document.getElementById('regEmail').value;
             const pass = document.getElementById('regPass').value;
             try {
-                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'signup', name, email, password: btoa(pass) }) });
-                const data = await res.json();
-                if(data.status === 'success') {
-                    currentUser = data.user;
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .insert([{ name, email, password: btoa(pass), avatar: 'U', contact: '' }])
+                    .select();
+                    
+                if(data) {
+                    currentUser = data[0];
                     localStorage.setItem('TEKA_USER', JSON.stringify(currentUser));
                     document.getElementById('authOverlay').classList.add('hidden');
                     initApp();
-                } else alert(data.message);
-            } catch(e) { alert("Error"); }
+                } else alert("Error signing up: " + error.message);
+            } catch(e) { alert("Error: " + e.message); }
         }
 
         function logout() { 
@@ -738,60 +703,42 @@
             document.getElementById('profileModal').classList.remove('hidden');
             document.getElementById('profileNameDisplay').innerText = currentUser.name || 'User';
             document.getElementById('profileEmailDisplay').innerText = currentUser.email || '';
-            
             updateProfileAvatarUI();
-            
             document.getElementById('profileNameInput').value = currentUser.name || '';
             document.getElementById('profileContactInput').value = currentUser.contact || '';
             document.getElementById('profileAvatarInput').value = currentUser.avatar && currentUser.avatar.startsWith('http') ? currentUser.avatar : '';
         }
         function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
-        function saveProfileLocal() {
+        async function saveProfileLocal() {
             const newName = document.getElementById('profileNameInput').value;
             const newAvatar = document.getElementById('profileAvatarInput').value;
+            const newContact = document.getElementById('profileContactInput').value;
             if(newName) {
-                currentUser.name = newName;
-                currentUser.contact = document.getElementById('profileContactInput').value;
-                if(newAvatar) currentUser.avatar = newAvatar;
-                
-                if(localStorage.getItem('TEKA_USER')) localStorage.setItem('TEKA_USER', JSON.stringify(currentUser));
-                else sessionStorage.setItem('TEKA_USER', JSON.stringify(currentUser));
-                
-                updateProfileAvatarUI();
-                closeProfileModal();
-                
-                // Sync to backend
-                fetch(API_URL, {
-                    method: 'POST', 
-                    body: JSON.stringify({ 
-                        action: 'update_profile', 
-                        email: currentUser.email, 
-                        name: newName, 
-                        contact: currentUser.contact, 
-                        avatar: newAvatar 
-                    })
-                });
+                const updates = { name: newName, contact: newContact, avatar: newAvatar };
+                const { data, error } = await supabaseClient.from('users').update(updates).eq('email', currentUser.email).select();
+                if(data) {
+                    currentUser = data[0];
+                    if(localStorage.getItem('TEKA_USER')) localStorage.setItem('TEKA_USER', JSON.stringify(currentUser));
+                    else sessionStorage.setItem('TEKA_USER', JSON.stringify(currentUser));
+                    updateProfileAvatarUI();
+                    closeProfileModal();
+                }
             }
         }
         
         function updateProfileAvatarUI() {
             const img = currentUser.avatar && currentUser.avatar.startsWith('http') ? currentUser.avatar : null;
-            // Header
             if(img) {
                 document.getElementById('headerAvatarImg').src = img;
                 document.getElementById('headerAvatarImg').classList.remove('hidden');
                 document.getElementById('headerAvatarText').classList.add('hidden');
-            } else {
-                document.getElementById('headerAvatarImg').classList.add('hidden');
-                document.getElementById('headerAvatarText').classList.remove('hidden');
-                document.getElementById('headerAvatarText').innerText = currentUser.name ? currentUser.name[0].toUpperCase() : 'U';
-            }
-            // Modal
-            if(img) {
                 document.getElementById('profileAvatarImg').src = img;
                 document.getElementById('profileAvatarImg').classList.remove('hidden');
                 document.getElementById('profileAvatarText').classList.add('hidden');
             } else {
+                document.getElementById('headerAvatarImg').classList.add('hidden');
+                document.getElementById('headerAvatarText').classList.remove('hidden');
+                document.getElementById('headerAvatarText').innerText = currentUser.name ? currentUser.name[0].toUpperCase() : 'U';
                 document.getElementById('profileAvatarImg').classList.add('hidden');
                 document.getElementById('profileAvatarText').classList.remove('hidden');
                 document.getElementById('profileAvatarText').innerText = currentUser.name ? currentUser.name[0].toUpperCase() : 'U';
@@ -805,10 +752,8 @@
             fill('inpWallet', WALLETS);
             fill('inpCategory', CATEGORIES);
             fill('inpContext', CONTEXTS);
-            
             const filters = ['All', ...CATEGORIES, ...CONTEXTS];
             document.getElementById('filterChips').innerHTML = filters.map(f => `<button onclick="filterHistory('${f}')" class="filter-chip ${f==='All'?'active':''}" id="chip-${f}">${f}</button>`).join('');
-
             syncDown();
             initLifestyle();
         }
@@ -817,24 +762,23 @@
         async function syncDown() {
             document.getElementById('syncIndicator').classList.remove('hidden');
             try {
-                const res = await fetch(`${API_URL}?email=${currentUser.email}`);
-                const json = await res.json();
-                if(json.status === 'success') {
-                    db = json.data;
-                    renderAll();
-                    checkNotifications();
-                }
-            } catch(e) {}
+                const { data: trans } = await supabaseClient.from('transactions').select('*').eq('email', currentUser.email);
+                const { data: debts } = await supabaseClient.from('debts').select('*').eq('email', currentUser.email);
+                const { data: up } = await supabaseClient.from('upcoming').select('*').eq('email', currentUser.email);
+                const { data: wish } = await supabaseClient.from('wishlist').select('*').eq('email', currentUser.email);
+                const { data: todos } = await supabaseClient.from('todos').select('*').eq('email', currentUser.email);
+                
+                db = { transactions: trans || [], debts: debts || [], upcoming: up || [], wishlist: wish || [], todos: todos || [] };
+                renderAll();
+                checkNotifications();
+            } catch(e) { console.error(e); }
             document.getElementById('syncIndicator').classList.add('hidden');
         }
-        async function syncUp(payload) { await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'sync_up', userEmail: currentUser.email, ...payload }) }); }
-        async function updateItem(type, id, updates) { await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'update', type, id, updates }) }); }
-        async function deleteItem(type, id) { await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', type, id }) }); }
 
         // --- SMART INPUT & PLAN LOGIC ---
         function openSmartInput() { document.getElementById('smartInputModal').classList.remove('hidden'); }
         
-        function processSmartInput(type) {
+        async function processSmartInput(type) {
             const text = document.getElementById('smartInputText').value;
             const items = text.split(/,|\n/).filter(i => i.trim() !== '');
             const txs = [];
@@ -849,7 +793,7 @@
                         const dateStr = now.toISOString().slice(0, 19).replace('T', ' ');
                         txs.push({
                             date: dateStr,
-                            email: currentUser.email, userName: currentUser.name,
+                            email: currentUser.email, user_name: currentUser.name,
                             title: title, amount: amount, type: type,
                             category: 'General', wallet: 'Cash', context: 'Personal', note: 'Smart Added', gps: currentGPS
                         });
@@ -858,11 +802,13 @@
             });
             
             if(txs.length > 0) {
-                txs.forEach(t => db.transactions.unshift(t));
-                renderAll();
-                document.getElementById('smartInputModal').classList.add('hidden');
-                document.getElementById('smartInputText').value = '';
-                syncUp({ transactions: txs });
+                const { data, error } = await supabaseClient.from('transactions').insert(txs).select();
+                if(data) {
+                    data.forEach(t => db.transactions.unshift(t));
+                    renderAll();
+                    document.getElementById('smartInputModal').classList.add('hidden');
+                    document.getElementById('smartInputText').value = '';
+                }
             }
         }
 
@@ -872,17 +818,15 @@
                 document.getElementById('smartPlanId').value = id;
                 document.getElementById('smartPlanAmount').value = plan.amount;
                 document.getElementById('smartPlanTitle').value = plan.title;
-                
                 if(plan.title.toLowerCase().includes('date')) { confirmSmartPlan('Girlfriend', 'Food'); return; }
                 if(plan.title.toLowerCase().includes('tour')) { confirmSmartPlan('Personal', 'Transport'); return; }
-                
                 document.getElementById('smartPlanModal').classList.remove('hidden');
             }
         }
         
         function closeSmartPlan() { document.getElementById('smartPlanModal').classList.add('hidden'); }
         
-        function confirmSmartPlan(context, category) {
+        async function confirmSmartPlan(context, category) {
             const id = document.getElementById('smartPlanId').value;
             const amt = document.getElementById('smartPlanAmount').value;
             const title = document.getElementById('smartPlanTitle').value;
@@ -890,24 +834,19 @@
             const dateStr = now.toISOString().slice(0, 19).replace('T', ' ');
             
             const tx = {
-                date: dateStr,
-                email: currentUser.email, userName: currentUser.name,
+                date: dateStr, email: currentUser.email, user_name: currentUser.name,
                 title: `Paid: ${title}`, amount: amt, type: 'expense',
                 category: category || 'General', wallet: 'Cash',
                 context: context || 'Personal', note: 'Auto-added from Plan', gps: ''
             };
-            db.transactions.unshift(tx);
+            const todo = { date: dateStr, email: currentUser.email, title: `Completed Plan: ${title}`, done: true };
             
-            const todo = { id: Date.now(), date: dateStr, email: currentUser.email, title: `Completed Plan: ${title}`, done: true };
-            if(!db.todos) db.todos = [];
-            db.todos.unshift(todo);
+            await supabaseClient.from('transactions').insert([tx]);
+            await supabaseClient.from('todos').insert([todo]);
+            await supabaseClient.from('upcoming').update({ is_paid: true }).eq('id', id);
             
-            const plan = db.upcoming.find(u => u.id == id);
-            if(plan) plan.isPaid = true;
-            
-            renderAll(); closeSmartPlan();
-            syncUp({ transactions: [tx], todos: [todo] });
-            updateItem('upcoming', id, {isPaid: true});
+            syncDown();
+            closeSmartPlan();
         }
 
         // --- NOTIFICATIONS ---
@@ -918,13 +857,12 @@
             if(total < 1000) notifications.push({icon:'fa-exclamation-triangle', text:'Low Balance Warning', color:'text-rose-500'});
             if(db.upcoming) {
                 db.upcoming.forEach(u => {
-                    if(String(u.isPaid).toLowerCase() !== 'true') {
+                    if(!u.is_paid) {
                         notifications.push({icon:'fa-file-invoice', text:`Pending: ${u.title} (৳${u.amount})`, color:'text-indigo-500'});
                         if (u.amount >= 5000) notifications.unshift({icon:'fa-radiation', text:`Upcoming Big Cost: ${u.title}`, color:'text-rose-600 font-black'});
                     }
                 });
             }
-            if(db.adminMessage) notifications.push({icon:'fa-shield-alt', text: db.adminMessage, color:'text-slate-400'});
             
             document.getElementById('notifBadge').classList.toggle('active', notifications.length > 0);
             document.getElementById('notifList').innerHTML = notifications.length ? notifications.map(n => `
@@ -1005,10 +943,8 @@
                 const hijriMonth = parseInt(d.date.hijri.month.number);
                 
                 document.getElementById('hijriFull').innerText = `${d.date.hijri.day} ${d.date.hijri.month.en} ${d.date.hijri.year}`;
-                
-                // Store timings globally for live update
                 prayerTimings = d.timings;
-                updateNextPrayer(); // Initial call
+                updateNextPrayer(); 
 
                 document.getElementById('prayerList').innerHTML = ['Fajr','Dhuhr','Asr','Maghrib','Isha'].map(p => `
                     <div class="flex justify-between p-3 border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors rounded-lg">
@@ -1018,10 +954,8 @@
 
                 const grid = document.getElementById('ramadanCalendarGrid');
                 grid.innerHTML = '';
-                // Ramadan 2026 Start: Approx Feb 18, 2026
                 const startRamadan = new Date('2026-02-18');
                 const todayMidnight = new Date(); todayMidnight.setHours(0,0,0,0);
-                
                 const daysPassed = Math.floor((todayMidnight - startRamadan) / (1000 * 60 * 60 * 24));
                 const daysToEid = 30 - daysPassed;
                 document.getElementById('eidCountdown').innerText = daysToEid > 0 ? `${daysToEid} Days to Eid` : "Eid Mubarak!";
@@ -1032,28 +966,15 @@
                 for(let i=1; i<=30; i++) {
                     let status = 'bg-slate-100 text-slate-400';
                     let dayClass = '';
+                    if(i < daysPassed + 1) status = 'bg-slate-200 text-slate-400 day-passed'; 
+                    else if (i === daysPassed + 1) status = 'bg-white border-2 border-emerald-500 text-emerald-600 animate-pulse font-black shadow-md';
+                    else status = 'bg-emerald-50 text-emerald-600 font-medium';
                     
-                    if(i < daysPassed + 1) { 
-                        // Passed
-                        status = 'bg-slate-200 text-slate-400 day-passed'; 
-                    } else if (i === daysPassed + 1) {
-                        // Today
-                        status = 'bg-white border-2 border-emerald-500 text-emerald-600 animate-pulse font-black shadow-md';
-                    } else {
-                        // Future
-                        status = 'bg-emerald-50 text-emerald-600 font-medium';
-                    }
-                    
-                    // Calculate English Date for this Ramadan Day
                     let rDate = new Date(startRamadan);
                     rDate.setDate(startRamadan.getDate() + (i - 1));
                     let engDateStr = rDate.getDate();
 
-                    grid.innerHTML += `
-                        <div class="flex flex-col items-center justify-center p-1 rounded-lg ${status} ${dayClass} h-10 w-full relative">
-                            <span class="text-xs font-serif leading-none">${toBangla(i)}</span>
-                            <span class="text-[8px] opacity-60 leading-none mt-0.5">${engDateStr}</span>
-                        </div>`;
+                    grid.innerHTML += `<div class="flex flex-col items-center justify-center p-1 rounded-lg ${status} ${dayClass} h-10 w-full relative"><span class="text-xs font-serif leading-none">${toBangla(i)}</span><span class="text-[8px] opacity-60 leading-none mt-0.5">${engDateStr}</span></div>`;
                 }
 
                 document.getElementById('sehriTime').innerText = d.timings.Fajr;
@@ -1069,45 +990,26 @@
         
         function updateNextPrayer() {
             if (!prayerTimings || Object.keys(prayerTimings).length === 0) return;
-            
             const now = new Date();
-            const timeStr = now.toTimeString().slice(0, 5); // HH:MM
-            
+            const timeStr = now.toTimeString().slice(0, 5); 
             const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
             let nextP = null;
-            
-            for (let p of prayers) {
-                if (timeStr < prayerTimings[p]) {
-                    nextP = p;
-                    break;
-                }
-            }
-            
-            if (!nextP) {
-                // Next is Fajr tomorrow
-                nextP = 'Fajr';
-            }
-            
+            for (let p of prayers) { if (timeStr < prayerTimings[p]) { nextP = p; break; } }
+            if (!nextP) nextP = 'Fajr';
             document.getElementById('nextPrayerName').innerText = nextP;
             document.getElementById('nextPrayerTime').innerText = prayerTimings[nextP];
             
-            // Sehri vs Iftar Logic
             const fajrTime = new Date(now.toDateString() + ' ' + prayerTimings.Fajr);
             const maghribTime = new Date(now.toDateString() + ' ' + prayerTimings.Maghrib);
-            
             if (now < fajrTime) {
                 document.getElementById('nextEventLabel').innerText = "Sehri Ends In";
                 const diff = fajrTime - now;
-                const h = Math.floor(diff / 3600000);
-                const m = Math.floor((diff % 3600000) / 60000);
-                const s = Math.floor((diff % 60000) / 1000);
+                const h = Math.floor(diff / 3600000); const m = Math.floor((diff % 3600000) / 60000); const s = Math.floor((diff % 60000) / 1000);
                 document.getElementById('sehriCountdown').innerText = `${h}h ${m}m ${s}s`;
             } else if (now < maghribTime) {
                 document.getElementById('nextEventLabel').innerText = "Iftar In";
                 const diff = maghribTime - now;
-                const h = Math.floor(diff / 3600000);
-                const m = Math.floor((diff % 3600000) / 60000);
-                const s = Math.floor((diff % 60000) / 1000);
+                const h = Math.floor(diff / 3600000); const m = Math.floor((diff % 3600000) / 60000); const s = Math.floor((diff % 60000) / 1000);
                 document.getElementById('sehriCountdown').innerText = `${h}h ${m}m ${s}s`;
             } else {
                 document.getElementById('nextEventLabel').innerText = "Sehri (Tomorrow)";
@@ -1119,15 +1021,8 @@
             isRamadan = !isRamadan;
             const t = document.getElementById('ramadanToggle').children[0];
             const b = document.getElementById('ramadanToggle');
-            if(isRamadan) { 
-                t.style.transform='translateX(24px)'; 
-                b.classList.replace('bg-slate-200','bg-emerald-500'); 
-                document.body.classList.add('islamic-mode'); 
-            } else { 
-                t.style.transform='translateX(0)'; 
-                b.classList.replace('bg-emerald-500','bg-slate-200'); 
-                document.body.classList.remove('islamic-mode'); 
-            }
+            if(isRamadan) { t.style.transform='translateX(24px)'; b.classList.replace('bg-slate-200','bg-emerald-500'); document.body.classList.add('islamic-mode'); } 
+            else { t.style.transform='translateX(0)'; b.classList.replace('bg-emerald-500','bg-slate-200'); document.body.classList.remove('islamic-mode'); }
         }
 
         // --- DAILY CLOSING ---
@@ -1138,42 +1033,54 @@
             if(db.transactions) db.transactions.forEach(t => { bals[t.wallet] += (t.type === 'income' ? Number(t.amount) : -Number(t.amount)); });
             document.getElementById('walletClosingList').innerHTML = Object.keys(bals).map(w => `
                 <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                    <div class="flex justify-between items-center mb-1">
-                        <div class="flex items-center gap-2"><img src="${WALLET_LOGOS[w]}" class="w-5 h-5 rounded-full"><span class="text-xs font-bold text-slate-600">${w}</span></div>
-                        <span class="text-[10px] text-slate-400">Sys: ৳${bals[w]}</span>
-                    </div>
+                    <div class="flex justify-between items-center mb-1"><div class="flex items-center gap-2"><img src="${WALLET_LOGOS[w]}" class="w-5 h-5 rounded-full"><span class="text-xs font-bold text-slate-600">${w}</span></div><span class="text-[10px] text-slate-400">Sys: ৳${bals[w]}</span></div>
                     <input type="number" id="close_${w}" data-sys="${bals[w]}" class="w-full p-2 bg-white rounded-lg border border-slate-200 text-sm font-bold" placeholder="Actual Amount" value="${bals[w]}">
                 </div>`).join('');
         }
-        function submitDailyClosing() {
+        async function submitDailyClosing() {
             let adjs = [];
             document.querySelectorAll('[id^="close_"]').forEach(inp => {
                 const w = inp.id.split('_')[1];
                 const diff = parseFloat(inp.value) - parseFloat(inp.dataset.sys);
                 if(!isNaN(diff) && diff !== 0) {
-                    adjs.push({ date: new Date().toISOString().slice(0, 19).replace('T', ' '), email: currentUser.email, userName: currentUser.name, title: `Auto-Adj (${w})`, amount: Math.abs(diff), type: diff > 0 ? 'income' : 'expense', category: 'Other', wallet: w, context: 'Office', note: 'Daily Closing', gps: '' });
+                    adjs.push({ date: new Date().toISOString().slice(0, 19).replace('T', ' '), email: currentUser.email, user_name: currentUser.name, title: `Auto-Adj (${w})`, amount: Math.abs(diff), type: diff > 0 ? 'income' : 'expense', category: 'Other', wallet: w, context: 'Office', note: 'Daily Closing', gps: '' });
                 }
             });
             if(adjs.length > 0) {
                 alert(`Adjusting for ${adjs.length} wallets.`);
-                adjs.forEach(t => db.transactions.unshift(t)); 
-                syncUp({ transactions: adjs }); 
-                renderDashboard(); 
+                const { data, error } = await supabaseClient.from('transactions').insert(adjs).select();
+                if(data) {
+                     data.forEach(t => db.transactions.unshift(t)); 
+                     renderDashboard();
+                }
             } else { alert("No discrepancies found!"); }
             document.getElementById('closingModal').classList.add('hidden');
         }
 
         // --- TODOS & ARCHIVE ---
-        function addTodo() {
+        async function addTodo() {
             const txt = document.getElementById('newTodoInput').value;
             if(!txt) return;
-            const t = { id: Date.now(), date: new Date().toISOString(), email: currentUser.email, title: txt, done: false };
-            if(!db.todos) db.todos = []; db.todos.unshift(t); document.getElementById('newTodoInput').value = ''; renderTodos(); syncUp({ todos: [t] });
+            const now = new Date().toISOString();
+            const { data, error } = await supabaseClient.from('todos').insert([{ date: now, email: currentUser.email, title: txt, done: false }]).select();
+            if(data) {
+                db.todos.unshift(data[0]);
+                document.getElementById('newTodoInput').value = '';
+                renderTodos();
+            }
         }
-        function completeTodo(id) { const t = db.todos.find(x => x.id == id); if(t) { t.done = true; renderTodos(); renderArchiveDeeds(); updateItem('todo', id, {done:true}); } }
+        async function completeTodo(id) { 
+            const t = db.todos.find(x => x.id == id);
+            if(t) { 
+                t.done = true; 
+                await supabaseClient.from('todos').update({ done: true }).eq('id', id);
+                renderTodos(); 
+                renderArchiveDeeds(); 
+            } 
+        }
         function renderTodos() {
             const list = document.getElementById('todoList');
-            if(db.todos) list.innerHTML = db.todos.filter(t => String(t.done).toLowerCase() !== 'true').map(t => `
+            if(db.todos) list.innerHTML = db.todos.filter(t => !t.done).map(t => `
                 <div class="flex items-center gap-3 p-4 bg-white/80 rounded-2xl border border-white/60 shadow-sm interactive-card">
                     <button onclick="completeTodo('${t.id}')" class="h-6 w-6 rounded-lg border-2 border-slate-300 hover:bg-emerald-500 hover:border-emerald-500 transition-colors"></button>
                     <span class="text-sm font-bold text-slate-700">${t.title}</span>
@@ -1181,7 +1088,7 @@
         }
         function renderArchiveDeeds() {
             const list = document.getElementById('archiveList');
-            if(db.todos) list.innerHTML = db.todos.filter(t => String(t.done).toLowerCase() === 'true').map(t => `
+            if(db.todos) list.innerHTML = db.todos.filter(t => t.done).map(t => `
                 <div class="flex items-center gap-3 p-3 bg-slate-100 rounded-xl border border-slate-200 opacity-75">
                     <div class="h-5 w-5 rounded-md bg-emerald-500 flex items-center justify-center text-white text-xs"><i class="fas fa-check"></i></div>
                     <span class="text-sm font-medium text-slate-500 line-through">${t.title}</span>
@@ -1243,7 +1150,6 @@
         }
 
         function renderReport(period) {
-            // Button Styling Update
             ['repWeek','repMonth','repPeople','repYear'].forEach(id => {
                 const el = document.getElementById(id);
                 if(el) { el.classList.remove('bg-white', 'text-slate-800', 'shadow-sm'); el.classList.add('text-slate-500'); }
@@ -1255,11 +1161,9 @@
             if(!ctx) return;
             const context = ctx.getContext('2d');
             
-            // Safe Destroy
             if(window.reportChart instanceof Chart) { window.reportChart.destroy(); } 
             else if (window.reportChart && typeof window.reportChart.destroy === 'function') { window.reportChart.destroy(); }
 
-            // Logic
             const now = new Date();
             let labels = [], data = [];
             let chartType = 'bar';
@@ -1341,7 +1245,7 @@
         // --- PLANS & WISH RENDER ---
         function renderPlansView() {
             const container = document.getElementById('plansContainer');
-            const filtered = plansView === 'upcoming' ? (db.upcoming ? db.upcoming.filter(u => String(u.isPaid).toLowerCase() !== 'true') : []) : (db.wishlist ? db.wishlist.filter(w => String(w.purchased).toLowerCase() !== 'true') : []);
+            const filtered = plansView === 'upcoming' ? (db.upcoming ? db.upcoming.filter(u => !u.is_paid) : []) : (db.wishlist ? db.wishlist.filter(w => !w.purchased) : []);
             
             if (plansView === 'upcoming') {
                 document.getElementById('btnAddPlan').classList.remove('hidden'); document.getElementById('btnAddWish').classList.add('hidden');
@@ -1406,7 +1310,7 @@
                 } else { alert("GPS not supported"); }
             }
         }
-        function submitTransaction() { 
+        async function submitTransaction() { 
             const amt = document.getElementById('inpAmount').value;
             const title = document.getElementById('inpTitle').value;
             // Get date from picker or fallback to now
@@ -1416,24 +1320,27 @@
             if(!amt || !title) return;
             const tx = {
                 date: dateStr,
-                email: currentUser.email, userName: currentUser.name, title, amount: amt, type: currentTxType,
+                email: currentUser.email, user_name: currentUser.name, title, amount: amt, type: currentTxType,
                 category: document.getElementById('inpCategory').value,
                 wallet: document.getElementById('inpWallet').value,
                 context: document.getElementById('inpContext').value,
                 note: document.getElementById('inpNote').value,
                 gps: currentGPS
             };
-            db.transactions.unshift(tx); renderAll(); 
-            // FIXED: Close modal immediately, sync later
-            closeInputModal(); 
-            setTimeout(() => syncUp({ transactions: [tx] }), 50); 
-            document.getElementById('inpAmount').value = ''; document.getElementById('inpTitle').value = '';
-            // Reset GPS button
-            currentGPS = '';
-            const btn = document.getElementById('btnGPS');
-            btn.className = "h-14 w-14 bg-slate-100 rounded-2xl text-slate-400 flex items-center justify-center transition-all active:scale-95 gap-2 px-3";
-            btn.innerHTML = '<i class="fas fa-map-marker-alt text-lg"></i>';
-            document.getElementById('gpsStatusText').innerText = '';
+            
+            const { data, error } = await supabaseClient.from('transactions').insert([tx]).select();
+            if(data) {
+                db.transactions.unshift(data[0]);
+                renderAll(); 
+                closeInputModal(); 
+                document.getElementById('inpAmount').value = ''; document.getElementById('inpTitle').value = '';
+                // Reset GPS button
+                currentGPS = '';
+                const btn = document.getElementById('btnGPS');
+                btn.className = "h-14 w-14 bg-slate-100 rounded-2xl text-slate-400 flex items-center justify-center transition-all active:scale-95 gap-2 px-3";
+                btn.innerHTML = '<i class="fas fa-map-marker-alt text-lg"></i>';
+                document.getElementById('gpsStatusText').innerText = '';
+            }
         }
         function filterHistory(c) { activeFilter = c; renderTransactions(); }
         function renderTransactions() { 
@@ -1460,34 +1367,64 @@
         function openWishlistModal() { document.getElementById('wishModal').classList.remove('hidden'); }
         function setDebtView(v) { currentDebtView = v; renderHalkhata(); }
         function togglePlansTab(v) { plansView = v; renderPlansView(); }
-        function submitDebt(t) { 
-             const d = { id: Date.now(), date: new Date().toISOString(), email: currentUser.email, name: document.getElementById('debtName').value, title: document.getElementById('debtTitle').value, amount: document.getElementById('debtAmount').value, type:t, settled: false };
-             db.debts.unshift(d); renderHalkhata(); document.getElementById('debtModal').classList.add('hidden'); syncUp({ debts: [d] });
+        
+        async function submitDebt(t) { 
+             const d = { date: new Date().toISOString(), email: currentUser.email, name: document.getElementById('debtName').value, title: document.getElementById('debtTitle').value, amount: document.getElementById('debtAmount').value, type:t, settled: false };
+             const { data, error } = await supabaseClient.from('debts').insert([d]).select();
+             if(data) {
+                 db.debts.unshift(data[0]);
+                 renderHalkhata(); 
+                 document.getElementById('debtModal').classList.add('hidden'); 
+             }
         }
         function editPlan(id) { 
             const p = db.upcoming.find(u => u.id == id);
             if(p) { document.getElementById('planModalTitle').innerText = 'Edit Plan'; document.getElementById('planEditId').value = id; document.getElementById('planTitle').value = p.title; document.getElementById('planAmount').value = p.amount; document.getElementById('planPriority').value = p.priority; document.getElementById('planModal').classList.remove('hidden'); }
         }
-        function submitPlan() {
+        async function submitPlan() {
              const id = document.getElementById('planEditId').value;
              const title = document.getElementById('planTitle').value;
              const amount = document.getElementById('planAmount').value;
              const priority = document.getElementById('planPriority').value;
+             
              if(id) {
+                 await supabaseClient.from('upcoming').update({ title, amount, priority }).eq('id', id);
                  const p = db.upcoming.find(u => u.id == id);
-                 if(p) { p.title = title; p.amount = amount; p.priority = priority; renderPlansView(); document.getElementById('planModal').classList.add('hidden'); deleteItem('upcoming', id); setTimeout(() => syncUp({ upcoming: [p] }), 500); }
+                 if(p) { p.title = title; p.amount = amount; p.priority = priority; }
              } else {
-                 const p = { id: Date.now(), date: new Date().toISOString(), email: currentUser.email, userName: currentUser.name, title, amount, priority, isPaid: false };
-                 db.upcoming.push(p); renderPlansView(); document.getElementById('planModal').classList.add('hidden'); syncUp({ upcoming: [p] });
+                 const p = { date: new Date().toISOString(), email: currentUser.email, user_name: currentUser.name, title, amount, priority, is_paid: false };
+                 const { data } = await supabaseClient.from('upcoming').insert([p]).select();
+                 if(data) db.upcoming.push(data[0]);
              }
+             renderPlansView(); 
+             document.getElementById('planModal').classList.add('hidden');
         }
-        function submitWish() {
-             const w = { id: Date.now(), date: new Date().toISOString(), email: currentUser.email, title: document.getElementById('wishTitle').value, price: document.getElementById('wishPrice').value, category:'General', link:document.getElementById('wishLink').value, priority:'Medium', purchased:false };
-             db.wishlist.push(w); renderPlansView(); document.getElementById('wishModal').classList.add('hidden'); syncUp({ wishlist: [w] });
+        async function submitWish() {
+             const w = { date: new Date().toISOString(), email: currentUser.email, title: document.getElementById('wishTitle').value, price: document.getElementById('wishPrice').value, category:'General', link:document.getElementById('wishLink').value, priority:'Medium', purchased:false };
+             const { data } = await supabaseClient.from('wishlist').insert([w]).select();
+             if(data) { db.wishlist.push(data[0]); renderPlansView(); document.getElementById('wishModal').classList.add('hidden'); }
         }
-        function settleDebt(id) { if(confirm("Settled?")) { db.debts.find(x=>x.id==id).settled=true; renderHalkhata(); updateItem('debt', id, {settled:true}); } }
-        function deletePlan(id) { if(confirm("Delete?")) { db.upcoming = db.upcoming.filter(u=>u.id!=id); renderPlansView(); deleteItem('upcoming', id); } }
-        function buyWish(id) { if(confirm("Bought?")) { db.wishlist.find(x=>x.id==id).purchased=true; renderPlansView(); updateItem('wishlist', id, {purchased:true}); } }
+        async function settleDebt(id) { 
+            if(confirm("Settled?")) { 
+                await supabaseClient.from('debts').update({ settled: true }).eq('id', id);
+                db.debts.find(x=>x.id==id).settled=true; 
+                renderHalkhata(); 
+            } 
+        }
+        async function deletePlan(id) { 
+            if(confirm("Delete?")) { 
+                await supabaseClient.from('upcoming').delete().eq('id', id);
+                db.upcoming = db.upcoming.filter(u=>u.id!=id); 
+                renderPlansView(); 
+            } 
+        }
+        async function buyWish(id) { 
+            if(confirm("Bought?")) { 
+                await supabaseClient.from('wishlist').update({ purchased: true }).eq('id', id);
+                db.wishlist.find(x=>x.id==id).purchased=true; 
+                renderPlansView(); 
+            } 
+        }
         function animateValue(id, end) { document.getElementById(id).innerText = Math.floor(end).toLocaleString(); }
     </script>
 </body>
