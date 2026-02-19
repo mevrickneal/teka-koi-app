@@ -448,6 +448,12 @@
         <div class="bg-white w-full max-w-sm rounded-[32px] p-6 slide-up shadow-2xl">
             <h3 class="text-xl font-black mb-4">Daily Closing</h3>
             <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-4" id="closingDate">---</p>
+            
+            <!-- Update: CSV Import Feature Here -->
+            <div class="flex gap-2 mb-4">
+                <button onclick="importCSV('transactions')" class="flex-1 py-2 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-bold border border-indigo-100">Import CSV</button>
+            </div>
+
             <div id="walletClosingList" class="space-y-3 mb-6 max-h-64 overflow-y-auto pr-1"></div>
             <button onclick="submitDailyClosing()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold shadow-lg">Update & Close</button>
             <button onclick="document.getElementById('closingModal').classList.add('hidden')" class="w-full py-3 text-slate-400 font-bold text-xs">CANCEL</button>
@@ -521,6 +527,15 @@
                 <div><label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Full Name</label><input type="text" id="profileNameInput" class="w-full p-3 bg-slate-50 rounded-xl font-bold text-sm border border-slate-100"></div>
                 <div><label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Avatar Image URL</label><input type="text" id="profileAvatarInput" class="w-full p-3 bg-slate-50 rounded-xl font-bold text-sm border border-slate-100" placeholder="https://..."></div>
                 <div><label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Contact No</label><input type="text" id="profileContactInput" class="w-full p-3 bg-slate-50 rounded-xl font-bold text-sm border border-slate-100" placeholder="+880..."></div>
+                
+                <!-- IMPORT DATA SECTION -->
+                <div class="mt-4 pt-4 border-t border-slate-100">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Import Legacy Data (CSV)</p>
+                    <div class="flex gap-2">
+                        <button onclick="importCSV('transactions')" class="flex-1 py-2 bg-slate-100 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-200">Transactions</button>
+                        <button onclick="importCSV('upcoming')" class="flex-1 py-2 bg-slate-100 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-200">Plans</button>
+                    </div>
+                </div>
             </div>
             <div class="grid grid-cols-2 gap-3">
                 <button onclick="saveProfileLocal()" class="w-full bg-emerald-500 text-white py-3 rounded-xl font-bold text-sm shadow-md">Save Details</button>
@@ -544,7 +559,7 @@
         let prayerTimings = {};
         
         let tvChannels = JSON.parse(localStorage.getItem('TEKA_TV')) || [
-            {name: "Jamuna TV", link: "https://www.youtube.com/embed/GvSQMcp7GDo?autoplay=1"},
+            {name: "Chanel i TV", link: "https://www.youtube.com/watch?v=o6SJvPy15o4&embeds_referring_euri=https%3A%2F%2Fwww.channelionline.com%2F&source_ve_path=OTY3MTQ"},
             {name: "Somoy TV", link: "https://www.youtube.com/embed/P7qS64-Qd4I?autoplay=1"},
             {name: "Channel 24", link: "https://www.youtube.com/embed/z4a6mX8qV9k?autoplay=1"}
         ];
@@ -773,6 +788,77 @@
                 checkNotifications();
             } catch(e) { console.error(e); }
             document.getElementById('syncIndicator').classList.add('hidden');
+        }
+
+        // --- CSV IMPORT UTILITY ---
+        async function importCSV(type) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.csv';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = async (event) => {
+                    const text = event.target.result;
+                    const rows = text.split('\n').map(r => r.split(','));
+                    const headers = rows[0].map(h => h.trim().toLowerCase());
+                    const data = [];
+                    
+                    for(let i=1; i<rows.length; i++) {
+                        const row = rows[i];
+                        if(row.length < 2) continue;
+                        const obj = {};
+                        headers.forEach((h, index) => obj[h] = row[index] ? row[index].replace(/^"|"$/g, '').trim() : '');
+                        
+                        let dbRow = {};
+                        if(type === 'transactions') {
+                            // Map CSV columns to DB columns
+                            // Expected CSV: Date,UserEmail,UserName,Title,Amount,Type,Category,Wallet,Context,Note
+                            if(!obj.amount) continue;
+                            dbRow = {
+                                date: obj.date || new Date().toISOString(),
+                                email: currentUser.email,
+                                user_name: obj.username || currentUser.name,
+                                title: obj.title || 'Imported Transaction',
+                                amount: parseFloat(obj.amount),
+                                type: obj.type ? obj.type.toLowerCase() : 'expense',
+                                category: obj.category || 'General',
+                                wallet: obj.wallet || 'Cash',
+                                context: obj.context || 'Personal',
+                                note: obj.note || 'Imported',
+                                gps: ''
+                            };
+                        } else if (type === 'upcoming') {
+                             // CSV: ID,Date,UserEmail,UserName,Title,Amount,Priority,IsPaid
+                             if(!obj.title) continue;
+                             dbRow = {
+                                 date: obj.date || new Date().toISOString(),
+                                 email: currentUser.email,
+                                 user_name: obj.username || currentUser.name,
+                                 title: obj.title,
+                                 amount: parseFloat(obj.amount || 0),
+                                 priority: obj.priority || 'Medium',
+                                 is_paid: obj.ispaid && obj.ispaid.toLowerCase() === 'true'
+                             };
+                        }
+                        data.push(dbRow);
+                    }
+                    
+                    if(data.length > 0) {
+                        const { error } = await supabaseClient.from(type).insert(data);
+                        if(error) alert('Import error: ' + error.message);
+                        else { 
+                            alert('Success! ' + data.length + ' rows imported.'); 
+                            syncDown(); 
+                            closeProfileModal();
+                        }
+                    } else {
+                        alert("No valid data found in CSV.");
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
         }
 
         // --- SMART INPUT & PLAN LOGIC ---
